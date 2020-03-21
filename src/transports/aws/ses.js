@@ -3,8 +3,8 @@ import AWS from 'aws-sdk';
 
 /**
  * AWS Email Transport
- * @param message
- * @param settings
+ * @param message {Object}
+ * @param settings {Object}
  * @returns {Promise<unknown>}
  */
 export default (message, settings) => new Promise((resolve, reject) => {

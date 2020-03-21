@@ -12,9 +12,9 @@ class Templates {
 
   /**
    * Register a new template
-   * @param name
-   * @param html
-   * @param text
+   * @param name {String}
+   * @param html {String}
+   * @param text {String}
    * @returns {[]|*[]}
    */
   register({ name, html, text }) {
@@ -47,7 +47,7 @@ class Templates {
 
   /**
    * Get a given Template
-   * @param name
+   * @param name {String}
    * @returns {*}
    */
   get(name) {
@@ -57,9 +57,10 @@ class Templates {
 
   /**
    * Use a Template for a new message
-   * @param name
-   * @param settings
-   * @param data
+   * @param name {String}
+   * @param settings {Object}
+   * @param data {Object}
+   * @param transport {String|Array|Object}
    * @returns {*}
    */
   send(name, settings = {}, data = {}, transport = null) {

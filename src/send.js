@@ -1,36 +1,48 @@
 import smtp from './transports/smtp';
 import mailgun from './transports/mailgun';
-import aws from './transports/aws';
+import ses from './transports/aws/ses';
 import sendgrid from './transports/sendgrid';
 import twilioSMS from './transports/twilio/sms';
 import twilioCall from './transports/twilio/call';
 
+
 /**
  * Message Sending Service
- * @param message
- * @param settings
- * @param uniqueTransport
+ * @param message {Object}
+ * @param settings {Object}
+ * @param transportFilter {String|Array|Object}
  * @returns {Promise<{success: boolean}>}
  */
-const send = async (message, settings, uniqueTransport) => {
+const send = async (message, settings, transportFilter) => {
   const availableTransports = {
     smtp,
     mailgun,
-    aws,
+    ses,
     sendgrid,
     twilioSMS,
     twilioCall,
   };
 
   let transports = [...settings.transports];
+  const isMultiSend = Array.isArray(transportFilter);
 
-  if (uniqueTransport) {
-    const matchService = settings.transports.find((e) => e.name === uniqueTransport);
-    if (!matchService) {
-      throw new Error(`Parrot Messenger [Send]: Transport ${uniqueTransport} not found`);
+  if (transportFilter) {
+    const matchServices = settings.transports.filter((e) => {
+      if (Array.isArray(transportFilter)) {
+        return transportFilter.indexOf(e.name) !== -1;
+      }
+
+      if (transportFilter.class) {
+        return e.class === transportFilter.class;
+      }
+
+      return e.name === transportFilter;
+    });
+    if (!matchServices.length) {
+      throw new Error(`Parrot Messenger [Send]: Transport ${transportFilter.join(', ')} not found`);
     }
     transports = [
-      matchService,
+      ...matchServices,
     ];
   }
 
@@ -38,7 +50,7 @@ const send = async (message, settings, uniqueTransport) => {
   let response = null;
 
   for (let i = 0; i < transports.length; i++) {
-    if (i > 0 && errors.length === 0) return;
+    if (i > 0 && errors.length === 0 && !isMultiSend) return;
     const transport = transports[i];
 
     try {

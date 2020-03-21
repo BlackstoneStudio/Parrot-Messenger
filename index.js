@@ -1,10 +1,9 @@
 import Parrot from './src/main';
 
 Parrot.init({
-  defaultEmail: 'Parrot Mailer me@parrotmessenger.com',
   transports: [
     {
-      name: 'aws',
+      name: 'ses',
       settings: {
         auth: {
           secretAccessKey: '/smgt0t1ShhvY1',
@@ -44,7 +43,7 @@ Parrot.init({
       },
     },
     {
-      name: 'twilioCall',
+      name: 'twilioSMS',
       settings: {
         auth: {
           sid: '',
@@ -56,7 +55,6 @@ Parrot.init({
       },
     },
   ],
-  letItParrot: true,
 });
 
 
@@ -73,7 +71,7 @@ Parrot.templates.send(
     subject: 'Testing',
   },
   { name: 'Parrot' },
-  'mailgun', // optional
+  { class: 'sms' },
 ).then((res) => {
   console.log('SEND TEMPALTE OUTPUT', res);
 });

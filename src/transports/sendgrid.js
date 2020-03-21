@@ -2,8 +2,8 @@ import Sengrid from '@sendgrid/mail';
 
 /**
  * Sendgrid Email Transport
- * @param email
- * @param settings
+ * @param email {Object}
+ * @param settings {Object}
  * @returns {Promise<unknown>}
  */
 export default (message, settings) => new Promise((resolve, reject) => {
