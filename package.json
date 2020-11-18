@@ -1,5 +1,5 @@
 {
-  "name": "parrot-mailer",
+  "name": "parrot-messenger",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -28,9 +28,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://blackstone_studio@bitbucket.org/blackstone_studio/parrot-mailer.git"
+    "url": "git+https://github.com/BlackstoneStudio/Parrot-Messenger.git"
   },
   "author": "Blackstone Studio",
   "license": "MIT",
-  "homepage": "https://bitbucket.org/blackstone_studio/parrot-mailer#readme"
+  "homepage": "https://github.com/BlackstoneStudio/Parrot-Messenger"
 }
