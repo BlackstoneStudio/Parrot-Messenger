@@ -1,4 +1,4 @@
-[![Header](https://blackstone-open-assets.s3-us-west-2.amazonaws.com/header.png)](https://www.blackstone.studio/we-are-blackstone/)
+<a href="https://www.blackstone.studio/" target=""_blank><img src="https://blackstone-open-assets.s3-us-west-2.amazonaws.com/header.png" alt="Blackstone Studio - In Development We Trust"></a>
 
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
@@ -53,6 +53,4 @@ Copyright © 2020 [Blackstone Studio](https://github.com/Blasckstone-Studio).
 
 This project is [MIT](https://github.com/BlackstoneStudio/Parrot-Messenger/master/LICENSE) licensed.
 
-
-
-[![Footer](https://blackstone-open-assets.s3-us-west-2.amazonaws.com/footer.png)](https://www.blackstone.studio/we-are-blackstone/)
+<a href="https://www.blackstone.studio/we-are-blackstone/" target=""_blank><img src="https://blackstone-open-assets.s3-us-west-2.amazonaws.com/footer.png" alt="We are blackstone - Contact us"></a>
