@@ -1,4 +1,4 @@
-![Header](https://blackstone-open-assets.s3-us-west-2.amazonaws.com/header.png) 
+[![Header](https://blackstone-open-assets.s3-us-west-2.amazonaws.com/header.png)](https://www.blackstone.studio/we-are-blackstone/)
 
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
@@ -55,4 +55,4 @@ This project is [MIT](https://github.com/BlackstoneStudio/Parrot-Messenger/maste
 
 
 
-![Footer](https://blackstone-open-assets.s3-us-west-2.amazonaws.com/footer.png)
+[![Footer](https://blackstone-open-assets.s3-us-west-2.amazonaws.com/footer.png)](https://www.blackstone.studio/we-are-blackstone/)
