@@ -1,7 +1,6 @@
 import mailgun from 'mailgun-js';
 import request from 'request';
 
-
 /**
  * Mailgun Email Transport
  * @param message {Object}

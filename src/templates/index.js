@@ -36,7 +36,6 @@ class Templates {
     return this.templates;
   }
 
-
   /**
    * List Registered Templates
    * @returns {[]|*[]}

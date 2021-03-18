@@ -5,7 +5,7 @@
  */
 const getTransportClass = (name) => {
   let defaultClass = 'unknown';
-  const emailTransports = ['ses', 'mailgun', 'smtp'];
+  const emailTransports = ['ses', 'mailgun', 'mailjet', 'mailchimp', 'smtp'];
   const smsTransports = ['twilioSMS'];
   const voiceTransports = ['twilioCall'];
 

@@ -1,10 +1,11 @@
 import smtp from './transports/smtp';
 import mailgun from './transports/mailgun';
+import mailjet from './transports/mailjet';
+import mailchimp from './transports/mailchimp';
 import ses from './transports/aws/ses';
 import sendgrid from './transports/sendgrid';
 import twilioSMS from './transports/twilio/sms';
 import twilioCall from './transports/twilio/call';
-
 
 /**
  * Message Sending Service
@@ -17,6 +18,8 @@ const send = async (message, settings, transportFilter) => {
   const availableTransports = {
     smtp,
     mailgun,
+    mailjet,
+    mailchimp,
     ses,
     sendgrid,
     twilioSMS,

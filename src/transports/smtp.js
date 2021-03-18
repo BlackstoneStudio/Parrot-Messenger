@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 
-
 /**
  * Mailgun Email Transport
  * @param email {Object}
