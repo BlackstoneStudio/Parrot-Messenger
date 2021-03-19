@@ -1,6 +1,7 @@
 import smtp from './transports/smtp';
 import mailgun from './transports/mailgun';
-import mailjet from './transports/mailjet';
+import mailjetEmail from './transports/mailjet/email';
+import mailjetSMS from './transports/mailjet/sms';
 import mailchimp from './transports/mailchimp';
 import ses from './transports/aws/ses';
 import sendgrid from './transports/sendgrid';
@@ -18,7 +19,8 @@ const send = async (message, settings, transportFilter) => {
   const availableTransports = {
     smtp,
     mailgun,
-    mailjet,
+    mailjetEmail,
+    mailjetSMS,
     mailchimp,
     ses,
     sendgrid,

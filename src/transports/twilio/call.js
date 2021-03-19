@@ -27,5 +27,10 @@ export default (message, settings) => new Promise((resolve, reject) => {
 
   transport.calls
     .create(messageData)
-    .then((call) => console.log(call.sid));
+    .then((call) => {
+      resolve(call);
+    })
+    .catch((error) => {
+      reject(error);
+    });
 });

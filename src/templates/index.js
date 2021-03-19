@@ -1,4 +1,5 @@
 import Handlebars from 'handlebars';
+import Axios from 'axios';
 
 class Templates {
   /**
@@ -15,13 +16,18 @@ class Templates {
    * @param name {String}
    * @param html {String}
    * @param text {String}
+   * @param request {Object}
    * @returns {[]|*[]}
    */
-  register({ name, html, text }) {
+  register({
+    name, html, text, request,
+  }) {
     // Test that the template is a valid handlebars template
     try {
-      const handlebarsTemplate = Handlebars.compile(html || text);
-      handlebarsTemplate({});
+      if (!request) {
+        const handlebarsTemplate = Handlebars.compile(html || text);
+        handlebarsTemplate({});
+      }
     } catch (e) {
       console.error('Parrot Messenger [Send]: Error Parsing Message Template');
       throw new Error(e);
@@ -30,7 +36,11 @@ class Templates {
     // Add this template to the store
     this.templates = [
       ...this.templates,
-      { name, html: html || text },
+      {
+        name,
+        html: html || text,
+        request: request || null,
+      },
     ];
 
     return this.templates;
@@ -62,16 +72,32 @@ class Templates {
    * @param transport {String|Array|Object}
    * @returns {*}
    */
-  send(name, settings = {}, data = {}, transport = null) {
-    // Find the teamplate
+  async send(name, settings = {}, data = {}, transport = null) {
+    // Find the template
     const template = this.get(name);
+    let content = template.html || template.text;
+
+    if (template.request) {
+      const { request } = template;
+
+      try {
+        const req = await Axios(request);
+        content = request.resolve.split('.').reduce((o, i) => o[i], req.data);
+      } catch (e) {
+        throw new Error('[Async Tempalte] Error', e);
+      }
+    }
+
+    if (!content) {
+      throw new Error('[Async Template] Content not found');
+    }
 
     if (!template) {
       throw new Error(`Parrot Messenger [Send]: Template ${name} not found`);
     }
 
     // Compile the handlebars template and render
-    const handlebarsTemplate = Handlebars.compile(template.html || template.text);
+    const handlebarsTemplate = Handlebars.compile(content);
     const html = handlebarsTemplate(data);
 
     const message = {

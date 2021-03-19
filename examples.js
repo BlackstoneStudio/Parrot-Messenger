@@ -1,112 +1,209 @@
 import Parrot from './src';
 
+/**
+ * Mailgun Example Settings
+ */
+const mailgun = {
+  name: 'mailgun',
+  settings: {
+    auth: {
+      domain: 'email.parrotmessenger.com',
+      apiKey: '',
+    },
+    defaults: {
+      from: 'me@parrotmessenger.com',
+    },
+  },
+};
+
+/**
+ * Mailchimp Example Settings
+ */
+const mailchimp = {
+  name: 'mailchimp',
+  settings: {
+    auth: {
+      apiKey: 'XXX',
+    },
+    defaults: {
+      from: 'me@parrotmessenger.com',
+    },
+  },
+};
+
+/**
+ * AWS SES Example Settings
+ */
+const ses = {
+  name: 'ses',
+  settings: {
+    auth: {
+      secretAccessKey: 'XXX',
+      accessKeyId: '',
+      region: '',
+    },
+    defaults: {
+      from: 'me@parrotmessenger.com',
+    },
+  },
+};
+
+/**
+ * Sendgrid Example Settings
+ */
+
+const sendgrid = {
+  name: 'sendgrid',
+  settings: {
+    auth: {
+      apiKeyPublic: 'XXXX',
+      apiKeyPrivate: 'XXXX',
+    },
+    defaults: {
+      from: 'me@parrotmessenger.com',
+    },
+  },
+};
+
+/**
+ * Mailjet Email Example Settings
+ */
+const mailjetEmail = {
+  name: 'mailjetEmail',
+  settings: {
+    auth: {
+      apiKeyPublic: 'XXX',
+      apiKeyPrivate: 'XXX',
+    },
+    defaults: {
+      from: 'me@parrotmessenger.com',
+    },
+  },
+};
+
+/**
+ * Mailjet SMS Example Settings
+ */
+const mailjetSMS = {
+  name: 'mailjetSMS',
+  settings: {
+    auth: {
+      apiKey: 'XXXX',
+    },
+    defaults: {
+      from: 'MJPilot',
+    },
+  },
+};
+
+/**
+ * Twilio SMS Example Settings
+ */
+const twilioSMS = {
+  name: 'twilioSMS',
+  settings: {
+    auth: {
+      sid: '',
+      token: '',
+    },
+    defaults: {
+      from: '15555555555',
+    },
+  },
+};
+
+/**
+ * Twilio Call Example Settings
+ */
+const twilioCall = {
+  name: 'twilioCall',
+  settings: {
+    auth: {
+      sid: '',
+      token: '',
+    },
+    defaults: {
+      from: '15555555555',
+    },
+  },
+};
+
+/**
+ * SMTP Example Settings
+ */
+const smtp = {
+  name: 'smtp',
+  settings: {
+    host: 'smtp.gmail.com',
+    port: '587',
+    secure: true,
+    auth: {
+      user: '',
+      pass: '',
+    },
+    defaults: {
+      from: 'Parrot Mailer me@parrotmessenger.com',
+    },
+  },
+};
+
 Parrot.init({
   transports: [
-    {
-      name: 'mailchimp',
-      settings: {
-        auth: {
-          apiKey: '26QSqaIxFOBKoZkj6jYLkw',
-        },
-        defaults: {
-          from: 'me@parrotmessenger.com',
-        },
-      },
-    },
-    {
-      name: 'mailjet',
-      settings: {
-        auth: {
-          apiKeyPublic: 'XXXX',
-          apiKeyPrivate: 'XXXX',
-        },
-        defaults: {
-          from: 'me@parrotmessenger.com',
-        },
-      },
-    },
-    {
-      name: 'mailjet',
-      settings: {
-        auth: {
-          apiKeyPublic: 'XXXX',
-          apiKeyPrivate: 'XXXX',
-        },
-        defaults: {
-          from: 'me@parrotmessenger.com',
-        },
-      },
-    },
-    {
-      name: 'ses',
-      settings: {
-        auth: {
-          secretAccessKey: '/smgt0t1ShhvY1',
-          accessKeyId: '',
-          region: 'us-east-1',
-        },
-        defaults: {
-          from: 'me@parrotmessenger.com',
-        },
-      },
-    },
-    {
-      name: 'smtp',
-      settings: {
-        host: 'smtp.gmail.com',
-        port: '587',
-        secure: true,
-        auth: {
-          user: '',
-          pass: '',
-        },
-        defaults: {
-          from: 'Parrot Mailer me@parrotmessenger.com',
-        },
-      },
-    },
-    {
-      name: 'mailgun',
-      settings: {
-        auth: {
-          domain: 'email.parrotmessenger.com',
-          apiKey: '',
-        },
-        defaults: {
-          from: 'me@parrotmessenger.com',
-        },
-      },
-    },
-    {
-      name: 'twilioSMS',
-      settings: {
-        auth: {
-          sid: '',
-          token: '',
-        },
-        defaults: {
-          from: '14152149707',
-        },
-      },
-    },
+    mailgun,
+    mailchimp,
+    ses,
+    sendgrid,
+    mailjetEmail,
+    mailjetSMS,
+    twilioSMS,
+    twilioCall,
+    smtp,
   ],
 });
 
+/**
+ * Standard HTML Template
+ */
 Parrot.templates.register({
-  name: 'Test Template',
-  html: '<p>Hey there {{name}}!!</p>',
+  name: 'HTML Template',
+  html: '<p>Hey there {{name}}!!</p> {{date}}',
+});
+
+/**
+ * Remote Async Template
+ */
+Parrot.templates.register({
+  name: 'Async Template',
+  // Request is a standard Axios type object
+  // with an additional resolve parameter
+  // that resolves the response of the object
+  // API reference for Axios:
+  // https://github.com/axios/axios#axios-api
+  request: {
+    method: 'GET',
+    url: 'https://reqres.in/api/unknown/2',
+    data: {},
+    headers: {},
+    resolve: 'support.text',
+  },
 });
 
 Parrot.templates.send(
-  'Test Template',
+  'Async Template',
   {
-    // to: '523325481771‬',
-    to: 'bernardo@nishikawa.co',
+    // to: '+15555555555',
+    to: 'john@doe.com',
     subject: 'Testing',
   },
   // Sample Data for Template
-  { name: 'User' },
-  { class: 'email', name: 'mailchimp' },
+  { name: 'User', date: new Date() },
+  // Transport Settings
+  // Available classes email, sms & call
+  // Available transports per Class:
+  // Email: 'ses', 'mailgun', 'mailjetEmail', 'mailchimp', 'smtp'
+  // SMS: 'twilioSMS', 'mailjetSMS'
+  // Call: 'twilioCall'
+  { class: 'email', name: 'mailjetEmail' },
 )
   .then((res) => {
     console.log('SEND TEMPALTE OUTPUT', res);
