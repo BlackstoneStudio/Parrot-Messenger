@@ -6,7 +6,7 @@ import mailchimp from '@mailchimp/mailchimp_transactional';
  * @param settings {Object}
  * @returns {Promise<unknown>}
  */
-export default (message, settings) => new Promise(async (resolve, reject) => {
+export default (message, settings): Promise<void> => new Promise((resolve, reject) => {
   const transport = mailchimp(settings.auth.apiKey);
   const emailData = {
     ...settings.defaults || {},

@@ -1,4 +1,4 @@
-import Handlebars from 'handlebars';
+import { compile } from 'handlebars';
 import Axios from 'axios';
 
 class Templates {
@@ -21,11 +21,16 @@ class Templates {
    */
   register({
     name, html, text, request,
+  }: {
+    name: string,
+    html: string, 
+    text: string,
+    request?: Record<string|number, any>
   }) {
     // Test that the template is a valid handlebars template
     try {
       if (!request) {
-        const handlebarsTemplate = Handlebars.compile(html || text);
+        const handlebarsTemplate = compile(html || text);
         handlebarsTemplate({});
       }
     } catch (e) {
@@ -97,7 +102,7 @@ class Templates {
     }
 
     // Compile the handlebars template and render
-    const handlebarsTemplate = Handlebars.compile(content);
+    const handlebarsTemplate = compile(content);
     const html = handlebarsTemplate(data);
 
     const message = {
@@ -107,7 +112,7 @@ class Templates {
 
     // MJS makes this as an export so we need
     // to access default prop of mailer
-    return this.mailer.default.send(message, transport);
+    return this.mailer.send(message, transport);
   }
 }
 

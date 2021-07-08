@@ -1,10 +1,5 @@
-/**
- *  Get the default class for a transport
- * @param name {string}
- * @returns {string}
- */
-const getTransportClass = (name) => {
-  let defaultClass = 'unknown';
+export default (name: string): 'email'|'sms'|'call' => {
+  let defaultClass: 'email'|'sms'|'call' = 'email';
   const emailTransports = ['ses', 'mailgun', 'mailjetEmail', 'mailchimp', 'smtp'];
   const smsTransports = ['twilioSMS', 'mailjetSMS'];
   const voiceTransports = ['twilioCall'];
@@ -14,8 +9,4 @@ const getTransportClass = (name) => {
   if (voiceTransports.indexOf(name) !== -1) defaultClass = 'call';
 
   return defaultClass;
-};
-
-export {
-  getTransportClass,
 };

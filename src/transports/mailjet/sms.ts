@@ -1,4 +1,4 @@
-import mailjet from 'node-mailjet';
+import * as mailjet from 'node-mailjet';
 import htmlToText from 'html-to-text';
 
 /**
@@ -22,7 +22,7 @@ export default (message, settings) => new Promise((resolve, reject) => {
   };
 
   const request = transport
-    .post('sms-send', { version: 'v4' })
+    .post('sms-send')
     .request(messageData);
 
   request

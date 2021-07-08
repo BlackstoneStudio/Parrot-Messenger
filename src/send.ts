@@ -3,10 +3,11 @@ import mailgun from './transports/mailgun';
 import mailjetEmail from './transports/mailjet/email';
 import mailjetSMS from './transports/mailjet/sms';
 import mailchimp from './transports/mailchimp';
-import ses from './transports/aws/ses';
+import SES from './transports/aws/ses';
 import sendgrid from './transports/sendgrid';
 import twilioSMS from './transports/twilio/sms';
 import twilioCall from './transports/twilio/call';
+import { Envelope, Settings, Transport } from './types';
 
 /**
  * Message Sending Service
@@ -15,14 +16,18 @@ import twilioCall from './transports/twilio/call';
  * @param transportFilter {String|Array|Object}
  * @returns {Promise<{success: boolean}>}
  */
-const send = async (message, settings, transportFilter) => {
+const send = async (
+  message: Envelope,
+  settings: Settings,
+  transportFilter: Omit<Transport, 'settings'>[],
+) => {
   const availableTransports = {
     smtp,
     mailgun,
     mailjetEmail,
     mailjetSMS,
     mailchimp,
-    ses,
+    ses: SES,
     sendgrid,
     twilioSMS,
     twilioCall,

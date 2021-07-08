@@ -1,4 +1,4 @@
-import Parrot from './src';
+import Parrot from '../src';
 
 /**
  * Mailgun Example Settings
