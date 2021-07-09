@@ -1,25 +1,28 @@
-import Sengrid from '@sendgrid/mail';
+import * as SendgridMail from '@sendgrid/mail';
 
-/**
- * Sendgrid Email Transport
- * @param email {Object}
- * @param settings {Object}
- * @returns {Promise<unknown>}
- */
-export default (message, settings) => new Promise((resolve, reject) => {
-  const transport = Sengrid.setApiKey(settings.auth.apiKey);
-  const emailData = {
-    ...settings.defaults || {},
-    ...message,
-  };
+import { Envelope, GenericTransport, Sendgrid as ISendgrid } from '../types';
 
-  // TODO: Implement Attachment Translator
+class Sendgrid implements GenericTransport {
+  constructor(
+    private settings: ISendgrid,
+    public transport: any = new SendgridMail.MailService(),
+  ) {
+    transport.setApiKey(settings.auth.apiKey);
+  }
 
-  transport.send(emailData, (error, info) => {
-    if (error) {
-      reject(error);
-      return;
-    }
-    resolve(info);
-  });
-});
+  async send(message: Envelope) {
+    const request = {
+      ...this.settings.defaults,
+      ...message,
+    };
+
+    await this.transport.send({
+      from: request.from,
+      to: request.to,
+      subject: request.subject,
+      html: request.html,
+    });
+  }
+}
+
+export default Sendgrid;

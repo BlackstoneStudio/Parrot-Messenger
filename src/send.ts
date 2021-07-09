@@ -1,6 +1,6 @@
 import smtp from './transports/smtp';
 import mailgun from './transports/mailgun';
-import mailjetEmail from './transports/mailjet/email';
+import MailjetEmail from './transports/mailjet/email';
 import mailjetSMS from './transports/mailjet/sms';
 import mailchimp from './transports/mailchimp';
 import SES from './transports/aws/ses';
@@ -24,7 +24,7 @@ const send = async (
   const availableTransports = {
     smtp,
     mailgun,
-    mailjetEmail,
+    mailjetEmail: MailjetEmail,
     mailjetSMS,
     mailchimp,
     ses: SES,

@@ -1,7 +1,7 @@
 import * as mailjet from 'node-mailjet';
-import { Envelope, MailjetEmail as TMailjetEmail } from '../../types';
+import { Envelope, GenericTransport, MailjetEmail as TMailjetEmail } from '../../types';
 
-class MailjetEmail {
+class MailjetEmail implements GenericTransport<mailjet.Email.PostResource> {
   public transport: mailjet.Email.PostResource
 
   constructor(private settings: TMailjetEmail) {

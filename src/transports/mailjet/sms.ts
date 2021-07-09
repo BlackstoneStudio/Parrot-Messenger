@@ -1,35 +1,28 @@
 import * as mailjet from 'node-mailjet';
-import htmlToText from 'html-to-text';
+import { htmlToText } from 'html-to-text';
+import { Envelope, GenericTransport, MailjetSMS as IMailjetSMS } from '../../types';
 
-/**
- * Mailjet Email Transport
- * @param message {Object}
- * @param settings {Object}
- * @returns {Promise<unknown>}
- */
-export default (message, settings) => new Promise((resolve, reject) => {
-  const transport = mailjet.connect(settings.auth.apiKey);
+class MailjetSMS implements GenericTransport<mailjet.SMS.PostResource> {
+  transport: mailjet.SMS.PostResource
 
-  const body = htmlToText.fromString(message.html);
+  constructor(private settings: IMailjetSMS) {
+    this.transport = mailjet
+      .connect(settings.auth.apiKey)
+      .post('sms-send');
+  }
 
-  const messageData = {
-    ...settings.defaults || {},
-    ...{
-      To: message.to,
-      From: message.from || settings.defaults.from,
-      Text: body,
-    },
-  };
+  async send(message: Envelope) {
+    const request = {
+      ...this.settings.defaults,
+      ...message,
+    };
 
-  const request = transport
-    .post('sms-send')
-    .request(messageData);
-
-  request
-    .then(async (info) => {
-      resolve(info.body);
-    })
-    .catch((error) => {
-      reject(error);
+    await this.transport.request({
+      From: request.from,
+      To: request.to,
+      Text: htmlToText(request.html),
     });
-});
+  }
+}
+
+export default MailjetSMS;

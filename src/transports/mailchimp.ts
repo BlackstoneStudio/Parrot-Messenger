@@ -1,42 +1,31 @@
-import mailchimp from '@mailchimp/mailchimp_transactional';
+import mailchimp from '@mailchimp/mailchimp_transactional/src/index';
+import { Envelope, GenericTransport, Mailchimp as IMailchimp } from '../types';
 
-/**
- * Mailchimp Email Transport
- * @param message {Object}
- * @param settings {Object}
- * @returns {Promise<unknown>}
- */
-export default (message, settings): Promise<void> => new Promise((resolve, reject) => {
-  const transport = mailchimp(settings.auth.apiKey);
-  const emailData = {
-    ...settings.defaults || {},
-    ...message,
-  };
+class Mailchimp implements GenericTransport<any> {
+  transport;
 
-  const messageData = {
-    key: settings.auth.apiKey,
-    message: {
-      from_email: emailData.from,
-      to: [
-        {
-          email: emailData.to,
-        },
-      ],
-      html: emailData.html,
-      subject: emailData.subject,
-    },
-  };
+  constructor(private settings: IMailchimp) {
+    this.transport = mailchimp(settings.auth.apiKey);
+  }
 
-  transport
-    .messages.send(messageData)
-    .then((info) => {
-      if (info[0].status === 'rejected') {
-        reject(info);
-        return;
-      }
-      resolve(info);
-    })
-    .catch((error) => {
-      reject(error);
+  async send(message: Envelope) {
+    const request = {
+      ...this.settings.defaults,
+      ...message,
+    };
+
+    await this.transport.messages.send({
+      key: this.settings.auth.apiKey,
+      message: {
+        from_email: request.from,
+        to: [{
+          email: request.to,
+        }],
+        html: request.html,
+        subject: request.subject,
+      },
     });
-});
+  }
+}
+
+export default Mailchimp;
