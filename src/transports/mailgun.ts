@@ -1,28 +1,32 @@
-import mailgun from 'mailgun-js';
-import request from 'request';
+import * as mailgun from 'mailgun-js';
+// import * as request from 'request';
+import { Envelope, GenericTransport, Mailgun as IMailgun } from '../types';
 
-/**
- * Mailgun Email Transport
- * @param message {Object}
- * @param settings {Object}
- * @returns {Promise<unknown>}
- */
-export default (message, settings) => new Promise((resolve, reject) => {
-  const transport = mailgun(settings.auth);
-  const emailData = {
-    ...settings.defaults || {},
-    ...message,
-  };
-  if (emailData.attachments) {
+/* if (emailData.attachments) {
     emailData.attachment = request(emailData.attachments[0].path);
     delete emailData.attachments;
+  } */
+
+class Mailgun implements GenericTransport {
+  transport: mailgun.Mailgun
+
+  constructor(private settings: IMailgun) {
+    this.transport = mailgun(settings.auth);
   }
 
-  transport.messages().send(emailData, (error, info) => {
-    if (error) {
-      reject(error);
-      return;
-    }
-    resolve(info);
-  });
-});
+  async send(message: Envelope) {
+    const mailData = {
+      ...this.settings.defaults,
+      ...message,
+    };
+
+    await this.transport.messages().send({
+      from: mailData.from,
+      to: mailData.to,
+      subject: mailData.subject,
+      html: mailData.html,
+    });
+  }
+}
+
+export default Mailgun;

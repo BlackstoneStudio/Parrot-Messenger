@@ -1,105 +1,66 @@
-import smtp from './transports/smtp';
-import mailgun from './transports/mailgun';
+import SMTP from './transports/smtp';
+import Mailgun from './transports/mailgun';
 import MailjetEmail from './transports/mailjet/email';
-import mailjetSMS from './transports/mailjet/sms';
-import mailchimp from './transports/mailchimp';
+import MailjetSMS from './transports/mailjet/sms';
+import Mailchimp from './transports/mailchimp';
 import SES from './transports/aws/ses';
-import sendgrid from './transports/sendgrid';
-import twilioSMS from './transports/twilio/sms';
-import twilioCall from './transports/twilio/call';
-import { Envelope, Settings, Transport } from './types';
+import Sendgrid from './transports/sendgrid';
+import TwilioSMS from './transports/twilio/sms';
+import TwilioCall from './transports/twilio/call';
+import {
+  Envelope, GenericTransport, Settings, Transport,
+} from './types';
 
-/**
- * Message Sending Service
- * @param message {Object}
- * @param settings {Object}
- * @param transportFilter {String|Array|Object}
- * @returns {Promise<{success: boolean}>}
- */
+const availableTransports = new Map();
+availableTransports.set('smtp', SMTP);
+availableTransports.set('mailgun', Mailgun);
+availableTransports.set('mailjetEmail', MailjetEmail);
+availableTransports.set('mailjetSMS', MailjetSMS);
+availableTransports.set('mailchimp', Mailchimp);
+availableTransports.set('ses', SES);
+availableTransports.set('sendgrid', Sendgrid);
+availableTransports.set('twilioSMS', TwilioSMS);
+availableTransports.set('twilioCall', TwilioCall);
+
 const send = async (
   message: Envelope,
-  settings: Settings,
-  transportFilter: Omit<Transport, 'settings'>[],
+  transports: Settings['transports'],
+  transportFilter?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
 ) => {
-  const availableTransports = {
-    smtp,
-    mailgun,
-    mailjetEmail: MailjetEmail,
-    mailjetSMS,
-    mailchimp,
-    ses: SES,
-    sendgrid,
-    twilioSMS,
-    twilioCall,
-  };
-
-  let transports = [...settings.transports];
-  const isMultiSend = Array.isArray(transportFilter);
-
-  if (transportFilter) {
-    const matchServices = settings.transports.filter((e) => {
-      if (Array.isArray(transportFilter)) {
-        return transportFilter.indexOf(e.name) !== -1;
-      }
-
-      if (transportFilter.class) {
-        return e.class === transportFilter.class;
-      }
-
-      return e.name === transportFilter;
-    });
-    if (!matchServices.length) {
-      throw new Error(`Parrot Messenger [Send]: Transport ${transportFilter.join(', ')} not found`);
+  const matchServices = transports.filter((transport) => {
+    if (Array.isArray(transportFilter)) {
+      return transportFilter.some((f) => (
+        transport.name === f.name
+          || transport.class === f.class
+      ));
     }
-    transports = [
-      ...matchServices,
-    ];
+
+    return (
+      transport.class === transportFilter.class
+          || transport.name === transportFilter.name
+    );
+  });
+
+  if (!matchServices.length) {
+    throw new Error(`Parrot Messenger [Send]: Transport ${
+      Array.isArray(transportFilter) ? transportFilter.map((f) => f.name).join(', ') : transportFilter.name
+    } not found`);
   }
 
-  const errors = [];
-  let response = null;
-
-  for (let i = 0; i < transports.length; i++) {
-    if (i > 0 && errors.length === 0 && !isMultiSend) return;
-    const transport = transports[i];
-
-    try {
-      if (availableTransports[transports.name] && !transport.mailer) {
-        throw new Error(`Parrot Messenger [Send]: Transport ${transport.name} not found & no mailer function available`);
-      }
-      const mailer = availableTransports[transport.name] || transport.mailer;
-
-      const messageData = {
-        ...transport.defaults,
-        ...message,
-      };
-
-      // eslint-disable-next-line
-      response = await mailer(messageData, transport.settings);
-    } catch (e) {
-      errors.push({
-        transport: transport.name,
-        error: e.message,
-      });
+  await Promise.all(matchServices.map(async (transport) => {
+    if (!availableTransports[transport.name]) {
+      throw new Error(`Parrot Messenger [Send]: Transport ${transport.name} not found & no mailer function available`);
     }
-  }
+    const Mailer = availableTransports.get(transport.name);
 
-  const success = errors.length !== transports.length;
+    const messageData: Envelope = {
+      ...transport.setings.defaults,
+      ...message,
+    };
 
-  const result = {
-    success,
-  };
-
-  if (errors.length) {
-    result.errors = errors;
-  }
-
-  if (response) {
-    result.response = response;
-  }
-
-  // eslint-disable-next-line
-  return result;
+    await (new Mailer(transport.setings) as GenericTransport)
+      .send(messageData);
+  }));
 };
 
 export default send;

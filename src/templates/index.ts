@@ -1,29 +1,25 @@
 import { compile } from 'handlebars';
 import Axios from 'axios';
+import { Envelope, Mailer, Transport } from '../types';
 
 class Templates {
-  /**
-   * Constructor
-   * @param mailer
-   */
-  constructor(mailer) {
-    this.mailer = mailer;
-    this.templates = [];
+  public templates: Map<string, {
+    name: string
+    html: string
+    request?: Record<string|number, any>
+  }>
+
+  constructor(
+    private mailer: Mailer<Templates>,
+  ) {
+    this.templates = new Map();
   }
 
-  /**
-   * Register a new template
-   * @param name {String}
-   * @param html {String}
-   * @param text {String}
-   * @param request {Object}
-   * @returns {[]|*[]}
-   */
   register({
     name, html, text, request,
   }: {
     name: string,
-    html: string, 
+    html: string,
     text: string,
     request?: Record<string|number, any>
   }) {
@@ -39,48 +35,27 @@ class Templates {
     }
 
     // Add this template to the store
-    this.templates = [
-      ...this.templates,
-      {
-        name,
-        html: html || text,
-        request: request || null,
-      },
-    ];
+    this.templates.set(name, {
+      name,
+      html: html || text,
+      request: request || null,
+    });
 
     return this.templates;
   }
 
-  /**
-   * List Registered Templates
-   * @returns {[]|*[]}
-   */
   list() {
-    return this.templates;
+    return [...this.templates.values()];
   }
 
-  /**
-   * Get a given Template
-   * @param name {String}
-   * @returns {*}
-   */
-  get(name) {
-    const { templates } = this;
-    return templates.find((t) => t.name === name);
-  }
-
-  /**
-   * Use a Template for a new message
-   * @param name {String}
-   * @param settings {Object}
-   * @param data {Object}
-   * @param transport {String|Array|Object}
-   * @returns {*}
-   */
-  async send(name, settings = {}, data = {}, transport = null) {
-    // Find the template
-    const template = this.get(name);
-    let content = template.html || template.text;
+  async send(
+    name: string,
+    settings: Envelope,
+    data = {},
+    transport: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
+  ) {
+    const template = this.templates.get(name);
+    let content = template.html;
 
     if (template.request) {
       const { request } = template;
@@ -89,7 +64,7 @@ class Templates {
         const req = await Axios(request);
         content = request.resolve.split('.').reduce((o, i) => o[i], req.data);
       } catch (e) {
-        throw new Error('[Async Tempalte] Error', e);
+        throw new Error(`[Async Tempalte] Error: ${e.message}`);
       }
     }
 

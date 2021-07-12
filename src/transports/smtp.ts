@@ -1,27 +1,27 @@
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
+import SMTPTransport = require('nodemailer/lib/smtp-transport');
+import { Envelope, GenericTransport, SMTP as ISMTP } from '../types';
 
-/**
- * Mailgun Email Transport
- * @param email {Object}
- * @param settings {Object}
- * @returns {Promise<unknown>}
- */
-export default (message, settings) => new Promise((resolve, reject) => {
-  const transportSettings = { ...settings };
-  delete transportSettings.defaults;
+class SMTP implements GenericTransport<nodemailer.Transporter<SMTPTransport.SentMessageInfo>> {
+  transport: nodemailer.Transporter<SMTPTransport.SentMessageInfo>
 
-  const transport = nodemailer.createTransport(transportSettings);
+  constructor(private settings: ISMTP) {
+    this.transport = nodemailer.createTransport(settings.auth);
+  }
 
-  const emailData = {
-    ...settings.defaults || {},
-    ...message,
-  };
+  async send(message: Envelope) {
+    const request = {
+      ...this.settings.defaults,
+      ...message,
+    };
 
-  transport.sendMail(emailData, (error, info) => {
-    if (error) {
-      reject(error);
-      return;
-    }
-    resolve(info);
-  });
-});
+    await this.transport.sendMail({
+      from: request.from,
+      to: request.to,
+      subject: request.subject,
+      html: request.html,
+    });
+  }
+}
+
+export default SMTP;

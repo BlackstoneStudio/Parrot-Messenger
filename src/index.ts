@@ -1,13 +1,15 @@
 import Templates from './templates';
 import send from './send';
 import getTransportClass from './utlis';
-import { Envelope, Settings } from './types';
+import {
+  Envelope, Mailer, ParrotSettings, Transport,
+} from './types';
 
-class Parrot {
+class Parrot implements Mailer<Templates> {
   public templates: Templates
 
   constructor(
-    private settings: Settings = {
+    private settings: ParrotSettings = {
       defaultClass: 'email',
       transports: [],
     },
@@ -15,17 +17,25 @@ class Parrot {
     this.settings = {
       defaultClass: settings.defaultClass,
       ...settings,
-      transports: settings.transports.map((t) => ({
-        ...t,
-        class: getTransportClass(t.name),
-      })),
     };
 
     this.templates = new Templates(this);
   }
 
-  send(message: Envelope, transport) {
-    send(message, this.settings, transport);
+  send(
+    message: Envelope,
+    transport?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
+  ) {
+    const transports = this.settings.transports.map((t) => ({
+      ...t,
+      class: getTransportClass(t.name),
+    }));
+
+    send(
+      message,
+      transports as Transport[],
+      transport,
+    );
   }
 }
 

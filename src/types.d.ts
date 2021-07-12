@@ -1,4 +1,6 @@
 import { ConfigurationOptions } from 'aws-sdk';
+import * as mailgun from 'mailgun-js';
+import SMTPTransport = require('nodemailer/lib/smtp-transport');
 
 export type Envelope = {
 	from?: string
@@ -52,6 +54,14 @@ export interface Sendgrid extends Defaults {
 	}
 }
 
+export interface Mailgun extends Defaults {
+	auth: mailgun.ConstructorParams
+}
+
+export interface SMTP extends Defaults {
+	auth: SMTPTransport.Options
+}
+
 interface TransportGeneric<
 	N extends string,
 	C extends 'email'|'sms'|'call',
@@ -66,14 +76,24 @@ export type Transport =
 	| TransportGeneric<'ses', 'email', AWSSESConfig>
 	| TransportGeneric<'mailjetEmail', 'email', MailjetEmail>
 	| TransportGeneric<'mailjetSMS', 'sms', MailjetSMS>
-	| TransportGeneric<'twilioSMS', 'sms', {}>
-	| TransportGeneric<'twilioCall', 'call', {}>
-	| TransportGeneric<'mailchimp', 'email', {}>
-	| TransportGeneric<'mailgun', 'email', {}>
-	| TransportGeneric<'sendgrid', 'email', {}>
-	| TransportGeneric<'smtp', 'email', {}>
+	| TransportGeneric<'twilioSMS', 'sms', TwilioSMS>
+	| TransportGeneric<'twilioCall', 'call', TwilioCall>
+	| TransportGeneric<'mailchimp', 'email', Mailchimp>
+	| TransportGeneric<'mailgun', 'email', Mailgun>
+	| TransportGeneric<'sendgrid', 'email', Sendgrid>
+	| TransportGeneric<'smtp', 'email', SMTP>
 
 export type Settings = {
 	defaultClass?: string
+	transports: Transport[]
+}
+
+export type ParrotSettings = {
+	defaultClass?: string
 	transports: Omit<Transport, 'class'>[]
+}
+
+export interface Mailer<T> {
+	send(message: Envelope, transport?: Omit<Transport, 'settings'>|Omit<Transport, 'settings'>[]): void
+	templates: T
 }

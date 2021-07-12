@@ -10,6 +10,7 @@
   "dependencies": {
     "@mailchimp/mailchimp_transactional": "^1.0.30",
     "@sendgrid/mail": "^6.5.5",
+    "@types/mailgun-js": "^0.22.12",
     "aws-sdk": "^2.642.0",
     "axios": "^0.21.1",
     "eslint-plugin-promise": "^4.2.1",
