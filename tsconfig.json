@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+	  "moduleResolution": "node",
+	  "module": "commonjs",
+	  "target": "es2015",
+	  "declaration": true,
+	  "outDir": "dist"
+	},
+	"include": [
+	  "src/**/*"
+, "test/index.spec.ts"	],
+	"exclude": [
+		"dist",
+		"node_modules",
+		"test"
+	]
+}
