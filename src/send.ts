@@ -27,18 +27,24 @@ const send = async (
   transports: Settings['transports'],
   transportFilter?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
 ) => {
+
   const matchServices = transports.filter((transport) => {
-    if (Array.isArray(transportFilter)) {
-      return transportFilter.some((f) => (
-        transport.name === f.name
-          || transport.class === f.class
-      ));
+    if(transportFilter) {
+
+      if (Array.isArray(transportFilter)) {
+        return transportFilter.some((f) => (
+          transport.name === f.name
+            || transport.class === f.class
+        ));
+      }
+  
+      return (
+        transport.class === transportFilter.class
+            || transport.name === transportFilter.name
+      );
     }
 
-    return (
-      transport.class === transportFilter.class
-          || transport.name === transportFilter.name
-    );
+    return true
   });
 
   if (!matchServices.length) {
@@ -48,17 +54,17 @@ const send = async (
   }
 
   await Promise.all(matchServices.map(async (transport) => {
-    if (!availableTransports[transport.name]) {
+    if (!availableTransports.has(transport.name)) {
       throw new Error(`Parrot Messenger [Send]: Transport ${transport.name} not found & no mailer function available`);
     }
     const Mailer = availableTransports.get(transport.name);
 
     const messageData: Envelope = {
-      ...transport.setings.defaults,
+      ...transport.settings.defaults,
       ...message,
     };
 
-    await (new Mailer(transport.setings) as GenericTransport)
+    await (new Mailer(transport.settings) as GenericTransport)
       .send(messageData);
   }));
 };

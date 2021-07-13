@@ -22,7 +22,7 @@ class Parrot implements Mailer<Templates> {
     this.templates = new Templates(this);
   }
 
-  send(
+  async send(
     message: Envelope,
     transport?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
   ) {
@@ -30,12 +30,15 @@ class Parrot implements Mailer<Templates> {
       ...t,
       class: getTransportClass(t.name),
     }));
-
-    send(
-      message,
-      transports as Transport[],
-      transport,
-    );
+    try {
+      await send(
+        message,
+        transports as Transport[],
+        transport,
+      );
+    } catch(e) {
+      throw new Error('Error sending email. More details: ' + e)
+    }
   }
 }
 

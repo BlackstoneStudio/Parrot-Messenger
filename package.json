@@ -3,7 +3,6 @@
   "version": "1.0.3",
   "description": "",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "files": [
     "/dist"
   ],
@@ -13,6 +12,7 @@
     "@types/mailgun-js": "^0.22.12",
     "aws-sdk": "^2.642.0",
     "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "esm": "^3.2.25",
     "handlebars": "^4.7.3",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@types/html-to-text": "^8.0.1",
+    "@types/jest": "^26.0.24",
     "@types/node-mailjet": "^3.3.7",
     "@types/nodemailer": "^6.4.3",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
@@ -33,14 +34,15 @@
     "eslint": "^7.30.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.23.4",
+    "jest": "^27.0.6",
     "nodemon": "^2.0.2",
+    "ts-jest": "^27.0.3",
     "typescript": "^4.3.5"
   },
   "scripts": {
-    "start": "npx ts-node src/index.ts",
-    "dev": "nodemon -r esm examples.js",
+    "prepare": "npm run build",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",

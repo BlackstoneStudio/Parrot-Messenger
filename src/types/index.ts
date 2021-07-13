@@ -69,7 +69,7 @@ interface TransportGeneric<
 > {
 	name: N,
 	class: C,
-	setings: S
+	settings: S
 }
 
 export type Transport =

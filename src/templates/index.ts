@@ -16,17 +16,16 @@ class Templates {
   }
 
   register({
-    name, html, text, request,
+    name, html, request,
   }: {
     name: string,
     html: string,
-    text: string,
     request?: Record<string|number, any>
   }) {
     // Test that the template is a valid handlebars template
     try {
       if (!request) {
-        const handlebarsTemplate = compile(html || text);
+        const handlebarsTemplate = compile(html);
         handlebarsTemplate({});
       }
     } catch (e) {
@@ -37,7 +36,7 @@ class Templates {
     // Add this template to the store
     this.templates.set(name, {
       name,
-      html: html || text,
+      html,
       request: request || null,
     });
 
@@ -52,7 +51,7 @@ class Templates {
     name: string,
     settings: Envelope,
     data = {},
-    transport: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
+    transport?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
   ) {
     const template = this.templates.get(name);
     let content = template.html;
