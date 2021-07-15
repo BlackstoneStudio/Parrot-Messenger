@@ -51,13 +51,15 @@ jobs:
           command: npm publish
 workflows:
   version: 2
-  PublishModule:
+  BuildAndTest:
     jobs:
       - Build
       - Test:
           requires:
             - Build
-      - Authorization:
+  PublishModule:
+    jobs:
+    - Authorization:
           filters:
             branches:
               only:
