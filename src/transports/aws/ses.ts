@@ -2,6 +2,8 @@ import { createTransport, Transporter } from 'nodemailer';
 import * as AWS from 'aws-sdk';
 import { AWSSESConfig, Envelope, GenericTransport } from '../../types';
 
+jest.useFakeTimers('legacy');
+
 class SES implements GenericTransport<Transporter> {
   private transportSettings = {
     apiVersion: '2010-12-01',

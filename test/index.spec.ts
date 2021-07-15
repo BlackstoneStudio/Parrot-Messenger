@@ -3,7 +3,7 @@ import Parrot from '../src/index';
 describe('Creates a parrot instance', () => {
   let parrot: Parrot;
 
-  beforeEach(() => {
+  beforeAll(() => {
     parrot = new Parrot({
       transports: [{
         name: 'ses',
@@ -29,7 +29,7 @@ describe('Creates a parrot instance', () => {
     } catch (e) {
       console.error(e);
     }
-  });
+  }, 5000);
 
   it('Registers a template and sends an email with given template', async () => {
     parrot.templates.register({
