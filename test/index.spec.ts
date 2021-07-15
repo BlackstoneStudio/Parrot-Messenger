@@ -1,5 +1,7 @@
 import Parrot from '../src/index';
 
+jest.useFakeTimers('legacy');
+
 describe('Creates a parrot instance', () => {
   let parrot: Parrot;
 
