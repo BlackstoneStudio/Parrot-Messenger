@@ -29,7 +29,7 @@ class Templates {
         handlebarsTemplate({});
       }
     } catch (e) {
-      console.error('Parrot Messenger [Send]: Error Parsing Message Template');
+      // console.error('Parrot Messenger [Send]: Error Parsing Message Template');
       throw new Error(e);
     }
 
