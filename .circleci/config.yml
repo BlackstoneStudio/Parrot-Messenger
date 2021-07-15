@@ -59,7 +59,7 @@ workflows:
             - Build
   PublishModule:
     jobs:
-    - Authorization:
+      - Authorization:
           filters:
             branches:
               only:
