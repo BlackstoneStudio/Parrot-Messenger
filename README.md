@@ -67,7 +67,7 @@ $ yarn add parrot-messenger
 Parrot needs to be initialized with the transports that it will be using before being used.
 
 ```js
-Parrot.init({
+const partot = new Parrot({
   transports: [
     // List of transports settings enabled
     mailgun,
