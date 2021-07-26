@@ -73,7 +73,6 @@ import Parrot from 'parrot-messenger';
 // CommonJS
 const { Parrot } = require('parrot-messenger');
 
-
 const parrot = new Parrot({
   transports: [
     // List of transports settings enabled
