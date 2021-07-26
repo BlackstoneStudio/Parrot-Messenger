@@ -36,8 +36,8 @@ class Parrot implements Mailer<Templates> {
         transports as Transport[],
         transport,
       );
-    } catch(e) {
-      throw new Error('Error sending email. More details: ' + e)
+    } catch (e) {
+      throw new Error(`Error sending email. More details: ${e}`);
     }
   }
 }

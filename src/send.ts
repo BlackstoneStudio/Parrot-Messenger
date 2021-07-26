@@ -27,24 +27,22 @@ const send = async (
   transports: Settings['transports'],
   transportFilter?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
 ) => {
-
   const matchServices = transports.filter((transport) => {
-    if(transportFilter) {
-
+    if (transportFilter) {
       if (Array.isArray(transportFilter)) {
         return transportFilter.some((f) => (
           transport.name === f.name
             || transport.class === f.class
         ));
       }
-  
+
       return (
         transport.class === transportFilter.class
             || transport.name === transportFilter.name
       );
     }
 
-    return true
+    return true;
   });
 
   if (!matchServices.length) {
