@@ -1,5 +1,5 @@
 import * as nodemailer from 'nodemailer';
-import SMTPTransport = require('nodemailer/lib/smtp-transport');
+import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { Envelope, GenericTransport, SMTP as ISMTP } from '../types';
 
 class SMTP implements GenericTransport<nodemailer.Transporter<SMTPTransport.SentMessageInfo>> {

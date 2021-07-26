@@ -42,4 +42,8 @@ class Parrot implements Mailer<Templates> {
   }
 }
 
+export {
+  Parrot
+}
+
 export default Parrot;

@@ -1,11 +1,19 @@
 {
-  "compilerOptions": {
-    "moduleResolution": "node",
-    "module": "commonjs",
-    "target": "es2015",
-    "declaration": true,
-    "outDir": "dist"
-  },
-  "include": ["src/**/*", "test/index.spec.ts"],
-  "exclude": ["dist", "node_modules", "test"]
+	"compilerOptions": {
+	  "moduleResolution": "node",
+    "esModuleInterop": true,
+	  "module": "CommonJS",
+	  "target": "ES2015",
+	  "declaration": true,
+	  "outDir": "dist"
+	},
+	"include": [
+	  "src/**/*",
+    "test/index.spec.ts"	
+  ],
+	"exclude": [
+		"dist",
+		"node_modules",
+		"test"
+	]
 }
