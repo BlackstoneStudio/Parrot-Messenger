@@ -67,7 +67,13 @@ $ yarn add parrot-messenger
 Parrot needs to be initialized with the transports that it will be using before being used.
 
 ```js
-const partot = new Parrot({
+// ES6
+import Parrot from 'parrot-messenger';
+
+// CommonJS
+const { Parrot } = require('parrot-messenger');
+
+const parrot = new Parrot({
   transports: [
     // List of transports settings enabled
     mailgun,
@@ -83,7 +89,7 @@ const partot = new Parrot({
 });
 ```
 
-The `init` method receives an array of transports with the settings for each transport. Each transport will have slightly different settings, particularly around the authentication for each. Example configurations are available in the `examples.js` file.
+The `parrot` instance receives an array of transports with the settings for each transport. Each transport will have slightly different settings, particularly around the authentication for each. Example configurations are available in the `examples.js` file.
 
 
 ## Settings
@@ -125,7 +131,7 @@ const transport = {
   name: 'ses'
 };
 
-Parrot.send(email, transport);
+parrot.send(email, transport);
 ```
 
 
@@ -136,7 +142,7 @@ Example Template Registration & Usage
 ```js
 // Register a template, notice the ussage of {{name}}
 // this value will be replaced
-Parrot.templates.register({
+parrot.templates.register({
   name: 'Sample Template',
   html: '<p>Hey there {{name}}!!</p>',
 });
@@ -152,7 +158,7 @@ const transport = {
 };
 
 // Send an email using this template
-Parrot.templates.send(
+parrot.templates.send(
   'Sample Template',
   messageData,
   // Sample Data for Template
@@ -173,7 +179,7 @@ If you need to get the HTML template from an API service prior to senting a temp
 Example Async Template
 ```js
 // Register template
-Parrot.templates.register({
+parrot.templates.register({
   name: 'Async Template',
   // Request is a standard Axios type object
   // with an additional resolve parameter
@@ -202,7 +208,7 @@ const transport = {
 };
 
 // Send an email using this template
-Parrot.templates.send(
+parrot.templates.send(
   'Async Template',
   messageData,
   // Sample Data for Template

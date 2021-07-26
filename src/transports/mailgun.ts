@@ -1,4 +1,4 @@
-import * as mailgun from 'mailgun-js';
+import mailgun from 'mailgun-js';
 // import * as request from 'request';
 import { Envelope, GenericTransport, Mailgun as IMailgun } from '../types';
 

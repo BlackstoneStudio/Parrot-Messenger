@@ -43,8 +43,13 @@ class Templates {
     return this.templates;
   }
 
-  list() {
-    return [...this.templates.values()];
+  list(): string[] {
+    const keys: string[] = []
+    this.templates.forEach((_, key) => {
+      keys.push(key)
+    });
+
+    return keys
   }
 
   async send(

@@ -1,4 +1,4 @@
-import * as Twilio from 'twilio';
+import Twilio from 'twilio';
 import { htmlToText } from 'html-to-text';
 import { Envelope, GenericTransport, TwilioSMS as ITwilioSMS } from '../../types';
 

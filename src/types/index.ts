@@ -1,6 +1,6 @@
 import { ConfigurationOptions } from 'aws-sdk';
 import * as mailgun from 'mailgun-js';
-import SMTPTransport = require('nodemailer/lib/smtp-transport');
+import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 export type Envelope = {
 	from?: string
