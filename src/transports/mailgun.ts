@@ -1,21 +1,22 @@
 import mailgun from 'mailgun-js';
-import * as request from 'request';
+import request from 'request';
 import { Envelope, GenericTransport, Mailgun as IMailgun } from '../types';
 
 class Mailgun implements GenericTransport {
   transport: mailgun.Mailgun
-  
+
   constructor(private settings: IMailgun) {
-    
     this.transport = mailgun(settings.auth);
   }
-  
+
   async send(message: Envelope) {
-    const writableMessage: Envelope & { attachment: any } = { ...message } as Envelope & { attachment: any };
+    const writableMessage: Envelope & { attachment: any } = {
+      ...message,
+    } as Envelope & { attachment: any };
     if (writableMessage.attachments) {
-        writableMessage.attachment = request(writableMessage.attachments[0].path);
-        delete writableMessage.attachments;
-      }
+      writableMessage.attachment = request(writableMessage.attachments[0].path);
+      delete writableMessage.attachments;
+    }
     const mailData = {
       ...this.settings.defaults,
       ...writableMessage,
