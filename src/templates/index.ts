@@ -44,12 +44,12 @@ class Templates {
   }
 
   list(): string[] {
-    const keys: string[] = []
+    const keys: string[] = [];
     this.templates.forEach((_, key) => {
-      keys.push(key)
+      keys.push(key);
     });
 
-    return keys
+    return keys;
   }
 
   async send(

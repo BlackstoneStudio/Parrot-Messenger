@@ -1,5 +1,4 @@
 import mailgun from 'mailgun-js';
-import request from 'request';
 import { Envelope, GenericTransport, Mailgun as IMailgun } from '../types';
 
 class Mailgun implements GenericTransport {
@@ -10,16 +9,9 @@ class Mailgun implements GenericTransport {
   }
 
   async send(message: Envelope) {
-    const writableMessage: Envelope & { attachment: any } = {
-      ...message,
-    } as Envelope & { attachment: any };
-    if (writableMessage.attachments) {
-      writableMessage.attachment = request(writableMessage.attachments[0].path);
-      delete writableMessage.attachments;
-    }
     const mailData = {
       ...this.settings.defaults,
-      ...writableMessage,
+      ...message,
     };
 
     await this.transport.messages().send({
@@ -27,6 +19,7 @@ class Mailgun implements GenericTransport {
       to: mailData.to,
       subject: mailData.subject,
       html: mailData.html,
+      attachment: mailData.attachment,
     });
   }
 }

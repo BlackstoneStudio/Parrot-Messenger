@@ -7,9 +7,7 @@ export type Envelope = {
 	to?: string
 	subject?: string
 	html?: string
-  attachments?: {
-    path: string
-  }
+	attachment?: any | Array<any>
 }
 export interface GenericTransport<T extends unknown = {}> {
 	transport: T

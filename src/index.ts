@@ -43,7 +43,7 @@ class Parrot implements Mailer<Templates> {
 }
 
 export {
-  Parrot
-}
+  Parrot,
+};
 
 export default Parrot;
