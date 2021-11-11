@@ -3,7 +3,7 @@ import { htmlToText } from 'html-to-text';
 import { Envelope, GenericTransport, TwilioCall as ITwilioCall } from '../../types';
 
 class TwilioCall implements GenericTransport<Twilio.Twilio> {
-  transport: Twilio.Twilio
+  transport: Twilio.Twilio;
 
   constructor(private settings: ITwilioCall) {
     this.transport = Twilio(settings.auth.sid, settings.auth.token);

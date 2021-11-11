@@ -7,7 +7,7 @@ class SES implements GenericTransport<Transporter> {
     apiVersion: '2010-12-01',
   };
 
-  transport: Transporter
+  transport: Transporter;
 
   constructor(private settings: AWSSESConfig) {
     AWS.config.update(settings.auth);

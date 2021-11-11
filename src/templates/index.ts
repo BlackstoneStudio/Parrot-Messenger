@@ -7,7 +7,7 @@ class Templates {
     name: string
     html: string
     request?: Record<string|number, any>
-  }>
+  }>;
 
   constructor(
     private mailer: Mailer<Templates>,
@@ -55,6 +55,7 @@ class Templates {
   async send(
     name: string,
     settings: Envelope,
+    // eslint-disable-next-line default-param-last
     data = {},
     transport?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
   ) {

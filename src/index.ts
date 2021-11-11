@@ -6,7 +6,7 @@ import {
 } from './types';
 
 class Parrot implements Mailer<Templates> {
-  public templates: Templates
+  public templates: Templates;
 
   constructor(
     private settings: ParrotSettings = {
