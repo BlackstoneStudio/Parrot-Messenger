@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-named-as-default
 import Parrot from '../src/index';
 
 jest.useFakeTimers('legacy');

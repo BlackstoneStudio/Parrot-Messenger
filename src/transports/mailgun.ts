@@ -1,11 +1,18 @@
-import mailgun from 'mailgun-js';
+import formData from 'form-data';
+import Mailgun from 'mailgun.js';
+// eslint-disable-next-line import/no-unresolved
+import Client from 'mailgun.js/dist/lib/client';
 import { Envelope, GenericTransport, Mailgun as IMailgun } from '../types';
 
-class Mailgun implements GenericTransport {
-  transport: mailgun.Mailgun
+class MailgunTransport implements GenericTransport {
+  transport: Client;
 
   constructor(private settings: IMailgun) {
-    this.transport = mailgun(settings.auth);
+    const mailgun = new Mailgun(formData);
+    this.transport = mailgun.client({
+      username: 'api',
+      key: this.settings.auth.apiKey,
+    });
   }
 
   async send(message: Envelope) {
@@ -13,15 +20,14 @@ class Mailgun implements GenericTransport {
       ...this.settings.defaults,
       ...message,
     };
-
-    await this.transport.messages().send({
+    await this.transport.messages.create(this.settings.auth.domain, {
       from: mailData.from,
       to: mailData.to,
       subject: mailData.subject,
+      text: mailData.text,
       html: mailData.html,
-      attachment: mailData.attachment,
     });
   }
 }
 
-export default Mailgun;
+export default MailgunTransport;

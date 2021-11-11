@@ -1,5 +1,4 @@
 import { ConfigurationOptions } from 'aws-sdk';
-import * as mailgun from 'mailgun-js';
 import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 
 export type Envelope = {
@@ -8,6 +7,7 @@ export type Envelope = {
 	subject?: string
 	html?: string
 	attachment?: any | Array<any>
+	text?: string
 }
 export interface GenericTransport<T extends unknown = {}> {
 	transport: T
@@ -21,17 +21,17 @@ export interface AWSSESConfig extends Defaults {
 	auth: ConfigurationOptions
 }
 
-export interface MailjetEmail extends Defaults {
-	auth: {
-		apiKeyPublic: string
-		apiKeyPrivate: string
-	}
-}
-export interface MailjetSMS extends Defaults {
-	auth: {
-		apiKey: string
-	}
-}
+// export interface MailjetEmail extends Defaults {
+// 	auth: {
+// 		apiKeyPublic: string
+// 		apiKeyPrivate: string
+// 	}
+// }
+// export interface MailjetSMS extends Defaults {
+// 	auth: {
+// 		apiKey: string
+// 	}
+// }
 export interface TwilioCall extends Defaults {
 	auth: {
 		sid: string
@@ -56,7 +56,10 @@ export interface Sendgrid extends Defaults {
 }
 
 export interface Mailgun extends Defaults {
-	auth: mailgun.ConstructorParams
+	auth: {
+		apiKey: string;
+		domain: string;
+	}
 }
 
 export interface SMTP extends Defaults {
@@ -75,8 +78,8 @@ interface TransportGeneric<
 
 export type Transport =
 	| TransportGeneric<'ses', 'email', AWSSESConfig>
-	| TransportGeneric<'mailjetEmail', 'email', MailjetEmail>
-	| TransportGeneric<'mailjetSMS', 'sms', MailjetSMS>
+	// | TransportGeneric<'mailjetEmail', 'email', MailjetEmail>
+	// | TransportGeneric<'mailjetSMS', 'sms', MailjetSMS>
 	| TransportGeneric<'twilioSMS', 'sms', TwilioSMS>
 	| TransportGeneric<'twilioCall', 'call', TwilioCall>
 	| TransportGeneric<'mailchimp', 'email', Mailchimp>

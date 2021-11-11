@@ -1,7 +1,7 @@
 import SMTP from './transports/smtp';
 import Mailgun from './transports/mailgun';
-import MailjetEmail from './transports/mailjet/email';
-import MailjetSMS from './transports/mailjet/sms';
+// import MailjetEmail from './transports/mailjet/email';
+// import MailjetSMS from './transports/mailjet/sms';
 import Mailchimp from './transports/mailchimp';
 import SES from './transports/aws/ses';
 import Sendgrid from './transports/sendgrid';
@@ -14,8 +14,8 @@ import {
 const availableTransports = new Map();
 availableTransports.set('smtp', SMTP);
 availableTransports.set('mailgun', Mailgun);
-availableTransports.set('mailjetEmail', MailjetEmail);
-availableTransports.set('mailjetSMS', MailjetSMS);
+// availableTransports.set('mailjetEmail', MailjetEmail);
+// availableTransports.set('mailjetSMS', MailjetSMS);
 availableTransports.set('mailchimp', Mailchimp);
 availableTransports.set('ses', SES);
 availableTransports.set('sendgrid', Sendgrid);
