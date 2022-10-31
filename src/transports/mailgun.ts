@@ -1,7 +1,7 @@
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 // eslint-disable-next-line import/no-unresolved
-import Client from 'mailgun.js/dist/lib/client';
+import Client from 'mailgun.js/client';
 import { Envelope, GenericTransport, Mailgun as IMailgun } from '../types';
 
 class MailgunTransport implements GenericTransport {
