@@ -21,7 +21,7 @@ class TwilioCall implements GenericTransport<Twilio.Twilio> {
       twiml: `
         <Response>
           <Pause length="1"/>
-          <Say voice="Polly.Joanna">
+          <Say voice="Polly.${message.voice || 'Nicole'}">
             ${htmlToText(request.html)}
           </Say>
         </Response> 
