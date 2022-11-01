@@ -1,4 +1,5 @@
 import { ConfigurationOptions } from 'aws-sdk';
+import Mail from 'nodemailer/lib/mailer';
 import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { voices } from '../constants/voices';
 
@@ -7,9 +8,9 @@ export type Envelope = {
   to?: string;
   subject?: string;
   html?: string;
-  attachment?: any | Array<any>;
   text?: string;
   voice?: keyof typeof voices;
+  attachments?: Mail.Attachment[];
 };
 export interface GenericTransport<T extends unknown = {}> {
   transport: T;

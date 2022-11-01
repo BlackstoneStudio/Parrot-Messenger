@@ -30,6 +30,12 @@ describe('Creates a parrot instance', () => {
         to: process.env.TO,
         html: 'Test mail',
         subject: 'Test mail',
+        attachments: [
+          {
+            filename: 'license.txt',
+            path: 'https://raw.github.com/nodemailer/nodemailer/master/LICENSE',
+          },
+        ],
       });
     } catch (e) {
       console.error(e);

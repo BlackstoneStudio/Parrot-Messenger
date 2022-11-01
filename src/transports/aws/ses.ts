@@ -28,6 +28,7 @@ class SES implements GenericTransport<Transporter> {
       to: request.to,
       subject: request.subject,
       html: request.html,
+      attachments: request.attachments,
     });
   }
 }
