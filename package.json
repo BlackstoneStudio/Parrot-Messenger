@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/html-to-text": "^8.1.1",
     "@types/jest": "^29.2.0",
+    "@types/mailchimp__mailchimp_transactional": "^1.0.5",
     "@types/node-mailjet": "^3.3.9",
     "@types/nodemailer": "^6.4.6",
     "@typescript-eslint/eslint-plugin": "^5.42.0",

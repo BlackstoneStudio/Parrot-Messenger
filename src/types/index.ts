@@ -10,7 +10,7 @@ export type Envelope = {
   html?: string;
   text?: string;
   voice?: keyof typeof voices;
-  attachments?: Mail.Attachment[];
+  attachments?: (Mail.Attachment | { filename: string; data: string })[];
 };
 export interface GenericTransport<T extends unknown = {}> {
   transport: T;

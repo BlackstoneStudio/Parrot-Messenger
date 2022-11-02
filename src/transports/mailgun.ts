@@ -7,9 +7,10 @@ import { Envelope, GenericTransport, Mailgun as IMailgun } from '../types';
 class MailgunTransport implements GenericTransport {
   transport: Client;
 
+  private mailgun = new Mailgun(formData);
+
   constructor(private settings: IMailgun) {
-    const mailgun = new Mailgun(formData);
-    this.transport = mailgun.client({
+    this.transport = this.mailgun.client({
       username: 'api',
       key: this.settings.auth.apiKey,
     });
@@ -26,6 +27,7 @@ class MailgunTransport implements GenericTransport {
       subject: mailData.subject,
       text: mailData.text,
       html: mailData.html,
+      attachment: mailData.attachments,
     });
   }
 }
