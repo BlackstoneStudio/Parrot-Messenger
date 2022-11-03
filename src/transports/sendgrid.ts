@@ -1,13 +1,9 @@
-import * as SendgridMail from '@sendgrid/mail';
-
+import SendgridMail from '@sendgrid/mail';
 import { Envelope, GenericTransport, Sendgrid as ISendgrid } from '../types';
 
 class Sendgrid implements GenericTransport {
-  constructor(
-    private settings: ISendgrid,
-    public transport: any = SendgridMail,
-  ) {
-    transport.setApiKey(settings.auth.apiKey);
+  constructor(private settings: ISendgrid, public transport: any = SendgridMail) {
+    this.transport.setApiKey(settings.auth.apiKey);
   }
 
   async send(message: Envelope) {
@@ -21,6 +17,7 @@ class Sendgrid implements GenericTransport {
       to: request.to,
       subject: request.subject,
       html: request.html,
+      attachments: request.attachments,
     });
   }
 }
