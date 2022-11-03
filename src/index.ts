@@ -31,19 +31,13 @@ class Parrot implements Mailer<Templates> {
       class: getTransportClass(t.name),
     }));
     try {
-      await send(
-        message,
-        transports as Transport[],
-        transport,
-      );
+      await send(message, transports as Transport[], transport);
     } catch (e) {
       throw new Error(`Error sending email. More details: ${e}`);
     }
   }
 }
 
-export {
-  Parrot,
-};
+export { Parrot };
 
 export default Parrot;

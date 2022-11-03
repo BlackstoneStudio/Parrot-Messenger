@@ -20,6 +20,7 @@ class SMTP implements GenericTransport<nodemailer.Transporter<SMTPTransport.Sent
       to: request.to,
       subject: request.subject,
       html: request.html,
+      attachments: request.attachments,
     });
   }
 }

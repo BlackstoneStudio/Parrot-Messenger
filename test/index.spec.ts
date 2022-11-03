@@ -1,23 +1,25 @@
 // eslint-disable-next-line import/no-named-as-default
 import Parrot from '../src/index';
 
-jest.useFakeTimers('legacy');
+jest.useFakeTimers({ legacyFakeTimers: true });
 
 describe('Creates a parrot instance', () => {
   let parrot: Parrot;
 
   beforeAll(() => {
     parrot = new Parrot({
-      transports: [{
-        name: 'ses',
-        settings: {
-          auth: {
-            secretAccessKey: process.env.SES_SECRET,
-            accessKeyId: process.env.SES_KEY,
-            region: process.env.REGION,
+      transports: [
+        {
+          name: 'ses',
+          settings: {
+            auth: {
+              secretAccessKey: process.env.SES_SECRET,
+              accessKeyId: process.env.SES_KEY,
+              region: process.env.REGION,
+            },
           },
         },
-      }],
+      ],
     });
   });
 
@@ -28,6 +30,12 @@ describe('Creates a parrot instance', () => {
         to: process.env.TO,
         html: 'Test mail',
         subject: 'Test mail',
+        attachments: [
+          {
+            filename: 'license.txt',
+            path: 'https://raw.github.com/nodemailer/nodemailer/master/LICENSE',
+          },
+        ],
       });
     } catch (e) {
       console.error(e);
@@ -40,12 +48,16 @@ describe('Creates a parrot instance', () => {
       html: '<h1>Test title</h1><p>{{testProp}}</p>',
     });
 
-    parrot.templates.send('test-template', {
-      from: process.env.FROM,
-      to: process.env.TO,
-      subject: 'another test',
-    }, {
-      testProp: 'Hello',
-    });
+    parrot.templates.send(
+      'test-template',
+      {
+        from: process.env.FROM,
+        to: process.env.TO,
+        subject: 'another test',
+      },
+      {
+        testProp: 'Hello',
+      }
+    );
   });
 });
