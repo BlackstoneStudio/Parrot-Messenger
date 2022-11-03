@@ -3,6 +3,11 @@ import Mail from 'nodemailer/lib/mailer';
 import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { voices } from '../constants/voices';
 
+type Attachment =
+  | Mail.Attachment // ses and smtp
+  | { filename: string; data: string } // mailgun
+  | { content: string; name: string; type: string }; // mailchimp
+
 export type Envelope = {
   from?: string;
   to?: string;
@@ -10,7 +15,7 @@ export type Envelope = {
   html?: string;
   text?: string;
   voice?: keyof typeof voices;
-  attachments?: (Mail.Attachment | { filename: string; data: string })[];
+  attachments?: Attachment[];
 };
 export interface GenericTransport<T extends unknown = {}> {
   transport: T;
