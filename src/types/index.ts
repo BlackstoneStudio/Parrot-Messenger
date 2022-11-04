@@ -6,7 +6,13 @@ import { voices } from '../constants/voices';
 type Attachment =
   | Mail.Attachment // ses and smtp
   | { filename: string; data: string } // mailgun
-  | { content: string; name: string; type: string }; // mailchimp
+  | { content: string; name: string; type: string } // mailchimp
+  | {
+      content: string;
+      filename: string;
+      type: string;
+      disposition: string;
+    }; // sendgrid
 
 export type Envelope = {
   from?: string;
