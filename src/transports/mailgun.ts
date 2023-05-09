@@ -21,14 +21,16 @@ class MailgunTransport implements GenericTransport {
       ...this.settings.defaults,
       ...message,
     };
-    await this.transport.messages.create(this.settings.auth.domain, {
+    const data: any = {
       from: mailData.from,
       to: mailData.to,
       subject: mailData.subject,
       text: mailData.text,
       html: mailData.html,
-      attachment: mailData.attachments,
-    });
+      attachments: mailData.attachments,
+    };
+    if (mailData.attachments) data.attachment = mailData.attachments;
+    await this.transport.messages.create(this.settings.auth.domain, data);
   }
 }
 
