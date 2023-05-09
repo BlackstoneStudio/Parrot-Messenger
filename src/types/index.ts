@@ -1,4 +1,4 @@
-import { ConfigurationOptions } from 'aws-sdk';
+import { SESClientConfig } from '@aws-sdk/client-ses';
 import Mail from 'nodemailer/lib/mailer';
 import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { voices } from '../constants/voices';
@@ -32,7 +32,7 @@ export type Defaults = {
   defaults?: Envelope;
 };
 export interface AWSSESConfig extends Defaults {
-  auth: ConfigurationOptions;
+  auth: SESClientConfig;
 }
 
 // export interface MailjetEmail extends Defaults {
@@ -80,7 +80,11 @@ export interface SMTP extends Defaults {
   auth: SMTPTransport.Options;
 }
 
-interface TransportGeneric<N extends string, C extends 'email' | 'sms' | 'call', S extends {}> {
+interface TransportGeneric<
+  N extends string,
+  C extends 'email' | 'sms' | 'call',
+  S extends {}
+> {
   name: N;
   class: C;
   settings: S;
