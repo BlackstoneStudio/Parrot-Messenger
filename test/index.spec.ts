@@ -13,8 +13,10 @@ describe('Creates a parrot instance', () => {
           name: 'ses',
           settings: {
             auth: {
-              secretAccessKey: process.env.SES_SECRET,
-              accessKeyId: process.env.SES_KEY,
+              credentials: {
+                secretAccessKey: `${process.env.SES_SECRET}`,
+                accessKeyId: `${process.env.SES_KEY}`,
+              },
               region: process.env.REGION,
             },
           },
@@ -57,7 +59,7 @@ describe('Creates a parrot instance', () => {
       },
       {
         testProp: 'Hello',
-      }
+      },
     );
   });
 });
