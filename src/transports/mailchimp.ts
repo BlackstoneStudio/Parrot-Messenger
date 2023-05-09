@@ -18,11 +18,14 @@ class Mailchimp implements GenericTransport<any> {
       key: this.settings.auth.apiKey,
       message: {
         from_email: request.from,
-        to: [{
-          email: request.to,
-        }],
+        to: [
+          {
+            email: request.to,
+          },
+        ],
         html: request.html,
         subject: request.subject,
+        attachments: request.attachments,
       },
     });
   }

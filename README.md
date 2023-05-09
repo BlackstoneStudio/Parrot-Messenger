@@ -102,9 +102,11 @@ const ses = {
   name: 'ses',
   settings: {
     auth: {
-      secretAccessKey: '',
-      accessKeyId: '',
       region: '',
+      credentials: {
+        secretAccessKey: '',
+        accessKeyId: '',
+      },
     },
     defaults: {
       from: 'me@parrotmessenger.com',
