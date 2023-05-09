@@ -26,7 +26,9 @@ class SES implements GenericTransport<Transporter> {
       Destination: { ToAddresses: [request.to] },
       Message: {
         Subject: { Data: request.subject },
-        Body: { Html: { Data: request.html } },
+        Body: {
+          Html: { Data: request.html },
+        },
       },
     });
 

@@ -1,13 +1,27 @@
 import { SESClientConfig } from '@aws-sdk/client-ses';
+import Mail from 'nodemailer/lib/mailer';
 import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { voices } from '../constants/voices';
+
+type Attachment =
+  | Mail.Attachment // ses and smtp
+  | { filename: string; data: string } // mailgun
+  | { content: string; name: string; type: string } // mailchimp
+  | {
+      content: string;
+      filename: string;
+      type: string;
+      disposition: string;
+    }; // sendgrid
 
 export type Envelope = {
   from?: string;
   to?: string;
   subject?: string;
   html?: string;
-  attachment?: any | Array<any>;
   text?: string;
+  voice?: keyof typeof voices;
+  attachments?: Attachment[];
 };
 export interface GenericTransport<T extends unknown = {}> {
   transport: T;
