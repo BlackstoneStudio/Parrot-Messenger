@@ -282,4 +282,199 @@ describe('send', () => {
 
     expect(SMTP).toHaveBeenCalledTimes(2);
   });
+
+  it('should filter by name only in array filter', async () => {
+    const message = { to: 'test@example.com', from: 'sender@example.com', subject: 'Test', html: 'Content' };
+    const transports = [
+      { 
+        name: 'smtp' as const, 
+        class: 'email' as const, 
+        settings: { 
+          auth: { 
+            host: 'localhost',
+            port: 587,
+            secure: false,
+            auth: { user: 'test', pass: 'test' }
+          }, 
+          defaults: {} 
+        } 
+      },
+      { 
+        name: 'ses' as const, 
+        class: 'email' as const, 
+        settings: { 
+          auth: { accessKeyId: 'test', secretAccessKey: 'test', region: 'us-east-1' }, 
+          defaults: {} 
+        } 
+      }
+    ];
+
+    await send(message, transports, [{ name: 'smtp' }]);
+
+    expect(SMTP).toHaveBeenCalledTimes(1);
+    expect(SES).not.toHaveBeenCalled();
+  });
+
+  it('should filter by class only in array filter', async () => {
+    const message = { to: 'test@example.com', from: 'sender@example.com', subject: 'Test', html: 'Content' };
+    const transports = [
+      { 
+        name: 'smtp' as const, 
+        class: 'email' as const, 
+        settings: { 
+          auth: { 
+            host: 'localhost',
+            port: 587,
+            secure: false,
+            auth: { user: 'test', pass: 'test' }
+          }, 
+          defaults: {} 
+        } 
+      },
+      { 
+        name: 'ses' as const, 
+        class: 'email' as const, 
+        settings: { 
+          auth: { accessKeyId: 'test', secretAccessKey: 'test', region: 'us-east-1' }, 
+          defaults: {} 
+        } 
+      }
+    ];
+
+    await send(message, transports, [{ class: 'email' }]);
+
+    expect(SMTP).toHaveBeenCalledTimes(1);
+    expect(SES).toHaveBeenCalledTimes(1);
+  });
+
+  it('should filter by name only in single filter', async () => {
+    const message = { to: 'test@example.com', from: 'sender@example.com', subject: 'Test', html: 'Content' };
+    const transports = [
+      { 
+        name: 'smtp' as const, 
+        class: 'email' as const, 
+        settings: { 
+          auth: { 
+            host: 'localhost',
+            port: 587,
+            secure: false,
+            auth: { user: 'test', pass: 'test' }
+          }, 
+          defaults: {} 
+        } 
+      },
+      { 
+        name: 'ses' as const, 
+        class: 'email' as const, 
+        settings: { 
+          auth: { accessKeyId: 'test', secretAccessKey: 'test', region: 'us-east-1' }, 
+          defaults: {} 
+        } 
+      }
+    ];
+
+    await send(message, transports, { name: 'smtp' });
+
+    expect(SMTP).toHaveBeenCalledTimes(1);
+    expect(SES).not.toHaveBeenCalled();
+  });
+
+  it('should filter by class only in single filter', async () => {
+    const message = { to: 'test@example.com', from: 'sender@example.com', subject: 'Test', html: 'Content' };
+    const transports = [
+      { 
+        name: 'smtp' as const, 
+        class: 'email' as const, 
+        settings: { 
+          auth: { 
+            host: 'localhost',
+            port: 587,
+            secure: false,
+            auth: { user: 'test', pass: 'test' }
+          }, 
+          defaults: {} 
+        } 
+      },
+      { 
+        name: 'ses' as const, 
+        class: 'email' as const, 
+        settings: { 
+          auth: { accessKeyId: 'test', secretAccessKey: 'test', region: 'us-east-1' }, 
+          defaults: {} 
+        } 
+      }
+    ];
+
+    await send(message, transports, { class: 'email' });
+
+    expect(SMTP).toHaveBeenCalledTimes(1);
+    expect(SES).toHaveBeenCalledTimes(1);
+  });
+
+  it('should handle empty filter object in array', async () => {
+    const message = { to: 'test@example.com', from: 'sender@example.com', subject: 'Test', html: 'Content' };
+    const transports = [
+      { 
+        name: 'smtp' as const, 
+        class: 'email' as const, 
+        settings: { 
+          auth: { 
+            host: 'localhost',
+            port: 587,
+            secure: false,
+            auth: { user: 'test', pass: 'test' }
+          }, 
+          defaults: {} 
+        } 
+      }
+    ];
+
+    await send(message, transports, [{}]);
+
+    expect(SMTP).not.toHaveBeenCalled();
+  });
+
+  it('should handle empty filter object', async () => {
+    const message = { to: 'test@example.com', from: 'sender@example.com', subject: 'Test', html: 'Content' };
+    const transports = [
+      { 
+        name: 'smtp' as const, 
+        class: 'email' as const, 
+        settings: { 
+          auth: { 
+            host: 'localhost',
+            port: 587,
+            secure: false,
+            auth: { user: 'test', pass: 'test' }
+          }, 
+          defaults: {} 
+        } 
+      }
+    ];
+
+    await expect(send(message, transports, {})).rejects.toThrow('Transport undefined not found');
+  });
+
+  it('should show multiple transport names in error for array filter', async () => {
+    const message = { to: 'test@example.com', from: 'sender@example.com', subject: 'Test', html: 'Content' };
+    const transports = [
+      { 
+        name: 'smtp' as const, 
+        class: 'email' as const, 
+        settings: { 
+          auth: { 
+            host: 'localhost',
+            port: 587,
+            secure: false,
+            auth: { user: 'test', pass: 'test' }
+          }, 
+          defaults: {} 
+        } 
+      }
+    ];
+
+    await expect(
+      send(message, transports, [{ name: 'nonexistent1' }, { name: 'nonexistent2' }] as unknown as Parameters<typeof send>[2])
+    ).rejects.toThrow('Transport nonexistent1, nonexistent2 not found');
+  });
 });

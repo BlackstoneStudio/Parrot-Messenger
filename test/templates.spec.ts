@@ -1,5 +1,8 @@
 import Templates from '../src/templates';
 import { TemplateError } from '../src/errors';
+import Axios from 'axios';
+
+jest.mock('axios');
 
 describe('Templates', () => {
   let templates: Templates;
@@ -120,6 +123,140 @@ describe('Templates', () => {
       expect(mockMailer.send).toHaveBeenCalledWith(
         expect.objectContaining({
           html: '<p>Static content</p>'
+        }),
+        undefined
+      );
+    });
+
+    it('should fetch and compile async template', async () => {
+      const mockAxios = Axios as jest.MockedFunction<typeof Axios>;
+      mockAxios.mockResolvedValueOnce({
+        data: {
+          data: {
+            html: '<p>Async Hello {{name}}!</p>'
+          }
+        }
+      });
+
+      templates.register({
+        name: 'async-template',
+        html: '',
+        request: {
+          url: 'https://api.example.com/template',
+          method: 'GET',
+          resolve: 'data.html'
+        }
+      });
+
+      await templates.send(
+        'async-template',
+        {
+          to: 'test@example.com',
+          from: 'sender@example.com',
+          subject: 'Async Test'
+        },
+        {
+          name: 'AsyncUser'
+        }
+      );
+
+      expect(mockAxios).toHaveBeenCalledWith({
+        url: 'https://api.example.com/template',
+        method: 'GET',
+        resolve: 'data.html'
+      });
+
+      expect(mockMailer.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          html: '<p>Async Hello AsyncUser!</p>'
+        }),
+        undefined
+      );
+    });
+
+    it('should handle async template fetch errors', async () => {
+      const mockAxios = Axios as jest.MockedFunction<typeof Axios>;
+      mockAxios.mockRejectedValueOnce(new Error('Network error'));
+
+      templates.register({
+        name: 'failing-async-template',
+        html: '',
+        request: {
+          url: 'https://api.example.com/template',
+          method: 'GET',
+          resolve: 'data.html'
+        }
+      });
+
+      await expect(
+        templates.send(
+          'failing-async-template',
+          {
+            to: 'test@example.com',
+            from: 'sender@example.com',
+            subject: 'Test'
+          },
+          {}
+        )
+      ).rejects.toThrow('Error fetching async template "failing-async-template": Network error');
+    });
+
+    it('should throw error when template has no content', async () => {
+      templates.register({
+        name: 'empty-template',
+        html: ''
+      });
+
+      await expect(
+        templates.send(
+          'empty-template',
+          {
+            to: 'test@example.com',
+            from: 'sender@example.com',
+            subject: 'Test'
+          },
+          {}
+        )
+      ).rejects.toThrow('No content found for template "empty-template"');
+    });
+
+    it('should handle deeply nested resolve path', async () => {
+      const mockAxios = Axios as jest.MockedFunction<typeof Axios>;
+      mockAxios.mockResolvedValueOnce({
+        data: {
+          response: {
+            templates: {
+              main: '<p>Deep {{message}}</p>'
+            }
+          }
+        }
+      });
+
+      templates.register({
+        name: 'deep-template',
+        html: '',
+        request: {
+          url: 'https://api.example.com/templates',
+          method: 'GET',
+          resolve: 'response.templates.main'
+        }
+      });
+
+      await templates.send(
+        'deep-template',
+        {
+          to: 'test@example.com',
+          from: 'sender@example.com',
+          subject: 'Deep Test'
+        },
+        {
+          message: 'nested content'
+        }
+      );
+
+      expect(mockMailer.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          html: '<p>Deep nested content</p>'
         }),
         undefined
       );
