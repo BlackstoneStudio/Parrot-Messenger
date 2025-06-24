@@ -8,7 +8,7 @@
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
   <a href="https://github.com/BlackstoneStudio/Parrot-Messenger/graphs/commit-activity" target="_blank">
-    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained-yes-green.svg" />
+    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained-yes-brightgreen.svg" />
   </a>
   <img alt="Build" src="https://github.com/BlackstoneStudio/Parrot-Messenger/workflows/CI/badge.svg" />
 </p>
@@ -17,11 +17,14 @@
 
 - [What's New](#whats-new)
 - [Features](#features)
+- [Prerequisites](#prerequisites)
 - [Installing](#installing)
+- [Local Development](#local-development)
 - [Initialization](#initialization)
 - [Settings](#settings)
 - [API](#api)
 - [Templates](#templates)
+- [API Reference](#api-reference)
 
 ## What's New
 
@@ -75,6 +78,11 @@ In its current iteration it supports 3 types of transport classes:
 ### Call Services
 - Twilio
 
+## Prerequisites
+
+- Node.js 18+ or higher
+- npm (comes with Node.js)
+
 ## Installing
 
 Using npm:
@@ -83,16 +91,108 @@ Using npm:
 $ npm install parrot-messenger
 ```
 
-Using bower:
+## Local Development
 
-```bash
-$ bower install parrot-messenger
+### Setting up the development environment
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/BlackstoneStudio/Parrot-Messenger.git
+   cd Parrot-Messenger
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` and add your service credentials for testing.
+
+### Development Commands
+
+- **Build the project**
+  ```bash
+  npm run build
+  ```
+  Compiles TypeScript source from `src/` to JavaScript in `dist/`
+
+- **Run tests**
+  ```bash
+  npm test                    # Run all tests
+  npm test -- --watch        # Run tests in watch mode
+  npm test -- --coverage     # Run tests with coverage report
+  ```
+
+- **Lint the code**
+  ```bash
+  npm run lint
+  ```
+  Runs ESLint with TypeScript parser on source files
+
+- **Development workflow**
+  ```bash
+  npm run prepare            # Auto-build (runs during npm install)
+  ```
+
+### Project Structure
+
+```
+parrot-messenger/
+├── src/                   # TypeScript source files
+│   ├── transports/        # Transport implementations
+│   │   ├── aws/          # AWS SES and SNS
+│   │   ├── telnyx/       # Telnyx SMS
+│   │   └── twilio/       # Twilio SMS and Call
+│   ├── templates/         # Template engine
+│   ├── constants/         # Constants (voices, etc.)
+│   ├── errors.ts         # Custom error types
+│   ├── validation.ts     # Input validation
+│   └── send.ts           # Core send logic
+├── test/                  # Test files
+├── examples/              # Usage examples
+├── dist/                  # Compiled JavaScript (generated)
+└── package.json          # Project configuration
 ```
 
-Using yarn:
+### Testing
 
-```bash
-$ yarn add parrot-messenger
+The project maintains 100% code coverage. When adding new features:
+
+1. Write tests first (TDD approach recommended)
+2. Ensure all tests pass: `npm test`
+3. Check coverage: `npm test -- --coverage`
+4. Fix any linting issues: `npm run lint`
+
+### Contributing Guidelines
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes and add tests
+4. Ensure all tests pass and coverage remains high
+5. Commit your changes: `git commit -am 'Add your feature'`
+6. Push to the branch: `git push origin feature/your-feature`
+7. Create a Pull Request
+
+### Debugging Tips
+
+- Use `console.log` or debugger statements during development
+- Run tests for specific files: `npm test path/to/test.spec.ts`
+- Use VS Code's built-in debugger with the following configuration:
+
+```json
+{
+  "type": "node",
+  "request": "launch",
+  "name": "Jest Debug",
+  "program": "${workspaceFolder}/node_modules/.bin/jest",
+  "args": ["--runInBand"],
+  "console": "integratedTerminal",
+  "internalConsoleOptions": "neverOpen"
+}
 ```
 
 ## Initialization
@@ -287,28 +387,300 @@ parrot.templates.send(
 );
 ```
 
+## API Reference
+
+### TypeScript Support
+
+Parrot Messenger is written in TypeScript and provides full type definitions out of the box.
+
+```typescript
+import Parrot, { Envelope, Transport } from 'parrot-messenger';
+```
+
+### Core Types
+
+#### Envelope
+The message object that all transports accept:
+
+```typescript
+interface Envelope {
+  from?: string;      // Sender address/number
+  to?: string;        // Recipient address/number
+  subject?: string;   // Email subject (required for email)
+  html?: string;      // HTML content
+  text?: string;      // Plain text content
+  voice?: string;     // Voice selection for calls (see Voices section)
+  attachments?: Attachment[];  // File attachments
+}
+```
+
+#### Transport Configuration
+
+```typescript
+interface Transport {
+  name: TransportName;
+  class: 'email' | 'sms' | 'call';
+  settings: TransportSettings;
+}
+```
+
+### Email Transports
+
+#### AWS SES
+```typescript
+interface AWSSESConfig {
+  auth: {
+    region: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+  defaults?: Envelope;
+}
+```
+
+#### SendGrid
+```typescript
+interface SendgridConfig {
+  auth: {
+    apiKey: string;  // Must start with 'SG.'
+  };
+  defaults?: Envelope;
+}
+```
+
+#### Mailgun
+```typescript
+interface MailgunConfig {
+  auth: {
+    apiKey: string;
+    domain: string;  // e.g., 'mg.yourdomain.com'
+  };
+  defaults?: Envelope;
+}
+```
+
+#### Mailchimp (Mandrill)
+```typescript
+interface MailchimpConfig {
+  auth: {
+    apiKey: string;
+  };
+  defaults?: Envelope;
+}
+```
+
+#### SMTP
+```typescript
+interface SMTPConfig {
+  auth: {
+    host: string;
+    port: number;
+    secure: boolean;
+    auth: {
+      user: string;
+      pass: string;
+    };
+  };
+  defaults?: Envelope;
+}
+```
+
+### SMS Transports
+
+#### Twilio SMS
+```typescript
+interface TwilioSMSConfig {
+  auth: {
+    sid: string;      // Account SID
+    token: string;    // Auth token
+  };
+  defaults?: Envelope;
+}
+```
+
+#### AWS SNS
+```typescript
+interface AWSSNSConfig {
+  auth: {
+    region: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+  smsType?: 'Transactional' | 'Promotional';
+  defaults?: Envelope;
+}
+```
+
+#### Telnyx
+```typescript
+interface TelnyxConfig {
+  auth: {
+    apiKey: string;
+  };
+  defaults?: Envelope;
+}
+```
+
+#### Mailjet SMS
+```typescript
+interface MailjetSMSConfig {
+  auth: {
+    apiToken: string;
+  };
+  defaults?: Envelope;
+}
+```
+
+### Call Transport
+
+#### Twilio Call
+```typescript
+interface TwilioCallConfig {
+  auth: {
+    sid: string;      // Account SID
+    token: string;    // Auth token
+  };
+  defaults?: Envelope;
+}
+```
+
+### Error Types
+
+Parrot Messenger provides custom error types for better error handling:
+
+```typescript
+// Base error class
+class ParrotError extends Error {
+  constructor(message: string, details?: any);
+}
+
+// Thrown when input validation fails
+class ValidationError extends ParrotError {
+  constructor(message: string, field?: string);
+}
+
+// Thrown when a transport operation fails
+class TransportError extends ParrotError {
+  constructor(message: string, transport?: string, originalError?: Error);
+}
+
+// Thrown when template processing fails
+class TemplateError extends ParrotError {
+  constructor(message: string, templateName?: string);
+}
+
+// Thrown when configuration is invalid
+class ConfigurationError extends ParrotError {
+  constructor(message: string, config?: any);
+}
+```
+
+### Error Handling Example
+
+```typescript
+import { send, ValidationError, TransportError } from 'parrot-messenger';
+
+try {
+  await send(message, transports);
+} catch (error) {
+  if (error instanceof ValidationError) {
+    console.error('Invalid input:', error.message);
+  } else if (error instanceof TransportError) {
+    console.error('Transport failed:', error.message);
+    // Access original error: error.originalError
+  } else {
+    console.error('Unexpected error:', error);
+  }
+}
+```
+
+### Voices for Calls
+
+Available voices for text-to-speech in calls:
+
+```typescript
+import { voices } from 'parrot-messenger';
+
+// Example voices:
+voices.Salli       // English (US)
+voices.Amy         // English (British)
+voices.Conchita    // Spanish (Castilian)
+voices.Mizuki      // Japanese
+// ... and many more
+
+// Usage in envelope:
+const message: Envelope = {
+  from: '+1234567890',
+  to: '+0987654321',
+  html: '<p>Hello!</p>',
+  voice: 'Amy'  // British English voice
+};
+```
+
+### Transport Filter Options
+
+When sending messages, you can filter which transports to use:
+
+```typescript
+// Use specific transport by name
+await send(message, transports, { name: 'smtp' });
+
+// Use all transports of a specific class
+await send(message, transports, { class: 'email' });
+
+// Use specific transport with both name and class
+await send(message, transports, { name: 'smtp', class: 'email' });
+
+// Use multiple transports
+await send(message, transports, [
+  { name: 'smtp' },
+  { name: 'ses' }
+]);
+```
+
+### Validation Rules
+
+- **Email addresses**: Must be valid RFC-compliant email addresses
+- **Phone numbers**: Must be valid E.164 format (e.g., +1234567890)
+- **Required fields**:
+  - `to`: Always required
+  - `from`: Always required
+  - `subject`: Required for email only
+  - `html` or `text`: At least one is required
+- **HTML content**: Automatically sanitized to prevent XSS attacks
+
 ## Who are we
-We are the development partner of choice for several different sized companies who need a team that delivers fast & scalable code understanding users needs and commercial scope.
+Blackstone Studio is a custom software development company that specializes in AI-powered digital transformation solutions. We help you harness the power of artificial intelligence to build innovative solutions, accelerating your business's digital transformation journey.
 
 ### Our services
 
-- Website development
-- UX/UI Design
-- Webapp Development
+- Custom Software Development
+- Staff Augmentation
+- Dedicated Teams
+- Generative AI Development
 - Mobile Development
-- Ecommerce
-- Specialized enterprise software
-- Legacy migrations, debugging and refactors
+- Web Development
+- Software Testing
+- Software Integrations
+- No-Code Development
+- Maintenance and Support
 
 ### Why us?
 
-We don't outsource a single thing. Each wireframe, design and every piece of code is written with outmost care by Blackstone's diverse teams.
+We pride ourselves on understanding each client's unique business model and creating solutions that complement their strategic vision. With our AI-centric approach to solving business challenges and flexible, adaptable development methodology, we build lasting partnerships that go beyond just software development. We serve diverse industries including retail, financial services, healthcare, real estate, and technology.
 
 
 
 ## 🛠 Built With
 
-- [Node.js](https://nodejs.org/en/) - Backend
+- [Node.js](https://nodejs.org/en/) - Runtime environment
+- [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
+- [Jest](https://jestjs.io/) - Testing framework with 100% code coverage
+- [Handlebars](https://handlebarsjs.com/) - Template engine
+- [Nodemailer](https://nodemailer.com/) - Email sending
+- [AWS SDK](https://aws.amazon.com/sdk-for-javascript/) - AWS SES and SNS integration
+- [Twilio](https://www.twilio.com/) - SMS and voice calls
+- [GitHub Actions](https://github.com/features/actions) - CI/CD pipeline
 
 
 ## 🤝 Contributing

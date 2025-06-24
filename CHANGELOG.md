@@ -43,6 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed potential SSRF vulnerability in template system
 - Prevented XML injection in Twilio Call transport
 - Enhanced email validation to prevent ReDoS attacks
+- Removed deprecated dependencies (mailchimp, request) - now 0 vulnerabilities
 
 ## [1.0.12] - Previous Release
 
