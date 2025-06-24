@@ -10,13 +10,13 @@ describe('Sendgrid', () => {
     jest.clearAllMocks();
     
     mockTransport = {
-      setApiKey: jest.fn(),
+      setApiKey: jest.fn().mockImplementation(() => {}),
       send: jest.fn().mockResolvedValue({ success: true }),
     };
 
     mockSettings = {
       auth: {
-        apiKey: 'test-api-key',
+        apiKey: 'SG.test-api-key',
       },
       defaults: {
         from: 'default@example.com',
@@ -33,7 +33,7 @@ describe('Sendgrid', () => {
     });
 
     it('should set API key on transport', () => {
-      expect(mockTransport.setApiKey).toHaveBeenCalledWith(mockSettings.auth.apiKey);
+      expect(mockTransport.setApiKey).toHaveBeenCalledWith('SG.test-api-key');
     });
 
     it('should use SendgridMail as default transport', () => {
@@ -126,7 +126,7 @@ describe('Sendgrid', () => {
     it('should merge defaults with message data', async () => {
       const settingsWithDefaults: ISendgrid = {
         auth: {
-          apiKey: 'test-api-key',
+          apiKey: 'SG.test-api-key-2',
         },
         defaults: {
           from: 'default@example.com',

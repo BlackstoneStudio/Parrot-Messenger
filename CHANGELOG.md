@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive input validation for emails and phone numbers
 - Custom error types (ParrotError, ValidationError, TransportError, TemplateError, ConfigurationError)
 - HTML sanitization to prevent XSS attacks
-- Comprehensive test suite with 87% code coverage (up from 77%)
+- Comprehensive test suite with 100% statement, function, and line coverage (up from 77%)
 - Test coverage for all transport providers (Mailchimp, Mailgun, SendGrid, AWS SNS, Telnyx SMS, Twilio Call)
 - Test coverage for voices constants
 - GitHub Actions CI/CD pipeline

@@ -75,12 +75,29 @@ describe('Validation', () => {
       }, 'email')).toThrow('Invalid email address: invalid');
     });
 
+    it('should throw on invalid sender email address', () => {
+      expect(() => validateEnvelope({
+        to: 'test@example.com',
+        from: 'invalid-sender',
+        subject: 'Test',
+        html: 'Content'
+      }, 'email')).toThrow('Invalid sender email address: invalid-sender');
+    });
+
     it('should throw on invalid phone numbers', () => {
       expect(() => validateEnvelope({
         to: '123',
         from: '+14155551111',
         text: 'SMS'
       }, 'sms')).toThrow('Invalid phone number: 123');
+    });
+
+    it('should throw on invalid sender phone number', () => {
+      expect(() => validateEnvelope({
+        to: '+14155552222',
+        from: 'invalid-phone',
+        text: 'SMS'
+      }, 'sms')).toThrow('Invalid sender phone number: invalid-phone');
     });
 
     it('should require content', () => {

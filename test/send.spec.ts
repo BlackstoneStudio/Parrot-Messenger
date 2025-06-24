@@ -309,7 +309,7 @@ describe('send', () => {
       }
     ];
 
-    await send(message, transports, [{ name: 'smtp' }]);
+    await send(message, transports, [{ name: 'smtp' } as any]);
 
     expect(SMTP).toHaveBeenCalledTimes(1);
     expect(SES).not.toHaveBeenCalled();
@@ -341,7 +341,7 @@ describe('send', () => {
       }
     ];
 
-    await send(message, transports, [{ class: 'email' }]);
+    await send(message, transports, [{ class: 'email' } as any]);
 
     expect(SMTP).toHaveBeenCalledTimes(1);
     expect(SES).toHaveBeenCalledTimes(1);
@@ -373,7 +373,7 @@ describe('send', () => {
       }
     ];
 
-    await send(message, transports, { name: 'smtp' });
+    await send(message, transports, { name: 'smtp' } as any);
 
     expect(SMTP).toHaveBeenCalledTimes(1);
     expect(SES).not.toHaveBeenCalled();
@@ -405,7 +405,7 @@ describe('send', () => {
       }
     ];
 
-    await send(message, transports, { class: 'email' });
+    await send(message, transports, { class: 'email' } as any);
 
     expect(SMTP).toHaveBeenCalledTimes(1);
     expect(SES).toHaveBeenCalledTimes(1);
@@ -429,9 +429,7 @@ describe('send', () => {
       }
     ];
 
-    await send(message, transports, [{}]);
-
-    expect(SMTP).not.toHaveBeenCalled();
+    await expect(send(message, transports, [{} as any])).rejects.toThrow('Transport undefined not found');
   });
 
   it('should handle empty filter object', async () => {
@@ -452,7 +450,7 @@ describe('send', () => {
       }
     ];
 
-    await expect(send(message, transports, {})).rejects.toThrow('Transport undefined not found');
+    await expect(send(message, transports, {} as any)).rejects.toThrow('Transport undefined not found');
   });
 
   it('should show multiple transport names in error for array filter', async () => {

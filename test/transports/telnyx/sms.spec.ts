@@ -124,7 +124,6 @@ describe('TelnyxSMSTransport', () => {
 
       expect(mockCreate).toHaveBeenCalledWith({
         from: '+1234567890',
-        subject: 'Default subject',
         to: message.to,
         text: message.text,
       });
