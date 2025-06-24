@@ -1,8 +1,19 @@
 import SendgridMail from '@sendgrid/mail';
 import { Envelope, GenericTransport, Sendgrid as ISendgrid } from '../types';
 
+interface SendgridTransport {
+  setApiKey(apiKey: string): void;
+  send(data: Record<string, unknown>): Promise<unknown>;
+}
+
 class Sendgrid implements GenericTransport {
-  constructor(private settings: ISendgrid, public transport: any = SendgridMail) {
+  public transport: SendgridTransport;
+
+  constructor(
+    private settings: ISendgrid,
+    transport: SendgridTransport = SendgridMail as unknown as SendgridTransport,
+  ) {
+    this.transport = transport;
     this.transport.setApiKey(settings.auth.apiKey);
   }
 

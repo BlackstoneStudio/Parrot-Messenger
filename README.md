@@ -3,23 +3,53 @@
 # Parrot Messenger
 
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://github.com/BlackstoneStudio/Parrot-Messenger/" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
   </a>
   <a href="https://github.com/BlackstoneStudio/Parrot-Messenger/graphs/commit-activity" target="_blank">
     <img alt="Maintenance" src="https://img.shields.io/badge/Maintained-yes-green.svg" />
   </a>
+  <img alt="Build" src="https://github.com/BlackstoneStudio/Parrot-Messenger/workflows/CI/badge.svg" />
 </p>
 
 ## Table of Contents
 
+- [What's New](#whats-new)
 - [Features](#features)
 - [Installing](#installing)
 - [Initialization](#initialization)
 - [Settings](#settings)
 - [API](#api)
 - [Templates](#templates)
+
+## What's New
+
+### Version 1.1.0
+
+#### New Features
+- **Telnyx SMS Support**: Added Telnyx as a new SMS transport provider
+- **AWS SNS SMS Support**: Added AWS SNS for SMS messaging capabilities
+- **Enhanced Security**: 
+  - Fixed AWS credentials global pollution issue
+  - Added input validation for email addresses and phone numbers
+  - Implemented HTML sanitization to prevent XSS attacks
+  - Fixed TwiML injection vulnerability
+- **Better Error Handling**: 
+  - Added custom error types for better debugging
+  - Improved error messages with more context
+  - Added validation errors with clear messages
+- **Improved Type Safety**: 
+  - Reduced usage of `any` types
+  - Better TypeScript support throughout the codebase
+- **Performance Enhancements**: 
+  - Transport clients are now properly managed
+  - Better resource utilization
+- **Testing**: Added comprehensive test suite with high coverage
+- **CI/CD**: Migrated from CircleCI to GitHub Actions
+
+#### Breaking Changes
+None - This release maintains full backward compatibility
 
 ## Features
 Parrot Messenger is a messaging library that can normalize the APIs for different messaging transports.
@@ -39,6 +69,8 @@ In its current iteration it supports 3 types of transport classes:
 ### SMS Services
 - Twilio
 - Mailjet
+- Telnyx
+- AWS SNS
 
 ### Call Services
 - Twilio
@@ -115,6 +147,41 @@ const ses = {
 };
 ```
 
+For Telnyx SMS transport:
+
+```js
+const telnyxSMS = {
+  name: 'telnyxSMS',
+  settings: {
+    auth: {
+      apiKey: 'YOUR_TELNYX_API_KEY',
+    },
+    defaults: {
+      from: '+15551234567', // Your Telnyx phone number
+    },
+  },
+};
+```
+
+For AWS SNS SMS transport:
+
+```js
+const sns = {
+  name: 'sns',
+  settings: {
+    auth: {
+      secretAccessKey: 'YOUR_SECRET_ACCESS_KEY',
+      accessKeyId: 'YOUR_ACCESS_KEY_ID',
+      region: 'us-east-1',
+    },
+    smsType: 'Transactional', // or 'Promotional'
+    defaults: {
+      from: 'YourApp', // SMS Sender ID (not supported in all regions)
+    },
+  },
+};
+```
+
 ## API
 Parrot Messenger works with a simple `send` service and a templating, here we'll describe the usage for the send method.
 The send method receives 2 parameters, both being objects.
@@ -168,8 +235,8 @@ parrot.templates.send(
   // Transport Settings
   // Available classes email, sms & call
   // Available transports per Class:
-  // Email: 'ses', 'mailgun', 'mailjetEmail', 'mailchimp', 'smtp'
-  // SMS: 'twilioSMS', 'mailjetSMS'
+  // Email: 'ses', 'mailgun', 'mailjetEmail', 'mailchimp', 'sendgrid', 'smtp'
+  // SMS: 'twilioSMS', 'mailjetSMS', 'telnyxSMS', 'sns'
   // Call: 'twilioCall'
   transport
 );
@@ -252,7 +319,7 @@ You can also suggest a new feature by creating an Issue. Please wait for confirm
 
 ## 📝 License
 
-Copyright © 2020 [Blackstone Studio](https://github.com/Blasckstone-Studio).
+Copyright © 2025 [Blackstone Studio](https://github.com/Blackstone-Studio).
 
 This project is [MIT](https://github.com/BlackstoneStudio/Parrot-Messenger/master/LICENSE) licensed.
 

@@ -15,14 +15,21 @@ class TwilioCall implements GenericTransport<Twilio.Twilio> {
       ...message,
     };
 
+    const textContent = htmlToText(request.html)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&apos;');
+
     await this.transport.calls.create({
       from: request.from,
       to: request.to,
       twiml: `
         <Response>
           <Pause length="1"/>
-          <Say voice="Polly.${message.voice || 'Nicole'}">
-            ${htmlToText(request.html)}
+          <Say voice="Polly.Joanna">
+            ${textContent}
           </Say>
         </Response> 
       `,

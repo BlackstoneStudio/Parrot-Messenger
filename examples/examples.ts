@@ -49,6 +49,24 @@ const ses = {
 };
 
 /**
+ * AWS SNS Example Settings
+ */
+const sns = {
+  name: 'sns',
+  settings: {
+    auth: {
+      secretAccessKey: 'XXX',
+      accessKeyId: '',
+      region: '',
+    },
+    smsType: 'Transactional', // or 'Promotional'
+    defaults: {
+      from: 'ParrotSMS', // SMS Sender ID (not supported in all regions)
+    },
+  },
+};
+
+/**
  * Sendgrid Example Settings
  */
 
@@ -113,6 +131,21 @@ const twilioSMS = {
 };
 
 /**
+ * Telnyx SMS Example Settings
+ */
+const telnyxSMS = {
+  name: 'telnyxSMS',
+  settings: {
+    auth: {
+      apiKey: '',
+    },
+    defaults: {
+      from: '15555555555',
+    },
+  },
+};
+
+/**
  * Twilio Call Example Settings
  */
 const twilioCall = {
@@ -152,10 +185,12 @@ Parrot.init({
     mailgun,
     mailchimp,
     ses,
+    sns,
     sendgrid,
     mailjetEmail,
     mailjetSMS,
     twilioSMS,
+    telnyxSMS,
     twilioCall,
     smtp,
   ],
@@ -200,8 +235,8 @@ Parrot.templates.send(
   // Transport Settings
   // Available classes email, sms & call
   // Available transports per Class:
-  // Email: 'ses', 'mailgun', 'mailjetEmail', 'mailchimp', 'smtp'
-  // SMS: 'twilioSMS', 'mailjetSMS'
+  // Email: 'ses', 'mailgun', 'mailjetEmail', 'mailchimp', 'sendgrid', 'smtp'
+  // SMS: 'twilioSMS', 'mailjetSMS', 'telnyxSMS', 'sns'
   // Call: 'twilioCall'
   { class: 'email', name: 'mailjetEmail' },
 )

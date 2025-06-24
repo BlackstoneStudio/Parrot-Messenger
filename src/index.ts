@@ -1,6 +1,6 @@
 import Templates from './templates';
 import send from './send';
-import getTransportClass from './utlis';
+import getTransportClass from './utils';
 import {
   Envelope, Mailer, ParrotSettings, Transport,
 } from './types';

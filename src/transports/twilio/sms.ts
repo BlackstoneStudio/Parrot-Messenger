@@ -5,13 +5,13 @@ import { Envelope, GenericTransport, TwilioSMS as ITwilioSMS } from '../../types
 class TwilioSMS implements GenericTransport<Twilio.Twilio> {
   transport: Twilio.Twilio;
 
-  constructor(private setttings: ITwilioSMS) {
-    this.transport = Twilio(setttings.auth.sid, setttings.auth.token);
+  constructor(private settings: ITwilioSMS) {
+    this.transport = Twilio(settings.auth.sid, settings.auth.token);
   }
 
   async send(message: Envelope) {
     const request = {
-      ...this.setttings.defaults,
+      ...this.settings.defaults,
       ...message,
     };
     await this.transport.messages.create({

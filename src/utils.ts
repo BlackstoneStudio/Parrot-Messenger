@@ -1,7 +1,7 @@
 export default (name: string): 'email'|'sms'|'call' => {
   let defaultClass: 'email'|'sms'|'call' = 'email';
-  const emailTransports = ['ses', 'mailgun', 'mailchimp', 'smtp'];
-  const smsTransports = ['twilioSMS', 'mailjetSMS'];
+  const emailTransports = ['ses', 'mailgun', 'mailchimp', 'smtp', 'sendgrid'];
+  const smsTransports = ['twilioSMS', 'mailjetSMS', 'telnyxSMS', 'sns'];
   const voiceTransports = ['twilioCall'];
 
   if (emailTransports.indexOf(name) !== -1) defaultClass = 'email';

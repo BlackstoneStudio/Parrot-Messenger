@@ -1,6 +1,6 @@
-import { SESClientConfig } from '@aws-sdk/client-ses';
 import Mail from 'nodemailer/lib/mailer';
 import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
+import { ConfigurationOptions } from 'aws-sdk';
 import { voices } from '../constants/voices';
 
 type Attachment =
@@ -32,7 +32,11 @@ export type Defaults = {
   defaults?: Envelope;
 };
 export interface AWSSESConfig extends Defaults {
-  auth: SESClientConfig;
+  auth: ConfigurationOptions;
+}
+export interface AWSSNS extends Defaults {
+	auth: ConfigurationOptions
+	smsType?: 'Transactional' | 'Promotional'
 }
 
 // export interface MailjetEmail extends Defaults {
@@ -57,6 +61,11 @@ export interface TwilioSMS extends Defaults {
     sid: string;
     token: string;
   };
+}
+export interface TelnyxSMS extends Defaults {
+	auth: {
+		apiKey: string
+	}
 }
 export interface Mailchimp extends Defaults {
   auth: {
@@ -92,9 +101,11 @@ interface TransportGeneric<
 
 export type Transport =
   | TransportGeneric<'ses', 'email', AWSSESConfig>
+  | TransportGeneric<'sns', 'sms', AWSSNS>
   // | TransportGeneric<'mailjetEmail', 'email', MailjetEmail>
   // | TransportGeneric<'mailjetSMS', 'sms', MailjetSMS>
   | TransportGeneric<'twilioSMS', 'sms', TwilioSMS>
+  | TransportGeneric<'telnyxSMS', 'sms', TelnyxSMS>
   | TransportGeneric<'twilioCall', 'call', TwilioCall>
   | TransportGeneric<'mailchimp', 'email', Mailchimp>
   | TransportGeneric<'mailgun', 'email', Mailgun>

@@ -1,6 +1,7 @@
 import { compile } from 'handlebars';
 import Axios from 'axios';
 import { Envelope, Mailer, Transport } from '../types';
+import { TemplateError } from '../errors';
 
 class Templates {
   public templates: Map<string, {
@@ -29,8 +30,7 @@ class Templates {
         handlebarsTemplate({});
       }
     } catch (e) {
-      // console.error('Parrot Messenger [Send]: Error Parsing Message Template');
-      throw new Error(e);
+      throw new TemplateError(`Error parsing template "${name}": ${e.message}`);
     }
 
     // Add this template to the store
@@ -60,6 +60,11 @@ class Templates {
     transport?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
   ) {
     const template = this.templates.get(name);
+
+    if (!template) {
+      throw new TemplateError(`Template "${name}" not found`);
+    }
+
     let content = template.html;
 
     if (template.request) {
@@ -69,16 +74,12 @@ class Templates {
         const req = await Axios(request);
         content = request.resolve.split('.').reduce((o, i) => o[i], req.data);
       } catch (e) {
-        throw new Error(`[Async Tempalte] Error: ${e.message}`);
+        throw new TemplateError(`Error fetching async template "${name}": ${e.message}`, { request });
       }
     }
 
     if (!content) {
-      throw new Error('[Async Template] Content not found');
-    }
-
-    if (!template) {
-      throw new Error(`Parrot Messenger [Send]: Template ${name} not found`);
+      throw new TemplateError(`No content found for template "${name}"`);
     }
 
     // Compile the handlebars template and render

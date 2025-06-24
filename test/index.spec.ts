@@ -1,12 +1,20 @@
 // eslint-disable-next-line import/no-named-as-default
 import Parrot from '../src/index';
 
-jest.useFakeTimers({ legacyFakeTimers: true });
+jest.useFakeTimers();
+
+jest.mock('../src/transports/aws/ses');
 
 describe('Creates a parrot instance', () => {
   let parrot: Parrot;
 
   beforeAll(() => {
+    process.env.SES_SECRET = 'mock-secret';
+    process.env.SES_KEY = 'mock-key';
+    process.env.REGION = 'us-east-1';
+    process.env.FROM = 'test@example.com';
+    process.env.TO = 'recipient@example.com';
+
     parrot = new Parrot({
       transports: [
         {
@@ -19,6 +27,7 @@ describe('Creates a parrot instance', () => {
               },
               region: process.env.REGION,
             },
+            defaults: {},
           },
         },
       ],
