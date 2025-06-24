@@ -1,11 +1,9 @@
 import SNSTransport from '../../../src/transports/aws/sns';
 import { Envelope, AWSSNS } from '../../../src/types';
-import * as AWS from 'aws-sdk';
+import { SNS } from '@aws-sdk/client-sns';
 
-jest.mock('aws-sdk', () => {
-  const mockPublish = jest.fn(() => ({
-    promise: jest.fn().mockResolvedValue({ MessageId: 'test-message-id' }),
-  }));
+jest.mock('@aws-sdk/client-sns', () => {
+  const mockPublish = jest.fn().mockResolvedValue({ MessageId: 'test-message-id' });
 
   return {
     SNS: jest.fn().mockImplementation(() => ({
@@ -45,10 +43,12 @@ describe('SNSTransport', () => {
     });
 
     it('should create SNS client with auth settings', () => {
-      expect(AWS.SNS).toHaveBeenCalledWith({
+      expect(SNS).toHaveBeenCalledWith({
         region: 'us-east-1',
-        accessKeyId: 'test-access-key',
-        secretAccessKey: 'test-secret-key',
+        credentials: {
+          accessKeyId: 'test-access-key',
+          secretAccessKey: 'test-secret-key',
+        },
       });
     });
   });
@@ -196,9 +196,7 @@ describe('SNSTransport', () => {
 
     it('should handle send errors', async () => {
       const error = new Error('SNS publish failed');
-      mockSNS.publish.mockReturnValueOnce({
-        promise: jest.fn().mockRejectedValueOnce(error),
-      });
+      mockSNS.publish.mockRejectedValueOnce(error);
 
       const message: Envelope = {
         to: '+1234567890',

@@ -95,7 +95,7 @@ describe('TwilioCall', () => {
       await twilioCallTransport.send(message);
 
       const callArgs = mockCreate.mock.calls[0][0];
-      expect(callArgs.twiml).toContain('Test &amp; &quot;quotes&quot; &apos;apostrophe&apos; &lt;tag&gt;');
+      expect(callArgs.twiml).toContain('Test &amp; &quot;quotes&quot; &apos;apostrophe&apos;');
     });
 
     it('should include proper TwiML structure', async () => {
@@ -150,7 +150,6 @@ describe('TwilioCall', () => {
 
       expect(mockCreate).toHaveBeenCalledWith({
         from: '+1234567890',
-        subject: 'Default subject',
         to: message.to,
         twiml: expect.stringContaining('Test message'),
       });

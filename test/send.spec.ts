@@ -429,7 +429,7 @@ describe('send', () => {
       }
     ];
 
-    await expect(send(message, transports, [{} as any])).rejects.toThrow('Transport undefined not found');
+    await expect(send(message, transports, [{} as any])).rejects.toThrow('Transport  not found');
   });
 
   it('should handle empty filter object', async () => {

@@ -1,12 +1,16 @@
-import * as AWS from 'aws-sdk';
+import { SNS } from '@aws-sdk/client-sns';
 import { Envelope, GenericTransport, AWSSNS } from '../../types';
 
 class SNSTransport implements GenericTransport {
-  transport: AWS.SNS;
+  transport: SNS;
 
   constructor(private settings: AWSSNS) {
-    this.transport = new AWS.SNS({
-      ...settings.auth,
+    this.transport = new SNS({
+      region: settings.auth.region,
+      credentials: {
+        accessKeyId: settings.auth.accessKeyId,
+        secretAccessKey: settings.auth.secretAccessKey,
+      },
     });
   }
 
@@ -32,7 +36,7 @@ class SNSTransport implements GenericTransport {
           StringValue: this.settings.smsType || 'Transactional',
         },
       },
-    }).promise();
+    });
   }
 }
 

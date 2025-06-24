@@ -1,22 +1,22 @@
-import AWS from 'aws-sdk';
+import * as aws from '@aws-sdk/client-ses';
 import { Transporter, createTransport } from 'nodemailer';
 import { AWSSESConfig, Envelope, GenericTransport } from '../../types';
 
 class SES implements GenericTransport<Transporter> {
-  private transportSettings = {
-    apiVersion: '2010-12-01',
-  };
-
   transport: Transporter;
 
   constructor(private settings: AWSSESConfig) {
-    const sesClient = new AWS.SES({
-      ...this.transportSettings,
-      ...settings.auth,
+    const ses = new aws.SES({
+      apiVersion: '2010-12-01',
+      region: settings.auth.region,
+      credentials: {
+        accessKeyId: settings.auth.accessKeyId,
+        secretAccessKey: settings.auth.secretAccessKey,
+      },
     });
 
     this.transport = createTransport({
-      SES: sesClient,
+      SES: { ses, aws },
     });
   }
 

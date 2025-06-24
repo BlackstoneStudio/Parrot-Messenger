@@ -27,6 +27,7 @@ class Sendgrid implements GenericTransport {
       from: request.from,
       to: request.to,
       subject: request.subject,
+      text: request.text,
       html: request.html,
       attachments: request.attachments,
     });

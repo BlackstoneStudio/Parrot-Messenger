@@ -1,14 +1,11 @@
 import SES from '../../../src/transports/aws/ses';
-import * as AWS from 'aws-sdk';
+import * as aws from '@aws-sdk/client-ses';
 import * as nodemailer from 'nodemailer';
 
-jest.mock('aws-sdk', () => {
+jest.mock('@aws-sdk/client-ses', () => {
   const mockSES = jest.fn();
   return {
     SES: mockSES,
-    config: {
-      update: jest.fn()
-    }
   };
 });
 jest.mock('nodemailer');
@@ -20,7 +17,7 @@ describe('AWS SES Transport', () => {
   beforeEach(() => {
     mockSendMail = jest.fn().mockResolvedValue({ messageId: '123' });
     
-    (AWS.SES as unknown as jest.Mock).mockImplementation(() => ({}));
+    (aws.SES as unknown as jest.Mock).mockImplementation(() => ({}));
     (nodemailer.createTransport as jest.Mock).mockReturnValue({
       sendMail: mockSendMail
     });
@@ -38,16 +35,14 @@ describe('AWS SES Transport', () => {
   });
 
   it('should create SES client with correct config', () => {
-    expect(AWS.SES).toHaveBeenCalledWith({
+    expect(aws.SES).toHaveBeenCalledWith({
       apiVersion: '2010-12-01',
-      accessKeyId: 'test-key',
-      secretAccessKey: 'test-secret',
-      region: 'us-east-1'
+      region: 'us-east-1',
+      credentials: {
+        accessKeyId: 'test-key',
+        secretAccessKey: 'test-secret'
+      }
     });
-  });
-
-  it('should not pollute global AWS config', () => {
-    expect(AWS.config.update).not.toHaveBeenCalled();
   });
 
   it('should send email through SES transport', async () => {

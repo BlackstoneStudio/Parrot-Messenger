@@ -21,10 +21,8 @@ describe('Creates a parrot instance', () => {
           name: 'ses',
           settings: {
             auth: {
-              credentials: {
-                secretAccessKey: `${process.env.SES_SECRET}`,
-                accessKeyId: `${process.env.SES_KEY}`,
-              },
+              secretAccessKey: `${process.env.SES_SECRET}`,
+              accessKeyId: `${process.env.SES_KEY}`,
               region: process.env.REGION,
             },
             defaults: {},

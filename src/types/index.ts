@@ -1,6 +1,5 @@
 import Mail from 'nodemailer/lib/mailer';
 import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
-import { ConfigurationOptions } from 'aws-sdk';
 import { voices } from '../constants/voices';
 
 type Attachment =
@@ -32,11 +31,19 @@ export type Defaults = {
   defaults?: Envelope;
 };
 export interface AWSSESConfig extends Defaults {
-  auth: ConfigurationOptions;
+  auth: {
+    region: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
 }
 export interface AWSSNS extends Defaults {
-	auth: ConfigurationOptions
-	smsType?: 'Transactional' | 'Promotional'
+  auth: {
+    region: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+  smsType?: 'Transactional' | 'Promotional';
 }
 
 // export interface MailjetEmail extends Defaults {
