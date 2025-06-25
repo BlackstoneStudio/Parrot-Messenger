@@ -3,8 +3,11 @@
 # Parrot Messenger
 
 <p>
+  <a href="https://www.npmjs.com/package/parrot-messenger" target="_blank">
+    <img alt="npm version" src="https://img.shields.io/npm/v/parrot-messenger.svg" />
+  </a>
   <img alt="Build Status" src="https://github.com/BlackstoneStudio/Parrot-Messenger/workflows/CI/badge.svg" />
-  <img alt="Code Coverage" src="https://img.shields.io/badge/coverage-84%25-green" />
+  <img alt="Code Coverage" src="https://img.shields.io/badge/coverage-99%25-brightgreen" />
   <a href="https://github.com/BlackstoneStudio/Parrot-Messenger/releases" target="_blank">
     <img alt="GitHub release" src="https://img.shields.io/github/v/release/BlackstoneStudio/Parrot-Messenger" />
   </a>
@@ -144,9 +147,9 @@ $ npm install parrot-messenger
   ```bash
   npm run lint               # Check code with ESLint
   npm run lint:fix           # Auto-fix ESLint issues
+  npm run typecheck          # Run TypeScript type checking
   npm run format             # Format code with Prettier
   npm run format:check       # Check code formatting
-  npm run typecheck          # Type-check without building
   ```
 
 - **Documentation**
@@ -757,7 +760,7 @@ You can also suggest a new feature by creating an Issue. Please wait for confirm
 
 ## License
 
-Copyright © 2025 [Blackstone Studio](https://github.com/Blackstone-Studio).
+Copyright © 2025 [Blackstone Studio](https://blackstone.studio/).
 
 This project is [MIT](https://github.com/BlackstoneStudio/Parrot-Messenger/master/LICENSE) licensed.
 
