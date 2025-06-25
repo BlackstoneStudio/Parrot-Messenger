@@ -21,6 +21,9 @@
     "twilio": "^5.7.1"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^12.0.1",
     "@types/html-to-text": "^9.0.4",
     "@types/jest": "^30.0.0",
     "@types/mailchimp__mailchimp_transactional": "^1.0.5",
@@ -30,17 +33,37 @@
     "dotenv": "^16.5.0",
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jest": "^29.0.1",
+    "husky": "^9.1.7",
     "jest": "^30.0.2",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.0",
+    "semantic-release": "^24.2.5",
     "ts-jest": "^29.2.5",
+    "typedoc": "^0.28.5",
     "typescript": "^5.8.3"
   },
   "scripts": {
-    "prepare": "npm run build",
-    "build": "tsc",
+    "prepare": "husky",
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "rm -rf dist coverage",
+    "prebuild": "npm run clean",
+    "dev": "tsc --watch",
     "test": "jest",
-    "lint": "eslint \"{src, apps, libs}/**/*.ts\" --fix"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint \"{src,test}/**/*.ts\"",
+    "lint:fix": "eslint \"{src,test}/**/*.ts\" --fix",
+    "format": "prettier --write \"{src,test}/**/*.{ts,js,json}\"",
+    "format:check": "prettier --check \"{src,test}/**/*.{ts,js,json}\"",
+    "docs": "typedoc",
+    "docs:watch": "typedoc --watch",
+    "release": "semantic-release",
+    "release:dry-run": "semantic-release --dry-run"
   },
   "repository": {
     "type": "git",
@@ -48,5 +71,14 @@
   },
   "author": "Blackstone Studio",
   "license": "MIT",
-  "homepage": "https://github.com/BlackstoneStudio/Parrot-Messenger"
+  "homepage": "https://github.com/BlackstoneStudio/Parrot-Messenger",
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  }
 }

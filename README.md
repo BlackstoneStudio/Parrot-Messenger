@@ -31,38 +31,42 @@
 ### Version 1.1.0
 
 #### New Features
+
 - **Telnyx SMS Support**: Added Telnyx as a new SMS transport provider
 - **AWS SNS SMS Support**: Added AWS SNS for SMS messaging capabilities
-- **Enhanced Security**: 
+- **Enhanced Security**:
   - Fixed AWS credentials global pollution issue
   - Added input validation for email addresses and phone numbers
   - Implemented HTML sanitization to prevent XSS attacks
   - Fixed TwiML injection vulnerability
-- **Better Error Handling**: 
+- **Better Error Handling**:
   - Added custom error types for better debugging
   - Improved error messages with more context
   - Added validation errors with clear messages
-- **Improved Type Safety**: 
+- **Improved Type Safety**:
   - Reduced usage of `any` types
   - Better TypeScript support throughout the codebase
-- **Performance Enhancements**: 
+- **Performance Enhancements**:
   - Transport clients are now properly managed
   - Better resource utilization
 - **Testing**: Added comprehensive test suite with high coverage
 - **CI/CD**: Migrated from CircleCI to GitHub Actions
 
 #### Breaking Changes
+
 None - This release maintains full backward compatibility
 
 ## Features
+
 Parrot Messenger is a messaging library that can normalize the APIs for different messaging transports.
 In its current iteration it supports 3 types of transport classes:
+
 - Email
 - SMS
 - Call
 
-
 ### Email Services
+
 - AWS SES
 - Mailchimp (Mandrill)
 - Mailgun
@@ -70,12 +74,14 @@ In its current iteration it supports 3 types of transport classes:
 - SMTP
 
 ### SMS Services
+
 - Twilio
 - Mailjet
 - Telnyx
 - AWS SNS
 
 ### Call Services
+
 - Twilio
 
 ## Prerequisites
@@ -96,12 +102,14 @@ $ npm install parrot-messenger
 ### Setting up the development environment
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/BlackstoneStudio/Parrot-Messenger.git
    cd Parrot-Messenger
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
@@ -115,28 +123,66 @@ $ npm install parrot-messenger
 ### Development Commands
 
 - **Build the project**
+
   ```bash
-  npm run build
+  npm run build              # Build TypeScript to JavaScript
+  npm run clean              # Clean build artifacts
+  npm run dev                # Build in watch mode for development
   ```
-  Compiles TypeScript source from `src/` to JavaScript in `dist/`
 
 - **Run tests**
+
   ```bash
-  npm test                    # Run all tests
-  npm test -- --watch        # Run tests in watch mode
-  npm test -- --coverage     # Run tests with coverage report
+  npm test                   # Run all tests
+  npm run test:watch         # Run tests in watch mode
+  npm run test:coverage      # Run tests with coverage report
+  npm run test:debug         # Debug tests with Node inspector
   ```
 
-- **Lint the code**
-  ```bash
-  npm run lint
-  ```
-  Runs ESLint with TypeScript parser on source files
+- **Code quality**
 
-- **Development workflow**
   ```bash
-  npm run prepare            # Auto-build (runs during npm install)
+  npm run lint               # Check code with ESLint
+  npm run lint:fix           # Auto-fix ESLint issues
+  npm run format             # Format code with Prettier
+  npm run format:check       # Check code formatting
+  npm run typecheck          # Type-check without building
   ```
+
+- **Documentation**
+
+  ```bash
+  npm run docs               # Generate API documentation
+  npm run docs:watch         # Generate docs in watch mode
+  ```
+
+- **Release**
+  ```bash
+  npm run release            # Create a release (CI only)
+  npm run release:dry-run    # Preview release changes
+  ```
+
+### Development Tools
+
+This project uses modern development tools:
+
+- **Prettier** - Code formatting
+- **ESLint** - Code linting with TypeScript support
+- **Husky** - Git hooks for pre-commit checks
+- **lint-staged** - Run linters on staged files
+- **TypeDoc** - API documentation generation
+- **semantic-release** - Automated versioning and releases
+
+### VS Code Integration
+
+The project includes VS Code configuration for optimal development experience:
+
+- **Debugging** - Launch configurations for debugging tests and TypeScript code
+- **Auto-formatting** - Format on save with Prettier
+- **ESLint integration** - Real-time linting feedback
+- **Recommended extensions** - Suggested extensions for the best experience
+
+To use: Open the project in VS Code and install recommended extensions when prompted.
 
 ### Project Structure
 
@@ -167,15 +213,24 @@ The project maintains 100% code coverage. When adding new features:
 3. Check coverage: `npm test -- --coverage`
 4. Fix any linting issues: `npm run lint`
 
-### Contributing Guidelines
+### Contributing
+
+We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) file for detailed guidelines, including:
+
+- Commit message format (following Blackstone Code Standards)
+- Development workflow
+- Testing requirements
+- Code style guidelines
+- Pull request process
+
+**Quick Start:**
 
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
+2. Create a feature branch following our naming convention
 3. Make your changes and add tests
-4. Ensure all tests pass and coverage remains high
-5. Commit your changes: `git commit -am 'Add your feature'`
-6. Push to the branch: `git push origin feature/your-feature`
-7. Create a Pull Request
+4. Follow our commit message format: `TYPE (Issue) Brief summary`
+5. Ensure all tests pass and maintain code coverage
+6. Create a Pull Request
 
 ### Debugging Tips
 
@@ -196,6 +251,7 @@ The project maintains 100% code coverage. When adding new features:
 ```
 
 ## Initialization
+
 Parrot needs to be initialized with the transports that it will be using before being used.
 
 ```js
@@ -223,8 +279,8 @@ const parrot = new Parrot({
 
 The `parrot` instance receives an array of transports with the settings for each transport. Each transport will have slightly different settings, particularly around the authentication for each. Example configurations are available in the `examples.js` file.
 
-
 ## Settings
+
 Each transport has a `defaults` object where you can define default parameters for all messages generated by that transport. So for example you can define a default `from` value for every message.
 
 This is a sample object for AWS SES transport along with its default values:
@@ -283,31 +339,34 @@ const sns = {
 ```
 
 ## API
+
 Parrot Messenger works with a simple `send` service and a templating, here we'll describe the usage for the send method.
 The send method receives 2 parameters, both being objects.
 The first parameter is the parameters for the object that we want to send and the second one is the settings for the transport we want to use.
 
 Example API call:
+
 ```js
 const email = {
   to: 'john@doe.com',
   subject: 'Sample Message',
-  html: 'Hey Joe, nice talking to you!'
+  html: 'Hey Joe, nice talking to you!',
 };
 
-const transport = { 
-  class: 'email', 
-  name: 'ses'
+const transport = {
+  class: 'email',
+  name: 'ses',
 };
 
 parrot.send(email, transport);
 ```
 
-
 ## Templates
+
 We can also use and register templates when using Parrot Messenger, so we can pre-define a set of messages we will be using. We use a templating language (Handlebars) to replace values inside the template before being sent.
 
 Example Template Registration & Usage
+
 ```js
 // Register a template, notice the ussage of {{name}}
 // this value will be replaced
@@ -322,8 +381,8 @@ const messageData = {
 };
 
 const transport = {
-  class: 'email', 
-  name: 'ses'
+  class: 'email',
+  name: 'ses',
 };
 
 // Send an email using this template
@@ -338,14 +397,16 @@ parrot.templates.send(
   // Email: 'ses', 'mailgun', 'mailjetEmail', 'mailchimp', 'sendgrid', 'smtp'
   // SMS: 'twilioSMS', 'mailjetSMS', 'telnyxSMS', 'sns'
   // Call: 'twilioCall'
-  transport
+  transport,
 );
 ```
 
 ### Async Templates
+
 If you need to get the HTML template from an API service prior to senting a template you can do this as well. Parrot Messenger will use Axios to make an API request and fetch the necessary data, and it can be mapped from the response.
 
 Example Async Template
+
 ```js
 // Register template
 parrot.templates.register({
@@ -365,7 +426,6 @@ parrot.templates.register({
   },
 });
 
-
 const messageData = {
   to: 'john@doe.com',
   subject: 'Hey there!',
@@ -373,7 +433,7 @@ const messageData = {
 
 const transport = {
   class: 'email',
-  name: 'ses'
+  name: 'ses',
 };
 
 // Send an email using this template
@@ -383,7 +443,7 @@ parrot.templates.send(
   // Sample Data for Template
   { name: 'User' },
   // Transport Settings
-  transport
+  transport,
 );
 ```
 
@@ -400,17 +460,18 @@ import Parrot, { Envelope, Transport } from 'parrot-messenger';
 ### Core Types
 
 #### Envelope
+
 The message object that all transports accept:
 
 ```typescript
 interface Envelope {
-  from?: string;      // Sender address/number
-  to?: string;        // Recipient address/number
-  subject?: string;   // Email subject (required for email)
-  html?: string;      // HTML content
-  text?: string;      // Plain text content
-  voice?: string;     // Voice selection for calls (see Voices section)
-  attachments?: Attachment[];  // File attachments
+  from?: string; // Sender address/number
+  to?: string; // Recipient address/number
+  subject?: string; // Email subject (required for email)
+  html?: string; // HTML content
+  text?: string; // Plain text content
+  voice?: string; // Voice selection for calls (see Voices section)
+  attachments?: Attachment[]; // File attachments
 }
 ```
 
@@ -427,6 +488,7 @@ interface Transport {
 ### Email Transports
 
 #### AWS SES
+
 ```typescript
 interface AWSSESConfig {
   auth: {
@@ -439,27 +501,30 @@ interface AWSSESConfig {
 ```
 
 #### SendGrid
+
 ```typescript
 interface SendgridConfig {
   auth: {
-    apiKey: string;  // Must start with 'SG.'
+    apiKey: string; // Must start with 'SG.'
   };
   defaults?: Envelope;
 }
 ```
 
 #### Mailgun
+
 ```typescript
 interface MailgunConfig {
   auth: {
     apiKey: string;
-    domain: string;  // e.g., 'mg.yourdomain.com'
+    domain: string; // e.g., 'mg.yourdomain.com'
   };
   defaults?: Envelope;
 }
 ```
 
 #### Mailchimp (Mandrill)
+
 ```typescript
 interface MailchimpConfig {
   auth: {
@@ -470,6 +535,7 @@ interface MailchimpConfig {
 ```
 
 #### SMTP
+
 ```typescript
 interface SMTPConfig {
   auth: {
@@ -488,17 +554,19 @@ interface SMTPConfig {
 ### SMS Transports
 
 #### Twilio SMS
+
 ```typescript
 interface TwilioSMSConfig {
   auth: {
-    sid: string;      // Account SID
-    token: string;    // Auth token
+    sid: string; // Account SID
+    token: string; // Auth token
   };
   defaults?: Envelope;
 }
 ```
 
 #### AWS SNS
+
 ```typescript
 interface AWSSNSConfig {
   auth: {
@@ -512,6 +580,7 @@ interface AWSSNSConfig {
 ```
 
 #### Telnyx
+
 ```typescript
 interface TelnyxConfig {
   auth: {
@@ -522,6 +591,7 @@ interface TelnyxConfig {
 ```
 
 #### Mailjet SMS
+
 ```typescript
 interface MailjetSMSConfig {
   auth: {
@@ -534,11 +604,12 @@ interface MailjetSMSConfig {
 ### Call Transport
 
 #### Twilio Call
+
 ```typescript
 interface TwilioCallConfig {
   auth: {
-    sid: string;      // Account SID
-    token: string;    // Auth token
+    sid: string; // Account SID
+    token: string; // Auth token
   };
   defaults?: Envelope;
 }
@@ -602,10 +673,10 @@ Available voices for text-to-speech in calls:
 import { voices } from 'parrot-messenger';
 
 // Example voices:
-voices.Salli       // English (US)
-voices.Amy         // English (British)
-voices.Conchita    // Spanish (Castilian)
-voices.Mizuki      // Japanese
+voices.Salli; // English (US)
+voices.Amy; // English (British)
+voices.Conchita; // Spanish (Castilian)
+voices.Mizuki; // Japanese
 // ... and many more
 
 // Usage in envelope:
@@ -613,7 +684,7 @@ const message: Envelope = {
   from: '+1234567890',
   to: '+0987654321',
   html: '<p>Hello!</p>',
-  voice: 'Amy'  // British English voice
+  voice: 'Amy', // British English voice
 };
 ```
 
@@ -632,10 +703,7 @@ await send(message, transports, { class: 'email' });
 await send(message, transports, { name: 'smtp', class: 'email' });
 
 // Use multiple transports
-await send(message, transports, [
-  { name: 'smtp' },
-  { name: 'ses' }
-]);
+await send(message, transports, [{ name: 'smtp' }, { name: 'ses' }]);
 ```
 
 ### Validation Rules
@@ -650,6 +718,7 @@ await send(message, transports, [
 - **HTML content**: Automatically sanitized to prevent XSS attacks
 
 ## Who are we
+
 Blackstone Studio is a custom software development company that specializes in AI-powered digital transformation solutions. We help you harness the power of artificial intelligence to build innovative solutions, accelerating your business's digital transformation journey.
 
 ### Our services
@@ -669,8 +738,6 @@ Blackstone Studio is a custom software development company that specializes in A
 
 We pride ourselves on understanding each client's unique business model and creating solutions that complement their strategic vision. With our AI-centric approach to solving business challenges and flexible, adaptable development methodology, we build lasting partnerships that go beyond just software development. We serve diverse industries including retail, financial services, healthcare, real estate, and technology.
 
-
-
 ## 🛠 Built With
 
 - [Node.js](https://nodejs.org/en/) - Runtime environment
@@ -681,7 +748,6 @@ We pride ourselves on understanding each client's unique business model and crea
 - [AWS SDK](https://aws.amazon.com/sdk-for-javascript/) - AWS SES and SNS integration
 - [Twilio](https://www.twilio.com/) - SMS and voice calls
 - [GitHub Actions](https://github.com/features/actions) - CI/CD pipeline
-
 
 ## 🤝 Contributing
 

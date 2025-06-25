@@ -116,3 +116,6 @@ dist
 # Claude AI
 .claude
 CLAUDE.md
+
+# Documentation
+docs/api

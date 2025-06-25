@@ -9,11 +9,8 @@ We love your input! We want to make contributing to Parrot Messenger as easy and
 - Becoming a maintainer
 
 ## We Develop with Github
-We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
 
-## We Use [Blackstone Code Standards](https://github.com/BlackstoneStudio/Blackstone-Code-Standards)
-All contributions must follow the Blackstone Code Standards, particularly:
-- [Commit Message Standards](https://github.com/BlackstoneStudio/Blackstone-Code-Standards/blob/master/git/commit/README.md)
+We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
 
 ## Pull Request Process
 
@@ -27,18 +24,21 @@ All contributions must follow the Blackstone Code Standards, particularly:
 ## Commit Message Format
 
 All commits must follow this format:
+
 ```
 TYPE (Issue) Brief summary
 ```
 
 Where `Issue` can be:
+
 - `#123` - GitHub issue number
 - `PROJ-123` - External tracking system reference
 - `NA` - For commits without an associated issue
 
 ### Valid Types:
+
 - `BREAK` - Breaking changes
-- `CI` - Changes in CI or docker files  
+- `CI` - Changes in CI or docker files
 - `DEPEN` - Changes in project dependencies
 - `DOCS` - Documentation changes
 - `ESLINT` - Eslint/stylelint rule changes
@@ -51,6 +51,7 @@ Where `Issue` can be:
 - `DB` - Database-related changes
 
 ### Examples:
+
 ```
 FEAT (#123) Add support for Telnyx SMS provider
 FIX (#124) Resolve validation error for phone numbers
@@ -61,6 +62,7 @@ TEST (#125) Add coverage for edge cases in validation
 ## Setting Up Git Commit Template
 
 To use our commit message template:
+
 ```bash
 git config --local commit.template .gitmessage
 ```
@@ -68,6 +70,7 @@ git config --local commit.template .gitmessage
 ## Development Process
 
 1. **Clone and install**
+
    ```bash
    git clone https://github.com/BlackstoneStudio/Parrot-Messenger.git
    cd Parrot-Messenger
@@ -75,6 +78,7 @@ git config --local commit.template .gitmessage
    ```
 
 2. **Create a branch**
+
    ```bash
    git checkout -b TYPE/brief-description
    # Example: git checkout -b feat/add-telnyx-support
@@ -87,6 +91,7 @@ git config --local commit.template .gitmessage
    - Update documentation
 
 4. **Test your changes**
+
    ```bash
    npm test                    # Run tests
    npm test -- --coverage     # Check coverage
@@ -95,6 +100,7 @@ git config --local commit.template .gitmessage
    ```
 
 5. **Commit your changes**
+
    ```bash
    git add .
    git commit  # This will open the template
@@ -123,9 +129,11 @@ git config --local commit.template .gitmessage
 - Use descriptive test names
 
 ## Any contributions you make will be under the MIT Software License
+
 In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
 
 ## Report bugs using Github's [issues](https://github.com/BlackstoneStudio/Parrot-Messenger/issues)
+
 We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/BlackstoneStudio/Parrot-Messenger/issues/new).
 
 ## Write bug reports with detail, background, and sample code
@@ -141,7 +149,9 @@ We use GitHub issues to track public bugs. Report a bug by [opening a new issue]
 - Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
 
 ## License
+
 By contributing, you agree that your contributions will be licensed under its MIT License.
 
 ## References
+
 This document was adapted from the open-source contribution guidelines for [Facebook's Draft](https://github.com/facebook/draft-js/blob/master/CONTRIBUTING.md)

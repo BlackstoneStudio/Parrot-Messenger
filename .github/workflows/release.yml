@@ -2,8 +2,14 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - master
+      - main
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
   release:
@@ -28,26 +34,8 @@ jobs:
     - name: Build
       run: npm run build
     
-    - name: Create GitHub Release
-      uses: actions/create-release@v1
+    - name: Semantic Release
+      run: npm run release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        body: |
-          Changes in this Release
-          - Enhanced security with input validation and sanitization
-          - Added Telnyx SMS support
-          - Improved error handling
-          - Better TypeScript support
-          - Comprehensive test coverage
-          
-          See [CHANGELOG.md](https://github.com/BlackstoneStudio/Parrot-Messenger/blob/master/CHANGELOG.md) for details.
-        draft: false
-        prerelease: false
-    
-    - name: Publish to npm
-      run: npm publish
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
