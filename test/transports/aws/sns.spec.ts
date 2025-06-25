@@ -1,6 +1,6 @@
+import { SNS } from '@aws-sdk/client-sns';
 import SNSTransport from '../../../src/transports/aws/sns';
 import { Envelope, AWSSNS } from '../../../src/types';
-import { SNS } from '@aws-sdk/client-sns';
 
 jest.mock('@aws-sdk/client-sns', () => {
   const mockPublish = jest.fn().mockResolvedValue({ MessageId: 'test-message-id' });

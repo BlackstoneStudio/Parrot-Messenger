@@ -1,13 +1,11 @@
 import Mailchimp from '../../src/transports/mailchimp';
 import { Envelope, Mailchimp as IMailchimp } from '../../src/types';
 
-jest.mock('@mailchimp/mailchimp_transactional/src/index', () => {
-  return jest.fn(() => ({
+jest.mock('@mailchimp/mailchimp_transactional/src/index', () => jest.fn(() => ({
     messages: {
       send: jest.fn().mockResolvedValue({ success: true }),
     },
-  }));
-});
+  })));
 
 describe('Mailchimp', () => {
   let mailchimpTransport: Mailchimp;
@@ -36,6 +34,7 @@ describe('Mailchimp', () => {
     });
 
     it('should create mailchimp client with apiKey', () => {
+      // eslint-disable-next-line global-require
       const mailchimpMock = require('@mailchimp/mailchimp_transactional/src/index');
       expect(mailchimpMock).toHaveBeenCalledWith(mockSettings.auth.apiKey);
     });
@@ -80,7 +79,7 @@ describe('Mailchimp', () => {
       expect(mockMailchimpClient.messages.send).toHaveBeenCalledWith({
         key: mockSettings.auth.apiKey,
         message: {
-          from_email: mockSettings.defaults.from,
+          from_email: mockSettings.defaults?.from,
           to: [
             {
               email: message.to,

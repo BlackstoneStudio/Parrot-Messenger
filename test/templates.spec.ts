@@ -1,6 +1,6 @@
+import Axios from 'axios';
 import Templates from '../src/templates';
 import { TemplateError } from '../src/errors';
-import Axios from 'axios';
 
 jest.mock('axios');
 
@@ -160,11 +160,13 @@ describe('Templates', () => {
         }
       );
 
-      expect(mockAxios).toHaveBeenCalledWith({
-        url: 'https://api.example.com/template',
-        method: 'GET',
-        resolve: 'data.html'
-      });
+      expect(mockAxios).toHaveBeenCalledWith(
+        expect.objectContaining({
+          url: 'https://api.example.com/template',
+          method: 'GET',
+          resolve: 'data.html'
+        })
+      );
 
       expect(mockMailer.send).toHaveBeenCalledWith(
         expect.objectContaining({

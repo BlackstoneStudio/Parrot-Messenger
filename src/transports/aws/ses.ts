@@ -1,18 +1,18 @@
 import * as aws from '@aws-sdk/client-ses';
 import { Transporter, createTransport } from 'nodemailer';
-import { AWSSESConfig, Envelope, GenericTransport } from '../../types';
+import { AWSSESConfig, Envelope } from '../../types';
+import { BaseAWSTransport } from './base';
 
-class SES implements GenericTransport<Transporter> {
+class SES extends BaseAWSTransport<Transporter> {
   transport: Transporter;
 
   constructor(private settings: AWSSESConfig) {
+    super(settings);
+    
     const ses = new aws.SES({
       apiVersion: '2010-12-01',
-      region: settings.auth.region,
-      credentials: {
-        accessKeyId: settings.auth.accessKeyId,
-        secretAccessKey: settings.auth.secretAccessKey,
-      },
+      region: this.region,
+      credentials: this.credentials,
     });
 
     this.transport = createTransport({
@@ -26,7 +26,11 @@ class SES implements GenericTransport<Transporter> {
       ...envelope,
     };
 
-    await this.transport.sendMail(request);
+    try {
+      await this.transport.sendMail(request);
+    } catch (error) {
+      BaseAWSTransport.wrapError(error, 'SES');
+    }
   }
 }
 

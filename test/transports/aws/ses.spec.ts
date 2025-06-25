@@ -1,6 +1,6 @@
-import SES from '../../../src/transports/aws/ses';
 import * as aws from '@aws-sdk/client-ses';
 import * as nodemailer from 'nodemailer';
+import SES from '../../../src/transports/aws/ses';
 
 jest.mock('@aws-sdk/client-ses', () => {
   const mockSES = jest.fn();

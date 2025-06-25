@@ -72,7 +72,7 @@ describe('Sendgrid', () => {
       await sendgridTransport.send(message);
 
       expect(mockTransport.send).toHaveBeenCalledWith({
-        from: mockSettings.defaults.from,
+        from: mockSettings.defaults?.from,
         to: message.to,
         subject: message.subject,
         html: message.html,

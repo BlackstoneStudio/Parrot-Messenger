@@ -1,4 +1,4 @@
-import Parrot from '../src/index';
+import { Parrot } from '../src/index';
 import send from '../src/send';
 import Templates from '../src/templates';
 
@@ -104,7 +104,7 @@ describe('Parrot', () => {
 
     await expect(
       parrot.send({ to: 'test@example.com', from: 'sender@example.com', subject: 'Test', html: 'Content' })
-    ).rejects.toThrow('Error sending email. More details: Error: Transport error');
+    ).rejects.toThrow('Error sending message: Transport error');
   });
 
   it('should create templates instance', () => {

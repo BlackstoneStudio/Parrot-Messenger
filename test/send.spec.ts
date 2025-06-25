@@ -2,10 +2,12 @@ import send from '../src/send';
 import SMTP from '../src/transports/smtp';
 import SES from '../src/transports/aws/ses';
 import { validateEnvelope } from '../src/validation';
+import TransportRegistry from '../src/registry/TransportRegistry';
 
 jest.mock('../src/transports/smtp');
 jest.mock('../src/transports/aws/ses');
 jest.mock('../src/validation');
+jest.mock('../src/registry/TransportRegistry');
 
 describe('send', () => {
   let mockSend: jest.Mock;
@@ -13,9 +15,20 @@ describe('send', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSend = jest.fn().mockResolvedValue(undefined);
-    (SMTP as jest.Mock).mockImplementation(() => ({ send: mockSend }));
-    (SES as jest.Mock).mockImplementation(() => ({ send: mockSend }));
+    (SMTP as unknown as jest.Mock).mockImplementation(() => ({ send: mockSend }));
+    (SES as unknown as jest.Mock).mockImplementation(() => ({ send: mockSend }));
     (validateEnvelope as jest.Mock).mockImplementation(() => {});
+    
+    // Mock TransportRegistry
+    const mockRegistry = {
+      has: jest.fn().mockReturnValue(true),
+      get: jest.fn().mockImplementation((name: string) => {
+        if (name === 'smtp') return SMTP;
+        if (name === 'ses') return SES;
+        return null;
+      })
+    };
+    (TransportRegistry.getInstance as jest.Mock).mockReturnValue(mockRegistry);
   });
 
   it('should send message through matching transport', async () => {
@@ -190,6 +203,17 @@ describe('send', () => {
         defaults: {} 
       } 
     }] as unknown as Parameters<typeof send>[1];
+
+    // Mock TransportRegistry to not have the 'unknown' transport
+    const mockRegistry = {
+      has: jest.fn().mockImplementation((name: string) => name !== 'unknown'),
+      get: jest.fn().mockImplementation((name: string) => {
+        if (name === 'smtp') return SMTP;
+        if (name === 'ses') return SES;
+        return null;
+      })
+    };
+    (TransportRegistry.getInstance as jest.Mock).mockReturnValue(mockRegistry);
 
     await expect(
       send(message, transports)

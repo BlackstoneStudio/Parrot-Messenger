@@ -34,3 +34,24 @@ export class ConfigurationError extends ParrotError {
     this.name = 'ConfigurationError';
   }
 }
+
+// Type guards for error handling
+export function isParrotError(error: unknown): error is ParrotError {
+  return error instanceof ParrotError;
+}
+
+export function isValidationError(error: unknown): error is ValidationError {
+  return error instanceof ValidationError;
+}
+
+export function isTransportError(error: unknown): error is TransportError {
+  return error instanceof TransportError;
+}
+
+export function isTemplateError(error: unknown): error is TemplateError {
+  return error instanceof TemplateError;
+}
+
+export function isConfigurationError(error: unknown): error is ConfigurationError {
+  return error instanceof ConfigurationError;
+}

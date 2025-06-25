@@ -1,12 +1,10 @@
-export default (name: string): 'email'|'sms'|'call' => {
-  let defaultClass: 'email'|'sms'|'call' = 'email';
-  const emailTransports = ['ses', 'mailgun', 'mailchimp', 'smtp', 'sendgrid'];
-  const smsTransports = ['twilioSMS', 'mailjetSMS', 'telnyxSMS', 'sns'];
-  const voiceTransports = ['twilioCall'];
+import { TRANSPORT_CLASSIFICATION, TransportClass } from './constants/transports';
 
-  if (emailTransports.indexOf(name) !== -1) defaultClass = 'email';
-  if (smsTransports.indexOf(name) !== -1) defaultClass = 'sms';
-  if (voiceTransports.indexOf(name) !== -1) defaultClass = 'call';
-
-  return defaultClass;
+export default (name: string): TransportClass => {
+  if (TRANSPORT_CLASSIFICATION.email.includes(name as any)) return 'email';
+  if (TRANSPORT_CLASSIFICATION.sms.includes(name as any)) return 'sms';
+  if (TRANSPORT_CLASSIFICATION.call.includes(name as any)) return 'call';
+  
+  // Default to email if transport name is not recognized
+  return 'email';
 };

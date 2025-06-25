@@ -15,9 +15,9 @@ class TwilioSMS implements GenericTransport<Twilio.Twilio> {
       ...message,
     };
     await this.transport.messages.create({
-      from: request.from,
-      to: request.to,
-      body: htmlToText(request.html),
+      from: request.from || '',
+      to: request.to || '',
+      body: htmlToText(request.html || request.text || ''),
     });
   }
 }

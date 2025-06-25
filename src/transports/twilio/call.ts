@@ -15,7 +15,7 @@ class TwilioCall implements GenericTransport<Twilio.Twilio> {
       ...message,
     };
 
-    const textContent = htmlToText(request.html)
+    const textContent = htmlToText(request.html || request.text || '')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -23,8 +23,8 @@ class TwilioCall implements GenericTransport<Twilio.Twilio> {
       .replace(/'/g, '&apos;');
 
     await this.transport.calls.create({
-      from: request.from,
-      to: request.to,
+      from: request.from || '',
+      to: request.to || '',
       twiml: `
         <Response>
           <Pause length="1"/>

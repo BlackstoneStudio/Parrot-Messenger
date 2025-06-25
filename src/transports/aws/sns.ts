@@ -1,16 +1,16 @@
 import { SNS } from '@aws-sdk/client-sns';
-import { Envelope, GenericTransport, AWSSNS } from '../../types';
+import { Envelope, AWSSNS } from '../../types';
+import { BaseAWSTransport } from './base';
 
-class SNSTransport implements GenericTransport {
+class SNSTransport extends BaseAWSTransport<SNS> {
   transport: SNS;
 
   constructor(private settings: AWSSNS) {
+    super(settings);
+    
     this.transport = new SNS({
-      region: settings.auth.region,
-      credentials: {
-        accessKeyId: settings.auth.accessKeyId,
-        secretAccessKey: settings.auth.secretAccessKey,
-      },
+      region: this.region,
+      credentials: this.credentials,
     });
   }
 
@@ -23,20 +23,24 @@ class SNSTransport implements GenericTransport {
     // For SMS, the subject is not used, only the text content
     const message = request.text || request.html || '';
 
-    await this.transport.publish({
-      Message: message,
-      PhoneNumber: request.to,
-      MessageAttributes: {
-        'AWS.SNS.SMS.SenderID': {
-          DataType: 'String',
-          StringValue: request.from || 'ParrotSMS',
+    try {
+      await this.transport.publish({
+        Message: message,
+        PhoneNumber: request.to,
+        MessageAttributes: {
+          'AWS.SNS.SMS.SenderID': {
+            DataType: 'String',
+            StringValue: request.from || 'ParrotSMS',
+          },
+          'AWS.SNS.SMS.SMSType': {
+            DataType: 'String',
+            StringValue: this.settings.smsType || 'Transactional',
+          },
         },
-        'AWS.SNS.SMS.SMSType': {
-          DataType: 'String',
-          StringValue: this.settings.smsType || 'Transactional',
-        },
-      },
-    });
+      });
+    } catch (error) {
+      BaseAWSTransport.wrapError(error, 'SNS');
+    }
   }
 }
 

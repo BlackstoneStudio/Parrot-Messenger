@@ -1,4 +1,4 @@
-<a href="https://www.blackstone.studio/" target="_blank"><img src="https://blackstone-open-assets.s3-us-west-2.amazonaws.com/header.png" alt="Blackstone Studio - In Development We Trust"></a>
+<a href="https://www.blackstone.studio/" target="_blank"><img src="./assets/header.png" alt="Blackstone Studio - In Development We Trust"></a>
 
 # Parrot Messenger
 
@@ -738,7 +738,7 @@ Blackstone Studio is a custom software development company that specializes in A
 
 We pride ourselves on understanding each client's unique business model and creating solutions that complement their strategic vision. With our AI-centric approach to solving business challenges and flexible, adaptable development methodology, we build lasting partnerships that go beyond just software development. We serve diverse industries including retail, financial services, healthcare, real estate, and technology.
 
-## 🛠 Built With
+## Built With
 
 - [Node.js](https://nodejs.org/en/) - Runtime environment
 - [TypeScript](https://www.typescriptlang.org/) - Type-safe JavaScript
@@ -749,16 +749,16 @@ We pride ourselves on understanding each client's unique business model and crea
 - [Twilio](https://www.twilio.com/) - SMS and voice calls
 - [GitHub Actions](https://github.com/features/actions) - CI/CD pipeline
 
-## 🤝 Contributing
+## Contributing
 
 Contributions, issues and feature requests are welcome!
 
 You can also suggest a new feature by creating an Issue. Please wait for confirmation before working on it.
 
-## 📝 License
+## License
 
 Copyright © 2025 [Blackstone Studio](https://github.com/Blackstone-Studio).
 
 This project is [MIT](https://github.com/BlackstoneStudio/Parrot-Messenger/master/LICENSE) licensed.
 
-<a href="https://www.blackstone.studio/we-are-blackstone/" target="_blank"><img src="https://blackstone-open-assets.s3-us-west-2.amazonaws.com/footer.png" alt="We are blackstone - Contact us"></a>
+<a href="https://www.blackstone.studio" target="_blank"><img src="./assets/footer.png" alt="We are blackstone - Contact us"></a>

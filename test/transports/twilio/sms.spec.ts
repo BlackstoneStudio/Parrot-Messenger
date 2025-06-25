@@ -1,6 +1,6 @@
-import TwilioSMS from '../../../src/transports/twilio/sms';
 import Twilio from 'twilio';
 import { htmlToText } from 'html-to-text';
+import TwilioSMS from '../../../src/transports/twilio/sms';
 
 jest.mock('twilio');
 jest.mock('html-to-text');

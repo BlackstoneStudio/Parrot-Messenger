@@ -47,7 +47,7 @@ describe('Creates a parrot instance', () => {
         ],
       });
     } catch (e) {
-      console.error(e);
+      console.error(e); // eslint-disable-line no-console
     }
   }, 5000);
 

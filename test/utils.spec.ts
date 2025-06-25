@@ -11,8 +11,8 @@ describe('getTransportClass', () => {
 
   it('should return sms for SMS transports', () => {
     expect(getTransportClass('twilioSMS')).toBe('sms');
-    expect(getTransportClass('mailjetSMS')).toBe('sms');
     expect(getTransportClass('telnyxSMS')).toBe('sms');
+    expect(getTransportClass('sns')).toBe('sms');
   });
 
   it('should return call for voice transports', () => {

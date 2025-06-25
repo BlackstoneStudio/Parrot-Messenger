@@ -1,31 +1,9 @@
-import SMTP from './transports/smtp';
-import Mailgun from './transports/mailgun';
-// import MailjetEmail from './transports/mailjet/email';
-// import MailjetSMS from './transports/mailjet/sms';
-import Mailchimp from './transports/mailchimp';
-import SES from './transports/aws/ses';
-import SNS from './transports/aws/sns';
-import Sendgrid from './transports/sendgrid';
-import TwilioSMS from './transports/twilio/sms';
-import TwilioCall from './transports/twilio/call';
-import TelnyxSMS from './transports/telnyx/sms';
 import {
   Envelope, GenericTransport, Settings, Transport,
 } from './types';
 import { validateEnvelope } from './validation';
-
-const availableTransports = new Map();
-availableTransports.set('smtp', SMTP);
-availableTransports.set('mailgun', Mailgun);
-// availableTransports.set('mailjetEmail', MailjetEmail);
-// availableTransports.set('mailjetSMS', MailjetSMS);
-availableTransports.set('mailchimp', Mailchimp);
-availableTransports.set('ses', SES);
-availableTransports.set('sns', SNS);
-availableTransports.set('sendgrid', Sendgrid);
-availableTransports.set('twilioSMS', TwilioSMS);
-availableTransports.set('twilioCall', TwilioCall);
-availableTransports.set('telnyxSMS', TelnyxSMS);
+import { ConfigurationError, ValidationError } from './errors';
+import TransportRegistry from './registry/TransportRegistry';
 
 const send = async (
   message: Envelope,
@@ -65,16 +43,18 @@ const send = async (
   });
 
   if (!matchServices.length) {
-    throw new Error(`Transport ${
+    throw new ConfigurationError(`Transport ${
       Array.isArray(transportFilter) ? transportFilter.map((f) => f.name).join(', ') : transportFilter?.name
     } not found`);
   }
 
+  const registry = TransportRegistry.getInstance();
+
   await Promise.all(matchServices.map(async (transport) => {
-    if (!availableTransports.has(transport.name)) {
-      throw new Error(`Transport ${transport.name} not found & no mailer function available`);
+    if (!registry.has(transport.name)) {
+      throw new ConfigurationError(`Transport ${transport.name} not found & no mailer function available`);
     }
-    const Mailer = availableTransports.get(transport.name);
+    const Mailer = registry.get(transport.name);
 
     const messageData: Envelope = {
       ...transport.settings.defaults,
@@ -84,7 +64,10 @@ const send = async (
     try {
       validateEnvelope(messageData, transport.class);
     } catch (validationError) {
-      throw new Error(`Validation Error: ${validationError.message}`);
+      if (validationError instanceof ValidationError) {
+        throw validationError;
+      }
+      throw new ValidationError(`Validation Error: ${validationError.message}`);
     }
 
     await (new Mailer(transport.settings) as GenericTransport)

@@ -1,22 +1,20 @@
+import Twilio from 'twilio';
 import TwilioCall from '../../../src/transports/twilio/call';
 import { Envelope, TwilioCall as ITwilioCall } from '../../../src/types';
-import Twilio from 'twilio';
 
 const mockCreate = jest.fn().mockResolvedValue({ sid: 'test-call-sid' });
 
-jest.mock('twilio', () => {
-  return jest.fn().mockImplementation(() => ({
+jest.mock('twilio', () => jest.fn().mockImplementation(() => ({
     calls: {
       create: mockCreate,
     },
-  }));
-});
+  })));
 
 jest.mock('html-to-text', () => ({
-  htmlToText: jest.fn((html) => {
+  htmlToText: jest.fn((html) => 
     // Simple HTML tag removal
-    return html.replace(/<[^>]*>/g, '');
-  }),
+     html.replace(/<[^>]*>/g, '')
+  ),
 }));
 
 describe('TwilioCall', () => {
@@ -79,7 +77,7 @@ describe('TwilioCall', () => {
       await twilioCallTransport.send(message);
 
       expect(mockCreate).toHaveBeenCalledWith({
-        from: mockSettings.defaults.from,
+        from: mockSettings.defaults?.from,
         to: message.to,
         twiml: expect.stringContaining('Test message'),
       });

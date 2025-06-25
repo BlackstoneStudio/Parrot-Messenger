@@ -46,17 +46,6 @@ export interface AWSSNS extends Defaults {
   smsType?: 'Transactional' | 'Promotional';
 }
 
-// export interface MailjetEmail extends Defaults {
-// 	auth: {
-// 		apiKeyPublic: string
-// 		apiKeyPrivate: string
-// 	}
-// }
-// export interface MailjetSMS extends Defaults {
-// 	auth: {
-// 		apiKey: string
-// 	}
-// }
 export interface TwilioCall extends Defaults {
   auth: {
     sid: string;
@@ -109,8 +98,6 @@ interface TransportGeneric<
 export type Transport =
   | TransportGeneric<'ses', 'email', AWSSESConfig>
   | TransportGeneric<'sns', 'sms', AWSSNS>
-  // | TransportGeneric<'mailjetEmail', 'email', MailjetEmail>
-  // | TransportGeneric<'mailjetSMS', 'sms', MailjetSMS>
   | TransportGeneric<'twilioSMS', 'sms', TwilioSMS>
   | TransportGeneric<'telnyxSMS', 'sms', TelnyxSMS>
   | TransportGeneric<'twilioCall', 'call', TwilioCall>
@@ -127,6 +114,13 @@ export type Settings = {
 export type ParrotSettings = {
   defaultClass?: string;
   transports: Omit<Transport, 'class'>[];
+  templateUrlValidation?: {
+    allowedProtocols?: string[];
+    allowedHosts?: string[];
+    allowedPorts?: number[];
+    blockPrivateIPs?: boolean;
+    timeout?: number;
+  };
 };
 
 export interface Mailer<T> {

@@ -3,13 +3,11 @@ import { Envelope, TelnyxSMS } from '../../../src/types';
 
 const mockCreate = jest.fn().mockResolvedValue({ id: 'test-message-id' });
 
-jest.mock('telnyx', () => {
-  return jest.fn().mockImplementation(() => ({
+jest.mock('telnyx', () => jest.fn().mockImplementation(() => ({
     messages: {
       create: mockCreate,
     },
-  }));
-});
+  })));
 
 describe('TelnyxSMSTransport', () => {
   let telnyxTransport: TelnyxSMSTransport;
@@ -37,6 +35,7 @@ describe('TelnyxSMSTransport', () => {
     });
 
     it('should create Telnyx client with API key', () => {
+      // eslint-disable-next-line global-require
       const TelnyxMock = require('telnyx');
       expect(TelnyxMock).toHaveBeenCalledWith(mockSettings.auth.apiKey);
     });
@@ -84,7 +83,7 @@ describe('TelnyxSMSTransport', () => {
       await telnyxTransport.send(message);
 
       expect(mockCreate).toHaveBeenCalledWith({
-        from: mockSettings.defaults.from,
+        from: mockSettings.defaults?.from,
         to: message.to,
         text: message.text,
       });

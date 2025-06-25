@@ -9,16 +9,21 @@ on:
 permissions:
   contents: write
   issues: write
-  pull-requests: write
+  pull-requests: read
+  packages: write
 
 jobs:
   release:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        persist-credentials: false
     
-    - name: Use Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20.x'
@@ -34,8 +39,94 @@ jobs:
     - name: Build
       run: npm run build
     
+    - name: Get PR Description
+      id: pr_desc
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const commits = await github.rest.repos.listCommits({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.sha,
+            per_page: 1
+          });
+          
+          const commit = commits.data[0];
+          const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            commit_sha: commit.sha
+          });
+          
+          if (prs.data.length > 0) {
+            const pr = prs.data.find(p => p.merged_at) || prs.data[0];
+            const prDetails = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number
+            });
+            
+            const prBody = prDetails.data.body || '';
+            const prTitle = prDetails.data.title || '';
+            
+            core.setOutput('has_pr', 'true');
+            core.setOutput('pr_number', pr.number.toString());
+            core.setOutput('pr_title', prTitle);
+            core.setOutput('pr_body', prBody);
+          } else {
+            core.setOutput('has_pr', 'false');
+          }
+    
     - name: Semantic Release
+      id: semantic
       run: npm run release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    
+    - name: Update Release with PR Description
+      if: steps.pr_desc.outputs.has_pr == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          // Get the latest release
+          const { data: releases } = await github.rest.repos.listReleases({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            per_page: 1
+          });
+          
+          if (releases.length > 0) {
+            const latestRelease = releases[0];
+            const prNumber = '${{ steps.pr_desc.outputs.pr_number }}';
+            const prTitle = `${{ steps.pr_desc.outputs.pr_title }}`;
+            const prBody = `${{ steps.pr_desc.outputs.pr_body }}`;
+            
+            // Prepare new release body with PR description
+            let newBody = `## What's Changed\n\n`;
+            newBody += `### Pull Request #${prNumber}: ${prTitle}\n\n`;
+            
+            if (prBody) {
+              newBody += `${prBody}\n\n`;
+            }
+            
+            // Add link to full changelog
+            newBody += `---\n\n`;
+            newBody += `**Full Changelog**: ${latestRelease.html_url.replace('/releases/', '/compare/')}...${latestRelease.tag_name}\n\n`;
+            
+            // Add original release notes as details
+            if (latestRelease.body) {
+              newBody += `<details>\n<summary>Conventional Commits</summary>\n\n${latestRelease.body}\n</details>`;
+            }
+            
+            // Update the release
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: latestRelease.id,
+              body: newBody
+            });
+            
+            console.log(`Updated release ${latestRelease.tag_name} with PR description`);
+          }

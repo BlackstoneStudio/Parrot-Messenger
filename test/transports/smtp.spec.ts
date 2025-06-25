@@ -1,5 +1,5 @@
-import SMTP from '../../src/transports/smtp';
 import * as nodemailer from 'nodemailer';
+import SMTP from '../../src/transports/smtp';
 
 jest.mock('nodemailer');
 

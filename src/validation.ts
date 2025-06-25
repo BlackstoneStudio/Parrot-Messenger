@@ -1,3 +1,5 @@
+import { ValidationError } from './errors';
+
 export const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
@@ -23,33 +25,33 @@ export const validateEnvelope = (envelope: {
   text?: string;
 }, transportClass: 'email' | 'sms' | 'call'): void => {
   if (!envelope.to) {
-    throw new Error('Recipient (to) is required');
+    throw new ValidationError('Recipient (to) is required');
   }
 
   if (!envelope.from) {
-    throw new Error('Sender (from) is required');
+    throw new ValidationError('Sender (from) is required');
   }
 
   if (transportClass === 'email') {
     if (!isValidEmail(envelope.to)) {
-      throw new Error(`Invalid email address: ${envelope.to}`);
+      throw new ValidationError(`Invalid email address: ${envelope.to}`);
     }
     if (!isValidEmail(envelope.from)) {
-      throw new Error(`Invalid sender email address: ${envelope.from}`);
+      throw new ValidationError(`Invalid sender email address: ${envelope.from}`);
     }
     if (!envelope.subject) {
-      throw new Error('Subject is required for email');
+      throw new ValidationError('Subject is required for email');
     }
   } else if (transportClass === 'sms' || transportClass === 'call') {
     if (!isValidPhoneNumber(envelope.to)) {
-      throw new Error(`Invalid phone number: ${envelope.to}`);
+      throw new ValidationError(`Invalid phone number: ${envelope.to}`);
     }
     if (!isValidPhoneNumber(envelope.from)) {
-      throw new Error(`Invalid sender phone number: ${envelope.from}`);
+      throw new ValidationError(`Invalid sender phone number: ${envelope.from}`);
     }
   }
 
   if (!envelope.html && !envelope.text) {
-    throw new Error('Message content (html or text) is required');
+    throw new ValidationError('Message content (html or text) is required');
   }
 };

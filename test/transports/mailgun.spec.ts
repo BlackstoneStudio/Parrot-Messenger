@@ -8,15 +8,11 @@ const mockClient = jest.fn(() => ({
   },
 }));
 
-jest.mock('mailgun.js', () => {
-  return jest.fn().mockImplementation(() => ({
+jest.mock('mailgun.js', () => jest.fn().mockImplementation(() => ({
     client: mockClient,
-  }));
-});
+  })));
 
-jest.mock('form-data', () => {
-  return jest.fn();
-});
+jest.mock('form-data', () => jest.fn());
 
 describe('MailgunTransport', () => {
   let mailgunTransport: MailgunTransport;
@@ -83,7 +79,7 @@ describe('MailgunTransport', () => {
       await mailgunTransport.send(message);
 
       expect(mockCreate).toHaveBeenCalledWith(mockSettings.auth.domain, {
-        from: mockSettings.defaults.from,
+        from: mockSettings.defaults?.from,
         to: message.to,
         subject: message.subject,
         text: undefined,
