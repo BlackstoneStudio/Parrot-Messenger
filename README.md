@@ -3,14 +3,14 @@
 # Parrot Messenger
 
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-blue.svg?cacheSeconds=2592000" />
-  <a href="https://github.com/BlackstoneStudio/Parrot-Messenger/" target="_blank">
-    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  <img alt="Build Status" src="https://github.com/BlackstoneStudio/Parrot-Messenger/workflows/CI/badge.svg" />
+  <img alt="Code Coverage" src="https://img.shields.io/badge/coverage-84%25-green" />
+  <a href="https://github.com/BlackstoneStudio/Parrot-Messenger/releases" target="_blank">
+    <img alt="GitHub release" src="https://img.shields.io/github/v/release/BlackstoneStudio/Parrot-Messenger" />
   </a>
-  <a href="https://github.com/BlackstoneStudio/Parrot-Messenger/graphs/commit-activity" target="_blank">
-    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained-yes-brightgreen.svg" />
-  </a>
-  <img alt="Build" src="https://github.com/BlackstoneStudio/Parrot-Messenger/workflows/CI/badge.svg" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-100%25-blue" />
+  <img alt="Node.js Version" src="https://img.shields.io/badge/node-%3E%3D18-brightgreen" />
+  <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
 </p>
 
 ## Table of Contents

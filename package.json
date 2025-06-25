@@ -64,7 +64,9 @@
     "docs": "typedoc",
     "docs:watch": "typedoc --watch",
     "release": "semantic-release",
-    "release:dry-run": "semantic-release --dry-run"
+    "release:dry-run": "semantic-release --dry-run",
+    "coverage:badge": "npm test -- --coverage --silent --ci --coverageReporters=json-summary && node .github/scripts/update-coverage-badge.js",
+    "coverage:badge:fast": "node .github/scripts/update-coverage-badge-fast.js"
   },
   "repository": {
     "type": "git",
