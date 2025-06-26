@@ -101,6 +101,16 @@ export interface Slack extends Defaults {
   defaultChannel?: string;
 }
 
+export interface Telegram extends Defaults {
+  auth: {
+    botToken: string;
+  };
+  defaultChatId?: string | number;
+  parseMode?: 'HTML' | 'Markdown' | 'MarkdownV2';
+  disableWebPagePreview?: boolean;
+  disableNotification?: boolean;
+}
+
 interface TransportGeneric<
   N extends string,
   C extends 'email' | 'sms' | 'call' | 'chat',
@@ -121,7 +131,8 @@ export type Transport =
   | TransportGeneric<'mailgun', 'email', Mailgun>
   | TransportGeneric<'sendgrid', 'email', Sendgrid>
   | TransportGeneric<'smtp', 'email', SMTP>
-  | TransportGeneric<'slack', 'chat', Slack>;
+  | TransportGeneric<'slack', 'chat', Slack>
+  | TransportGeneric<'telegram', 'chat', Telegram>;
 
 export type Settings = {
   defaultClass?: string;

@@ -138,6 +138,8 @@ describe('TransportRegistry', () => {
       expect(registry.has('twilioSMS')).toBe(true);
       expect(registry.has('twilioCall')).toBe(true);
       expect(registry.has('telnyxSMS')).toBe(true);
+      expect(registry.has('slack')).toBe(true);
+      expect(registry.has('telegram')).toBe(true);
     });
   });
 });

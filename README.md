@@ -7,7 +7,7 @@
     <img alt="npm version" src="https://img.shields.io/npm/v/parrot-messenger.svg" />
   </a>
   <img alt="Build Status" src="https://github.com/BlackstoneStudio/Parrot-Messenger/workflows/CI/badge.svg" />
-  <img alt="Code Coverage" src="https://img.shields.io/badge/coverage-96%25-brightgreen" />
+  <img alt="Code Coverage" src="https://img.shields.io/badge/coverage-95%25-brightgreen" />
   <a href="https://github.com/BlackstoneStudio/Parrot-Messenger/releases" target="_blank">
     <img alt="GitHub release" src="https://img.shields.io/github/v/release/BlackstoneStudio/Parrot-Messenger" />
   </a>

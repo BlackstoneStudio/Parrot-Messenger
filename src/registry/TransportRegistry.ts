@@ -13,6 +13,7 @@ import TwilioSMS from '../transports/twilio/sms';
 import TwilioCall from '../transports/twilio/call';
 import TelnyxSMS from '../transports/telnyx/sms';
 import Slack from '../transports/slack';
+import Telegram from '../transports/telegram';
 
 type TransportConstructor = new (settings: any) => GenericTransport;
 
@@ -54,6 +55,7 @@ class TransportRegistry {
     this.register(TRANSPORT_NAMES.TWILIO_CALL, TwilioCall);
     this.register(TRANSPORT_NAMES.TELNYX_SMS, TelnyxSMS);
     this.register(TRANSPORT_NAMES.SLACK, Slack);
+    this.register(TRANSPORT_NAMES.TELEGRAM, Telegram);
   }
 
   /**
