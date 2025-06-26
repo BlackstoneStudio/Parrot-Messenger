@@ -1,8 +1,51 @@
 {
   "branches": ["master", "main"],
   "plugins": [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "angular",
+        "releaseRules": [
+          {"type": "BREAK", "release": "major"},
+          {"type": "FEAT", "release": "minor"},
+          {"type": "FUNC", "release": "minor"},
+          {"type": "FIX", "release": "patch"},
+          {"type": "DOCS", "release": "patch"},
+          {"type": "STYLE", "release": "patch"},
+          {"type": "TEST", "release": "patch"},
+          {"type": "CI", "release": "patch"},
+          {"type": "DEPEN", "release": "patch"},
+          {"type": "ESLINT", "release": "patch"},
+          {"type": "FILES", "release": "patch"},
+          {"type": "DB", "release": "patch"}
+        ],
+        "parserOpts": {
+          "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAK"]
+        }
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "angular",
+        "presetConfig": {
+          "types": [
+            {"type": "BREAK", "section": "Breaking Changes", "hidden": false},
+            {"type": "FEAT", "section": "Features", "hidden": false},
+            {"type": "FUNC", "section": "Functionality Changes", "hidden": false},
+            {"type": "FIX", "section": "Bug Fixes", "hidden": false},
+            {"type": "DOCS", "section": "Documentation", "hidden": false},
+            {"type": "STYLE", "section": "Styles", "hidden": false},
+            {"type": "TEST", "section": "Tests", "hidden": false},
+            {"type": "CI", "section": "Continuous Integration", "hidden": false},
+            {"type": "DEPEN", "section": "Dependencies", "hidden": false},
+            {"type": "ESLINT", "section": "Code Style", "hidden": false},
+            {"type": "FILES", "section": "File Structure", "hidden": false},
+            {"type": "DB", "section": "Database", "hidden": false}
+          ]
+        }
+      }
+    ],
     [
       "@semantic-release/changelog",
       {
