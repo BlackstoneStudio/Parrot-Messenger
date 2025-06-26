@@ -121,7 +121,6 @@ In its current iteration it supports 4 types of transport classes:
 ### SMS Services
 
 - Twilio
-- Mailjet
 - Telnyx
 - AWS SNS
 
@@ -318,8 +317,6 @@ const parrot = new Parrot({
     mailchimp,
     ses,
     sendgrid,
-    mailjetEmail,
-    mailjetSMS,
     twilioSMS,
     twilioCall,
     smtp,
@@ -506,8 +503,8 @@ parrot.templates.send(
   // Transport Settings
   // Available classes email, sms & call
   // Available transports per Class:
-  // Email: 'ses', 'mailgun', 'mailjetEmail', 'mailchimp', 'sendgrid', 'smtp'
-  // SMS: 'twilioSMS', 'mailjetSMS', 'telnyxSMS', 'sns'
+  // Email: 'ses', 'mailgun', 'mailchimp', 'sendgrid', 'smtp'
+  // SMS: 'twilioSMS', 'telnyxSMS', 'sns'
   // Call: 'twilioCall'
   transport,
 );
@@ -697,17 +694,6 @@ interface AWSSNSConfig {
 interface TelnyxConfig {
   auth: {
     apiKey: string;
-  };
-  defaults?: Envelope;
-}
-```
-
-#### Mailjet SMS
-
-```typescript
-interface MailjetSMSConfig {
-  auth: {
-    apiToken: string;
   };
   defaults?: Envelope;
 }

@@ -23,7 +23,6 @@ npx ts-node examples/basic-usage.ts
 | `email-mailgun.ts` | Mailgun | Tracking, scheduling, batch sending, tags |
 | `email-sendgrid.ts` | SendGrid | Dynamic templates, personalizations, categories |
 | `email-mailchimp.ts` | Mailchimp/Mandrill | Transactional emails, merge variables, templates |
-| `email-mailjet.ts` | Mailjet | Template language, monitoring, campaigns |
 | `email-smtp.ts` | Any SMTP | Gmail, Outlook, Yahoo, custom servers |
 
 ### 💬 SMS Examples
@@ -31,7 +30,6 @@ npx ts-node examples/basic-usage.ts
 | File | Provider | Description |
 |------|----------|-------------|
 | `sms-twilio.ts` | Twilio | SMS/MMS, scheduling, alphanumeric senders |
-| `sms-mailjet.ts` | Mailjet | International SMS, Unicode, bulk campaigns |
 | `aws-sns-sms.ts` | AWS SNS | Transactional/Promotional SMS, custom attributes |
 | `telnyx-sms.ts` | Telnyx | Long messages, batch sending, auto-segmentation |
 
@@ -81,11 +79,6 @@ SENDGRID_API_KEY=your_key
 
 # Mailchimp/Mandrill
 MANDRILL_API_KEY=your_key
-
-# Mailjet
-MAILJET_API_KEY=your_public_key
-MAILJET_SECRET_KEY=your_private_key
-MAILJET_SMS_TOKEN=your_sms_token
 
 # Telnyx
 TELNYX_API_KEY=your_key

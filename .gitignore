@@ -119,3 +119,6 @@ CLAUDE.md
 
 # Documentation
 docs/api
+
+# macOS
+.DS_Store

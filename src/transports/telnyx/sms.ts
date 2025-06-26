@@ -1,5 +1,7 @@
 import Telnyx from 'telnyx';
+import { htmlToText } from 'html-to-text';
 import { Envelope, GenericTransport, TelnyxSMS } from '../../types';
+import { TransportError } from '../../errors';
 
 interface TelnyxClient {
   messages: {
@@ -20,11 +22,19 @@ class TelnyxSMSTransport implements GenericTransport {
       ...envelope,
     };
 
-    await this.transport.messages.create({
-      from: messageData.from,
-      to: messageData.to,
-      text: messageData.text || messageData.html,
-    });
+    try {
+      await this.transport.messages.create({
+        from: messageData.from,
+        to: messageData.to,
+        text: messageData.text || (messageData.html ? htmlToText(messageData.html) : ''),
+      });
+    } catch (error) {
+      throw new TransportError(
+        `Telnyx SMS error: ${error instanceof Error ? error.message : String(error)}`,
+        'telnyxSMS',
+        { originalError: error }
+      );
+    }
   }
 }
 

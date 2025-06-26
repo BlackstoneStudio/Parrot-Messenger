@@ -1,6 +1,7 @@
 import Twilio from 'twilio';
 import { htmlToText } from 'html-to-text';
 import { Envelope, GenericTransport, TwilioSMS as ITwilioSMS } from '../../types';
+import { TransportError } from '../../errors';
 
 class TwilioSMS implements GenericTransport<Twilio.Twilio> {
   transport: Twilio.Twilio;
@@ -14,11 +15,19 @@ class TwilioSMS implements GenericTransport<Twilio.Twilio> {
       ...this.settings.defaults,
       ...message,
     };
-    await this.transport.messages.create({
-      from: request.from || '',
-      to: request.to || '',
-      body: htmlToText(request.html || request.text || ''),
-    });
+    try {
+      await this.transport.messages.create({
+        from: request.from || '',
+        to: request.to || '',
+        body: htmlToText(request.html || request.text || ''),
+      });
+    } catch (error) {
+      throw new TransportError(
+        `Twilio SMS error: ${error instanceof Error ? error.message : String(error)}`,
+        'twilioSMS',
+        { originalError: error }
+      );
+    }
   }
 }
 

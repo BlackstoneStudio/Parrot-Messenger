@@ -2,6 +2,7 @@ import Twilio from 'twilio';
 import { htmlToText } from 'html-to-text';
 import { create } from 'xmlbuilder2';
 import { Envelope, GenericTransport, TwilioCall as ITwilioCall } from '../../types';
+import { TransportError } from '../../errors';
 
 class TwilioCall implements GenericTransport<Twilio.Twilio> {
   transport: Twilio.Twilio;
@@ -25,16 +26,24 @@ class TwilioCall implements GenericTransport<Twilio.Twilio> {
       .att('length', '1')
       .up()
       .ele('Say')
-      .att('voice', 'Polly.Joanna')
+      .att('voice', request.voice ? `Polly.${request.voice}` : 'Polly.Joanna')
       .txt(textContent)
       .up()
       .end({ prettyPrint: true });
 
-    await this.transport.calls.create({
-      from: request.from || '',
-      to: request.to || '',
-      twiml,
-    });
+    try {
+      await this.transport.calls.create({
+        from: request.from || '',
+        to: request.to || '',
+        twiml,
+      });
+    } catch (error) {
+      throw new TransportError(
+        `Twilio Call error: ${error instanceof Error ? error.message : String(error)}`,
+        'twilioCall',
+        { originalError: error }
+      );
+    }
   }
 }
 

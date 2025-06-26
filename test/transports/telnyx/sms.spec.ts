@@ -11,6 +11,13 @@ jest.mock('telnyx', () =>
   })),
 );
 
+jest.mock('html-to-text', () => ({
+  htmlToText: jest.fn((html) =>
+    // Simple HTML tag removal
+    html.replace(/<[^>]*>/g, ''),
+  ),
+}));
+
 describe('TelnyxSMSTransport', () => {
   let telnyxTransport: TelnyxSMSTransport;
   let mockSettings: TelnyxSMS;
@@ -72,7 +79,7 @@ describe('TelnyxSMSTransport', () => {
       expect(mockCreate).toHaveBeenCalledWith({
         from: message.from,
         to: message.to,
-        text: '<p>Test HTML message</p>',
+        text: 'Test HTML message',
       });
     });
 
@@ -101,7 +108,7 @@ describe('TelnyxSMSTransport', () => {
         text: 'Test message',
       };
 
-      await expect(telnyxTransport.send(message)).rejects.toThrow('Telnyx API error');
+      await expect(telnyxTransport.send(message)).rejects.toThrow('Telnyx SMS error: Telnyx API error');
     });
 
     it('should merge defaults with message data', async () => {

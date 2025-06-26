@@ -1,5 +1,6 @@
 import mailchimp from '@mailchimp/mailchimp_transactional/src/index';
 import { Envelope, GenericTransport, Mailchimp as IMailchimp } from '../types';
+import { TransportError } from '../errors';
 
 class Mailchimp implements GenericTransport<any> {
   public transport: any;
@@ -42,10 +43,18 @@ class Mailchimp implements GenericTransport<any> {
       });
     }
 
-    await this.transport.messages.send({
-      key: this.settings.auth.apiKey,
-      message: mailchimpMessage,
-    });
+    try {
+      await this.transport.messages.send({
+        key: this.settings.auth.apiKey,
+        message: mailchimpMessage,
+      });
+    } catch (error) {
+      throw new TransportError(
+        `Mailchimp error: ${error instanceof Error ? error.message : String(error)}`,
+        'mailchimp',
+        { originalError: error }
+      );
+    }
   }
 }
 

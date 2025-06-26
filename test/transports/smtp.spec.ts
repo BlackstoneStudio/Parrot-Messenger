@@ -71,4 +71,17 @@ describe('SMTP Transport', () => {
       html: 'Content',
     });
   });
+
+  it('should handle send errors', async () => {
+    const error = new Error('Connection refused');
+    mockSendMail.mockRejectedValueOnce(error);
+
+    await expect(
+      transport.send({
+        to: 'recipient@example.com',
+        subject: 'Test Email',
+        html: '<p>Test content</p>',
+      })
+    ).rejects.toThrow('SMTP error: Connection refused');
+  });
 });

@@ -123,7 +123,7 @@ describe('TwilioCall', () => {
         html: '<p>Test message</p>',
       };
 
-      await expect(twilioCallTransport.send(message)).rejects.toThrow('Twilio API error');
+      await expect(twilioCallTransport.send(message)).rejects.toThrow('Twilio Call error: Twilio API error');
     });
 
     it('should merge defaults with message data', async () => {
@@ -228,8 +228,8 @@ describe('TwilioCall', () => {
       await twilioCallTransport.send(message);
 
       const callArgs = mockCreate.mock.calls[0][0];
-      // Current implementation doesn't use custom voice, always uses Polly.Joanna
-      expect(callArgs.twiml).toContain('<Say voice="Polly.Joanna">');
+      // Should use custom voice with Polly prefix
+      expect(callArgs.twiml).toContain('<Say voice="Polly.Amy">');
     });
 
     it('should use default voice when not specified', async () => {

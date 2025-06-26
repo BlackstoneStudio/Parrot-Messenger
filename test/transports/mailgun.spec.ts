@@ -67,7 +67,6 @@ describe('MailgunTransport', () => {
         subject: message.subject,
         text: message.text,
         html: message.html,
-        attachments: undefined,
       });
     });
 
@@ -86,7 +85,6 @@ describe('MailgunTransport', () => {
         subject: message.subject,
         text: undefined,
         html: message.html,
-        attachments: undefined,
       });
     });
 
@@ -112,7 +110,6 @@ describe('MailgunTransport', () => {
         subject: message.subject,
         text: undefined,
         html: message.html,
-        attachments: message.attachments,
         attachment: message.attachments,
       });
     });
@@ -128,7 +125,7 @@ describe('MailgunTransport', () => {
         html: '<p>Test HTML</p>',
       };
 
-      await expect(mailgunTransport.send(message)).rejects.toThrow('Mailgun API error');
+      await expect(mailgunTransport.send(message)).rejects.toThrow('Mailgun error: Mailgun API error');
     });
 
     it('should merge defaults with message data', async () => {
@@ -157,7 +154,6 @@ describe('MailgunTransport', () => {
         subject: message.subject,
         text: undefined,
         html: message.html,
-        attachments: undefined,
       });
     });
   });

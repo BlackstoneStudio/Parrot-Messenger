@@ -2,6 +2,7 @@ import formData from 'form-data';
 // eslint-disable-next-line import/no-unresolved
 import Mailgun from 'mailgun.js';
 import { Envelope, GenericTransport, Mailgun as IMailgun } from '../types';
+import { TransportError } from '../errors';
 
 interface MailgunClient {
   messages: {
@@ -32,10 +33,20 @@ class MailgunTransport implements GenericTransport {
       subject: mailData.subject,
       text: mailData.text,
       html: mailData.html,
-      attachments: mailData.attachments,
     };
-    if (mailData.attachments) data.attachment = mailData.attachments;
-    await this.transport.messages.create(this.settings.auth.domain, data);
+    if (mailData.attachments) {
+      data.attachment = mailData.attachments;
+    }
+    
+    try {
+      await this.transport.messages.create(this.settings.auth.domain, data);
+    } catch (error) {
+      throw new TransportError(
+        `Mailgun error: ${error instanceof Error ? error.message : String(error)}`,
+        'mailgun',
+        { originalError: error }
+      );
+    }
   }
 }
 

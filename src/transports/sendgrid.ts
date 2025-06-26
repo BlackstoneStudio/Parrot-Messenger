@@ -1,5 +1,6 @@
 import SendgridMail from '@sendgrid/mail';
 import { Envelope, GenericTransport, Sendgrid as ISendgrid } from '../types';
+import { TransportError } from '../errors';
 
 interface SendgridTransport {
   setApiKey(apiKey: string): void;
@@ -23,14 +24,22 @@ class Sendgrid implements GenericTransport {
       ...message,
     };
 
-    await this.transport.send({
-      from: request.from,
-      to: request.to,
-      subject: request.subject,
-      text: request.text,
-      html: request.html,
-      attachments: request.attachments,
-    });
+    try {
+      await this.transport.send({
+        from: request.from,
+        to: request.to,
+        subject: request.subject,
+        text: request.text,
+        html: request.html,
+        attachments: request.attachments,
+      });
+    } catch (error) {
+      throw new TransportError(
+        `SendGrid error: ${error instanceof Error ? error.message : String(error)}`,
+        'sendgrid',
+        { originalError: error }
+      );
+    }
   }
 }
 
