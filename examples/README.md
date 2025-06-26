@@ -1,6 +1,6 @@
 # Parrot Messenger Examples
 
-This directory contains comprehensive examples demonstrating all capabilities of Parrot Messenger v1.1.0.
+This directory contains comprehensive examples demonstrating all capabilities of Parrot Messenger v2.0.0.
 
 ## Quick Start
 
@@ -40,6 +40,13 @@ npx ts-node examples/basic-usage.ts
 | File | Provider | Description |
 |------|----------|-------------|
 | `call-twilio.ts` | Twilio | Text-to-speech, multi-language, custom voices |
+
+### 💬 Chat Examples
+
+| File | Provider | Description |
+|------|----------|-------------|
+| `chat-slack.ts` | Slack | Bot & webhook messaging, attachments, formatting |
+| `chat-telegram.ts` | Telegram | Bot messaging, inline keyboards, HTML/Markdown |
 
 ### 🛠️ Feature Examples
 
@@ -84,6 +91,13 @@ MAILJET_SMS_TOKEN=your_sms_token
 TELNYX_API_KEY=your_key
 TELNYX_PHONE_NUMBER=+15555555555
 
+# Slack
+SLACK_BOT_TOKEN=xoxb-your-bot-token
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
+
+# Telegram
+TELEGRAM_BOT_TOKEN=123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11
+
 # SMTP
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
@@ -106,6 +120,10 @@ npx ts-node examples/email-sendgrid.ts
 npx ts-node examples/sms-twilio.ts
 npx ts-node examples/aws-sns-sms.ts
 
+# Chat providers
+npx ts-node examples/chat-slack.ts
+npx ts-node examples/chat-telegram.ts
+
 # Advanced features
 npx ts-node examples/error-handling.ts
 npx ts-node examples/templates-advanced.ts
@@ -114,7 +132,13 @@ npx ts-node examples/multi-transport.ts
 
 ## Key Features Demonstrated
 
-### Security Enhancements (v1.1.0)
+### New Features (v2.0.0)
+- Slack integration with bot & webhook support
+- Telegram bot support with inline keyboards
+- Enhanced chat transport capabilities
+- Improved plugin architecture
+
+### Security Enhancements
 - Input validation for email and phone numbers
 - HTML sanitization to prevent XSS
 - Protection against ReDoS attacks

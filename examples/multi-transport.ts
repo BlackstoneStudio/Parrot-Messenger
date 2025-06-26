@@ -89,12 +89,35 @@ async function setupMultipleTransports() {
           },
         },
       },
+      // Chat transports
+      {
+        name: 'slack',
+        settings: {
+          auth: {
+            token: process.env.SLACK_BOT_TOKEN || '',
+          },
+          defaultChannel: '#notifications',
+          defaults: {},
+        },
+      },
+      {
+        name: 'telegram',
+        settings: {
+          auth: {
+            botToken: process.env.TELEGRAM_BOT_TOKEN || '',
+          },
+          defaultChatId: process.env.TELEGRAM_CHAT_ID || '',
+          defaults: {},
+        },
+      },
     ],
   });
+
+  return parrot;
 }
 
 // Example 1: Automatic Fallback for Email
-async function emailWithFallback() {
+async function emailWithFallback(parrot: Parrot) {
   console.log('\n--- Example 1: Email with Automatic Fallback ---');
   
   const envelope = {
@@ -108,13 +131,13 @@ async function emailWithFallback() {
   try {
     await parrot.send(envelope, { class: 'email' });
     console.log('✓ Email sent successfully using default transport');
-  } catch (error) {
+  } catch (error: any) {
     console.error('✗ All email transports failed:', error.message);
   }
 }
 
 // Example 2: Manual Fallback Strategy
-async function manualFallbackStrategy() {
+async function manualFallbackStrategy(parrot: Parrot) {
   console.log('\n--- Example 2: Manual Fallback Strategy ---');
   
   const envelope = {
@@ -125,7 +148,7 @@ async function manualFallbackStrategy() {
 
   const emailTransports = ['ses', 'mailgun', 'smtp'];
   let sent = false;
-  let errors = [];
+  let errors: any[] = [];
 
   for (const transport of emailTransports) {
     try {
@@ -139,7 +162,7 @@ async function manualFallbackStrategy() {
       console.log(`✓ Successfully sent via ${transport}`);
       sent = true;
       break;
-    } catch (error) {
+    } catch (error: any) {
       console.log(`  ✗ ${transport} failed: ${error.message}`);
       errors.push({ transport, error: error.message });
     }
@@ -151,7 +174,7 @@ async function manualFallbackStrategy() {
 }
 
 // Example 3: Multi-Channel Notifications
-async function multiChannelNotification() {
+async function multiChannelNotification(parrot: Parrot) {
   console.log('\n--- Example 3: Multi-Channel Notification ---');
   
   const criticalAlert = {
@@ -160,7 +183,7 @@ async function multiChannelNotification() {
     message: 'CRITICAL: Server CPU usage above 90%',
   };
 
-  const results = {
+  const results: any = {
     email: null,
     sms: null,
     call: null,
@@ -175,7 +198,7 @@ async function multiChannelNotification() {
       text: criticalAlert.message,
     }, { class: 'email' });
     console.log('✓ Email notification sent');
-  } catch (error) {
+  } catch (error: any) {
     console.error('✗ Email failed:', error.message);
   }
 
@@ -186,7 +209,7 @@ async function multiChannelNotification() {
       text: criticalAlert.message,
     }, { class: 'sms' });
     console.log('✓ SMS notification sent');
-  } catch (error) {
+  } catch (error: any) {
     console.error('✗ SMS failed:', error.message);
   }
 
@@ -197,16 +220,75 @@ async function multiChannelNotification() {
       text: criticalAlert.message,
     }, { class: 'call' });
     console.log('✓ Voice call initiated');
-  } catch (error) {
+  } catch (error: any) {
     console.error('✗ Call failed:', error.message);
   }
 
   return results;
 }
 
-// Example 4: Load Balancing Across Transports
-async function loadBalancingExample() {
-  console.log('\n--- Example 4: Load Balancing Across Transports ---');
+// Example 4: Multi-Channel Chat Notifications
+async function multiChannelChatNotification(parrot: Parrot) {
+  console.log('\n--- Example 4: Multi-Channel Chat Notifications ---');
+  
+  const announcement = {
+    title: '🚀 New Feature Release',
+    message: 'We just released a new feature: Dark Mode!',
+    details: 'Enable it in Settings > Appearance > Theme',
+  };
+
+  const results: any = {};
+
+  // Send to Slack
+  try {
+    await parrot.send({
+      to: '#announcements',
+      subject: announcement.title,
+      html: `<b>${announcement.message}</b><br><br>${announcement.details}`,
+    }, { name: 'slack' });
+    console.log('✓ Slack notification sent');
+    results.slack = true;
+  } catch (error: any) {
+    console.error('✗ Slack failed:', error.message);
+    results.slack = false;
+  }
+
+  // Send to Telegram
+  try {
+    await parrot.send({
+      to: '@yourchannel',
+      subject: announcement.title,
+      html: `<b>${announcement.message}</b>\n\n${announcement.details}`,
+    }, { name: 'telegram' });
+    console.log('✓ Telegram notification sent');
+    results.telegram = true;
+  } catch (error: any) {
+    console.error('✗ Telegram failed:', error.message);
+    results.telegram = false;
+  }
+
+  // Fallback to email if both chat services fail
+  if (!results.slack && !results.telegram) {
+    try {
+      await parrot.send({
+        to: 'team@example.com',
+        subject: announcement.title,
+        html: `<h2>${announcement.message}</h2><p>${announcement.details}</p>`,
+      }, { class: 'email' });
+      console.log('✓ Fallback email sent');
+      results.email = true;
+    } catch (error: any) {
+      console.error('✗ Email fallback failed:', error.message);
+      results.email = false;
+    }
+  }
+
+  return results;
+}
+
+// Example 5: Load Balancing Across Transports
+async function loadBalancingExample(parrot: Parrot) {
+  console.log('\n--- Example 5: Load Balancing Across Transports ---');
   
   const transports = ['ses', 'mailgun'];
   let currentIndex = 0;
@@ -253,9 +335,9 @@ async function loadBalancingExample() {
   console.log(`\nLoad balancing complete: ${successful}/${recipients.length} emails sent`);
 }
 
-// Example 5: Priority-based Transport Selection
-async function priorityBasedSelection() {
-  console.log('\n--- Example 5: Priority-based Transport Selection ---');
+// Example 6: Priority-based Transport Selection
+async function priorityBasedSelection(parrot: Parrot) {
+  console.log('\n--- Example 6: Priority-based Transport Selection ---');
   
   // Define transport priorities based on cost/reliability
   const transportPriority = {
@@ -270,7 +352,7 @@ async function priorityBasedSelection() {
     ],
   };
 
-  async function sendWithPriority(envelope, messageClass, preferLowCost = true) {
+  async function sendWithPriority(envelope: any, messageClass: string, preferLowCost = true) {
     const transports = transportPriority[messageClass];
     
     // Sort by priority (cost or reliability)
@@ -291,8 +373,8 @@ async function priorityBasedSelection() {
         });
         
         console.log(`✓ Sent via ${transport.name}`);
-        return { ...result, transport: transport.name, cost: transport.cost };
-      } catch (error) {
+        return { success: true, transport: transport.name, cost: transport.cost };
+      } catch (error: any) {
         console.log(`  ✗ ${transport.name} failed: ${error.message}`);
       }
     }
@@ -307,7 +389,7 @@ async function priorityBasedSelection() {
       subject: 'Cost-optimized delivery',
       text: 'This email was sent via the most cost-effective transport',
     }, 'email', true);
-  } catch (error) {
+  } catch (error: any) {
     console.error('✗ Cost-optimized sending failed:', error.message);
   }
 
@@ -317,22 +399,23 @@ async function priorityBasedSelection() {
       to: '+1234567890',
       text: 'This SMS was sent via the most reliable transport',
     }, 'sms', false);
-  } catch (error) {
+  } catch (error: any) {
     console.error('✗ Reliability-optimized sending failed:', error.message);
   }
 }
 
 // Run all examples
 async function runExamples() {
-  await setupMultipleTransports();
+  const parrot = await setupMultipleTransports();
   
-  await emailWithFallback();
-  await manualFallbackStrategy();
-  await multiChannelNotification();
-  await loadBalancingExample();
-  await priorityBasedSelection();
+  await emailWithFallback(parrot);
+  await manualFallbackStrategy(parrot);
+  await multiChannelNotification(parrot);
+  await multiChannelChatNotification(parrot);
+  await loadBalancingExample(parrot);
+  await priorityBasedSelection(parrot);
 }
 
 runExamples()
   .then(() => console.log('\n✓ All multi-transport examples completed'))
-  .catch(error => console.error('\n✗ Unexpected error:', error));
+  .catch((error: any) => console.error('\n✗ Unexpected error:', error));

@@ -7,7 +7,7 @@
     <img alt="npm version" src="https://img.shields.io/npm/v/parrot-messenger.svg" />
   </a>
   <img alt="Build Status" src="https://github.com/BlackstoneStudio/Parrot-Messenger/workflows/CI/badge.svg" />
-  <img alt="Code Coverage" src="https://img.shields.io/badge/coverage-95%25-brightgreen" />
+  <img alt="Code Coverage" src="https://img.shields.io/badge/coverage-97%25-brightgreen" />
   <a href="https://github.com/BlackstoneStudio/Parrot-Messenger/releases" target="_blank">
     <img alt="GitHub release" src="https://img.shields.io/github/v/release/BlackstoneStudio/Parrot-Messenger" />
   </a>
@@ -69,8 +69,13 @@
 
 #### New Features
 
-- **Telnyx SMS Support**: Added Telnyx as a new SMS transport provider
-- **AWS SNS SMS Support**: Added AWS SNS for SMS messaging capabilities
+- **Chat Platform Support**: 
+  - Added Slack integration (bot tokens and webhooks)
+  - Added Telegram bot support with inline keyboards
+  - New `chat` transport class for messaging platforms
+- **SMS Providers**:
+  - Added Telnyx SMS support
+  - Added AWS SNS SMS support
 - **Enhanced Security**:
   - Fixed AWS credentials global pollution issue
   - Added input validation for email addresses and phone numbers
@@ -86,17 +91,21 @@
 - **Performance Enhancements**:
   - Transport clients are now properly managed
   - Better resource utilization
-- **Testing**: Achieved 99% test coverage
-- **CI/CD**: Migrated from CircleCI to GitHub Actions
+- **Testing**: Achieved 97% test coverage
+- **CI/CD**: 
+  - Migrated from CircleCI to GitHub Actions
+  - Added Prettier formatting checks to CI
+  - Enforced 97% coverage thresholds
 
 ## Features
 
 Parrot Messenger is a messaging library that can normalize the APIs for different messaging transports.
-In its current iteration it supports 3 types of transport classes:
+In its current iteration it supports 4 types of transport classes:
 
 - Email
 - SMS
 - Call
+- Chat
 
 ### Email Services
 
@@ -116,6 +125,11 @@ In its current iteration it supports 3 types of transport classes:
 ### Call Services
 
 - Twilio
+
+### Chat Services
+
+- Slack (Bot & Webhooks)
+- Telegram
 
 ## Prerequisites
 
@@ -306,6 +320,8 @@ const parrot = new Parrot({
     twilioSMS,
     twilioCall,
     smtp,
+    slack,
+    telegram,
   ],
 });
 ```
@@ -371,6 +387,39 @@ const sns = {
 };
 ```
 
+For Slack chat transport:
+
+```js
+const slack = {
+  name: 'slack',
+  settings: {
+    auth: {
+      token: 'xoxb-your-bot-token', // Bot token
+      // OR
+      webhook: 'https://hooks.slack.com/services/YOUR/WEBHOOK/URL',
+    },
+    defaultChannel: '#general',
+    defaults: {},
+  },
+};
+```
+
+For Telegram chat transport:
+
+```js
+const telegram = {
+  name: 'telegram',
+  settings: {
+    auth: {
+      botToken: '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11',
+    },
+    defaultChatId: '123456789', // Default chat/channel ID
+    parseMode: 'HTML', // or 'Markdown', 'MarkdownV2'
+    defaults: {},
+  },
+};
+```
+
 ## API
 
 Parrot Messenger works with a simple `send` service and a templating, here we'll describe the usage for the send method.
@@ -392,6 +441,33 @@ const transport = {
 };
 
 parrot.send(email, transport);
+```
+
+Example Chat message:
+
+```js
+// Slack example
+const slackMessage = {
+  to: '#announcements', // Channel, user ID, or conversation ID
+  subject: '🚀 New Feature Released',
+  html: '<b>Feature X</b> is now available! Check it out <a href="https://example.com">here</a>.',
+};
+
+parrot.send(slackMessage, { name: 'slack' });
+
+// Telegram example
+const telegramMessage = {
+  to: '@yourchannel', // Chat ID or @channelname
+  text: 'Hello from Parrot Messenger! 🦜',
+  attachments: [{
+    inline_keyboard: [[
+      { text: 'Learn More', url: 'https://example.com' },
+      { text: 'Get Started', callback_data: 'start' },
+    ]],
+  }],
+};
+
+parrot.send(telegramMessage, { name: 'telegram' });
 ```
 
 ## Templates
@@ -644,6 +720,34 @@ interface TwilioCallConfig {
     sid: string; // Account SID
     token: string; // Auth token
   };
+  defaults?: Envelope;
+}
+```
+
+### Chat Transports
+
+#### Slack
+
+```typescript
+interface SlackConfig {
+  auth: {
+    token?: string;    // Bot token (xoxb-...)
+    webhook?: string;  // Webhook URL for simpler integration
+  };
+  defaultChannel?: string;
+  defaults?: Envelope;
+}
+```
+
+#### Telegram
+
+```typescript
+interface TelegramConfig {
+  auth: {
+    botToken: string;  // Bot token from @BotFather
+  };
+  defaultChatId?: string | number;
+  parseMode?: 'HTML' | 'Markdown' | 'MarkdownV2';
   defaults?: Envelope;
 }
 ```
