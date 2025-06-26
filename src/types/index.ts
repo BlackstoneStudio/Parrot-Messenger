@@ -93,7 +93,19 @@ export interface SMTP extends Defaults {
   auth: SMTPTransport.Options;
 }
 
-interface TransportGeneric<N extends string, C extends 'email' | 'sms' | 'call', S extends {}> {
+export interface Slack extends Defaults {
+  auth: {
+    token?: string;
+    webhook?: string;
+  };
+  defaultChannel?: string;
+}
+
+interface TransportGeneric<
+  N extends string,
+  C extends 'email' | 'sms' | 'call' | 'chat',
+  S extends {},
+> {
   name: N;
   class: C;
   settings: S;
@@ -108,7 +120,8 @@ export type Transport =
   | TransportGeneric<'mailchimp', 'email', Mailchimp>
   | TransportGeneric<'mailgun', 'email', Mailgun>
   | TransportGeneric<'sendgrid', 'email', Sendgrid>
-  | TransportGeneric<'smtp', 'email', SMTP>;
+  | TransportGeneric<'smtp', 'email', SMTP>
+  | TransportGeneric<'slack', 'chat', Slack>;
 
 export type Settings = {
   defaultClass?: string;

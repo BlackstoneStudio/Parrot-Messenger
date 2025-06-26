@@ -78,7 +78,7 @@ export const sanitizeHtml = (html: string): string =>
 
 export const validateEnvelope = (
   envelope: Partial<Envelope>,
-  transportClass: 'email' | 'sms' | 'call',
+  transportClass: 'email' | 'sms' | 'call' | 'chat',
 ): void => {
   if (!envelope.to) {
     throw new ValidationError('Recipient (to) is required');

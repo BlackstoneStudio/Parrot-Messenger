@@ -16,6 +16,9 @@ export const TRANSPORT_NAMES = {
 
   // Call transports
   TWILIO_CALL: 'twilioCall',
+
+  // Chat transports
+  SLACK: 'slack',
 } as const;
 
 /**
@@ -25,6 +28,7 @@ export const TRANSPORT_CLASSES = {
   EMAIL: 'email',
   SMS: 'sms',
   CALL: 'call',
+  CHAT: 'chat',
 } as const;
 
 /**
@@ -40,6 +44,7 @@ export const TRANSPORT_CLASSIFICATION = {
   ],
   sms: [TRANSPORT_NAMES.TWILIO_SMS, TRANSPORT_NAMES.TELNYX_SMS, TRANSPORT_NAMES.SNS],
   call: [TRANSPORT_NAMES.TWILIO_CALL],
+  chat: [TRANSPORT_NAMES.SLACK],
 } as const;
 
 // Type exports

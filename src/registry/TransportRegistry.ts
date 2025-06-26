@@ -12,6 +12,7 @@ import Sendgrid from '../transports/sendgrid';
 import TwilioSMS from '../transports/twilio/sms';
 import TwilioCall from '../transports/twilio/call';
 import TelnyxSMS from '../transports/telnyx/sms';
+import Slack from '../transports/slack';
 
 type TransportConstructor = new (settings: any) => GenericTransport;
 
@@ -52,6 +53,7 @@ class TransportRegistry {
     this.register(TRANSPORT_NAMES.TWILIO_SMS, TwilioSMS);
     this.register(TRANSPORT_NAMES.TWILIO_CALL, TwilioCall);
     this.register(TRANSPORT_NAMES.TELNYX_SMS, TelnyxSMS);
+    this.register(TRANSPORT_NAMES.SLACK, Slack);
   }
 
   /**

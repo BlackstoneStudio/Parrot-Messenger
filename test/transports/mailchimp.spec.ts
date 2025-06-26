@@ -198,7 +198,7 @@ describe('Mailchimp', () => {
       expect(mockMailchimpClient.messages.send).toHaveBeenCalledWith({
         key: mockSettings.auth.apiKey,
         message: {
-          from_email: '',
+          from_email: 'default@example.com',
           to: [
             {
               email: '',
