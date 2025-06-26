@@ -2,6 +2,7 @@ import { Envelope, GenericTransport, Settings, Transport } from './types';
 import { validateEnvelope } from './validation';
 import { ConfigurationError, ValidationError } from './errors';
 import TransportRegistry from './registry/TransportRegistry';
+import { withRetry } from './utils/retry';
 
 const send = async (
   message: Envelope,
@@ -72,10 +73,19 @@ const send = async (
         if (validationError instanceof ValidationError) {
           throw validationError;
         }
-        throw new ValidationError(`Validation Error: ${validationError.message}`);
+        throw new ValidationError(
+          `Validation Error: ${validationError instanceof Error ? validationError.message : String(validationError)}`,
+        );
       }
 
-      await (new Mailer(transport.settings) as GenericTransport).send(messageData);
+      const transportInstance = new Mailer(transport.settings) as GenericTransport;
+
+      await withRetry(() => transportInstance.send(messageData), transport.name, {
+        maxRetries: transport.settings.retryOptions?.maxRetries,
+        initialDelay: transport.settings.retryOptions?.initialDelay,
+        maxDelay: transport.settings.retryOptions?.maxDelay,
+        factor: transport.settings.retryOptions?.factor,
+      });
     }),
   );
 };

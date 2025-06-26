@@ -1,5 +1,4 @@
 import { validateUrl } from '../../src/security/urlValidator';
-import { ConfigurationError } from '../../src/errors';
 
 describe('urlValidator edge cases', () => {
   it('should validate when protocols list is empty', () => {

@@ -60,11 +60,11 @@ describe('Mailchimp', () => {
           to: [
             {
               email: message.to,
+              type: 'to',
             },
           ],
           html: message.html,
           subject: message.subject,
-          attachments: undefined,
         },
       });
     });
@@ -85,11 +85,11 @@ describe('Mailchimp', () => {
           to: [
             {
               email: message.to,
+              type: 'to',
             },
           ],
           html: message.html,
           subject: message.subject,
-          attachments: undefined,
         },
       });
     });
@@ -117,11 +117,58 @@ describe('Mailchimp', () => {
           to: [
             {
               email: message.to,
+              type: 'to',
             },
           ],
           html: message.html,
           subject: message.subject,
-          attachments: message.attachments,
+          attachments: [
+            {
+              content: 'base64content',
+              name: 'test.pdf',
+              type: 'application/octet-stream',
+            },
+          ],
+        },
+      });
+    });
+
+    it('should handle attachments already in Mailchimp format', async () => {
+      const message: Envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com',
+        subject: 'Test Subject',
+        html: '<p>Test HTML</p>',
+        attachments: [
+          {
+            content: 'base64content',
+            name: 'document.pdf',
+            type: 'application/pdf',
+          } as any,
+        ],
+      };
+
+      await mailchimpTransport.send(message);
+
+      expect(mockMailchimpClient.messages.send).toHaveBeenCalledWith({
+        key: mockSettings.auth.apiKey,
+        message: {
+          from_email: message.from,
+          to: [
+            {
+              email: message.to,
+              type: 'to',
+            },
+          ],
+          html: message.html,
+          subject: message.subject,
+          attachments: [
+            {
+              content: 'base64content',
+              name: 'document.pdf',
+              type: 'application/pdf',
+            },
+          ],
         },
       });
     });
@@ -138,6 +185,68 @@ describe('Mailchimp', () => {
       };
 
       await expect(mailchimpTransport.send(message)).rejects.toThrow('Mailchimp API error');
+    });
+
+    it('should handle missing from and to fields with defaults', async () => {
+      const message: Envelope = {
+        subject: 'Test Subject',
+        html: '<p>Test HTML</p>',
+      };
+
+      await mailchimpTransport.send(message);
+
+      expect(mockMailchimpClient.messages.send).toHaveBeenCalledWith({
+        key: mockSettings.auth.apiKey,
+        message: {
+          from_email: '',
+          to: [
+            {
+              email: '',
+              type: 'to',
+            },
+          ],
+          html: message.html,
+          subject: message.subject,
+        },
+      });
+    });
+
+    it('should handle attachments with missing filename', async () => {
+      const message: Envelope = {
+        from: 'sender@example.com',
+        to: 'recipient@example.com',
+        subject: 'Test Subject',
+        html: '<p>Test HTML</p>',
+        attachments: [
+          {
+            content: 'base64content',
+          } as any,
+        ],
+      };
+
+      await mailchimpTransport.send(message);
+
+      expect(mockMailchimpClient.messages.send).toHaveBeenCalledWith({
+        key: mockSettings.auth.apiKey,
+        message: {
+          from_email: message.from,
+          to: [
+            {
+              email: message.to,
+              type: 'to',
+            },
+          ],
+          html: message.html,
+          subject: message.subject,
+          attachments: [
+            {
+              content: 'base64content',
+              name: 'attachment',
+              type: 'application/octet-stream',
+            },
+          ],
+        },
+      });
     });
   });
 });

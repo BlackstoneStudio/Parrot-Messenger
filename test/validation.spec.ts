@@ -38,11 +38,41 @@ describe('Validation', () => {
   });
 
   describe('sanitizeHtml', () => {
-    it('should escape HTML special characters', () => {
-      expect(sanitizeHtml('<script>alert("XSS")</script>')).toBe(
-        '&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;',
+    it('should remove dangerous HTML tags and scripts', () => {
+      // Scripts should be completely removed
+      expect(sanitizeHtml('<script>alert("XSS")</script>')).toBe('');
+      expect(sanitizeHtml('<p>Hello <script>alert("XSS")</script> World</p>')).toBe(
+        '<p>Hello  World</p>',
       );
-      expect(sanitizeHtml("It's a test & more")).toBe('It&apos;s a test &amp; more');
+    });
+
+    it('should allow safe HTML tags', () => {
+      expect(sanitizeHtml('<p>Hello <b>World</b></p>')).toBe('<p>Hello <b>World</b></p>');
+      expect(
+        sanitizeHtml('<h1>Title</h1><p>Content with <a href="https://example.com">link</a></p>'),
+      ).toBe('<h1>Title</h1><p>Content with <a href="https://example.com">link</a></p>');
+    });
+
+    it('should handle special characters safely', () => {
+      // DOMPurify doesn't escape plain text ampersands
+      expect(sanitizeHtml("It's a test & more")).toBe("It's a test & more");
+      // But it does escape < and > in HTML context
+      expect(sanitizeHtml('<p>5 < 10 && 10 > 5</p>')).toBe('<p>5 &lt; 10 &amp;&amp; 10 &gt; 5</p>');
+    });
+
+    it('should remove javascript: URLs', () => {
+      expect(sanitizeHtml('<a href="javascript:alert(\'XSS\')">Click</a>')).toBe('<a>Click</a>');
+      // DOMPurify keeps the img tag but removes the javascript: src
+      expect(sanitizeHtml('<img src="javascript:alert(\'XSS\')">')).toBe('<img>');
+    });
+
+    it('should remove event handlers', () => {
+      expect(sanitizeHtml('<div onclick="alert(\'XSS\')">Click me</div>')).toBe(
+        '<div>Click me</div>',
+      );
+      expect(sanitizeHtml('<img src="image.jpg" onerror="alert(\'XSS\')">')).toBe(
+        '<img src="image.jpg">',
+      );
     });
   });
 
@@ -167,6 +197,31 @@ describe('Validation', () => {
             subject: 'Test',
           },
           'email',
+        ),
+      ).toThrow('Message content (html or text) is required');
+    });
+
+    it('should validate unknown transport class without email/phone validation', () => {
+      // This tests the implicit else branch at line 66 when transportClass is not email/sms/call
+      expect(() =>
+        validateEnvelope(
+          {
+            to: 'any-destination',
+            from: 'any-source',
+            html: 'Content',
+          },
+          'webhook' as any,
+        ),
+      ).not.toThrow();
+
+      // Should still require content even for unknown transport class
+      expect(() =>
+        validateEnvelope(
+          {
+            to: 'any-destination',
+            from: 'any-source',
+          },
+          'webhook' as any,
         ),
       ).toThrow('Message content (html or text) is required');
     });

@@ -301,6 +301,38 @@ describe('send', () => {
     await expect(send(message, transports)).rejects.toThrow(validationError);
   });
 
+  it('should wrap non-Error validation exception in ValidationError', async () => {
+    (validateEnvelope as jest.Mock).mockImplementation(() => {
+      throw 'Invalid data format'; // eslint-disable-line no-throw-literal
+    });
+
+    const message = {
+      to: 'test@example.com',
+      from: 'sender@example.com',
+      subject: 'Test',
+      html: 'Content',
+    };
+    const transports = [
+      {
+        name: 'smtp' as const,
+        class: 'email' as const,
+        settings: {
+          auth: {
+            host: 'localhost',
+            port: 587,
+            secure: false,
+            auth: { user: 'test', pass: 'test' },
+          },
+          defaults: {},
+        },
+      },
+    ];
+
+    await expect(send(message, transports)).rejects.toThrow(
+      'Validation Error: Invalid data format',
+    );
+  });
+
   it('should merge defaults with message data', async () => {
     const message = { to: 'test@example.com', subject: 'Test', html: 'Content' };
     const transports = [

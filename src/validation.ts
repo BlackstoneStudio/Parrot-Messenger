@@ -1,23 +1,80 @@
+import validator from 'validator';
+import DOMPurify from 'isomorphic-dompurify';
 import { ValidationError } from './errors';
 import { Envelope } from './types';
 
-export const isValidEmail = (email: string): boolean => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
+export const isValidEmail = (email: string): boolean =>
+  validator.isEmail(email, {
+    allow_display_name: false,
+    require_display_name: false,
+    allow_utf8_local_part: true,
+    require_tld: true,
+    allow_ip_domain: false,
+    domain_specific_validation: false,
+    allow_underscores: false,
+  });
 
-export const isValidPhoneNumber = (phone: string): boolean => {
-  const phoneRegex = /^\+?[1-9]\d{5,14}$/;
-  return phoneRegex.test(phone);
-};
+export const isValidPhoneNumber = (phone: string): boolean =>
+  // Use validator's mobile phone validation which supports E.164 format
+  // The 'any' locale allows validation for any region
+  validator.isMobilePhone(phone, 'any', {
+    strictMode: false, // Allow national formats in addition to E.164
+  });
 
 export const sanitizeHtml = (html: string): string =>
-  html
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
+  // Configure DOMPurify to prevent XSS attacks
+  DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: [
+      'a',
+      'b',
+      'i',
+      'em',
+      'strong',
+      'u',
+      'p',
+      'br',
+      'hr',
+      'div',
+      'span',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
+      'ul',
+      'ol',
+      'li',
+      'blockquote',
+      'code',
+      'pre',
+      'table',
+      'thead',
+      'tbody',
+      'tr',
+      'th',
+      'td',
+      'img',
+      'figure',
+      'figcaption',
+    ],
+    ALLOWED_ATTR: [
+      'href',
+      'src',
+      'alt',
+      'title',
+      'width',
+      'height',
+      'class',
+      'id',
+      'style',
+      'target',
+      'rel',
+    ],
+    ALLOW_DATA_ATTR: false,
+    // Prevent javascript: URLs
+    ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
+  });
 
 export const validateEnvelope = (
   envelope: Partial<Envelope>,

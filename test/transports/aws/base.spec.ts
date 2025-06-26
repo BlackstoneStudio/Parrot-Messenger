@@ -7,15 +7,13 @@ class TestAWSTransport extends BaseAWSTransport<any> {
     // Mock AWS client
   };
 
-  constructor(config: any) {
-    super(config);
-  }
-
+  // eslint-disable-next-line class-methods-use-this
   async send(): Promise<void> {
     // Not used in these tests
   }
 
   // Expose protected method for testing
+  // eslint-disable-next-line class-methods-use-this
   public testWrapError(error: any): void {
     (BaseAWSTransport as any).wrapError(error, 'TestService');
   }

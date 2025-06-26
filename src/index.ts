@@ -79,7 +79,10 @@ class Parrot implements Mailer<Templates> {
         throw e;
       }
       // Otherwise wrap in a generic ParrotError
-      throw new ParrotError(`Error sending message: ${e.message || e}`, 'SEND_ERROR');
+      throw new ParrotError(
+        `Error sending message: ${e instanceof Error ? e.message : String(e)}`,
+        'SEND_ERROR',
+      );
     }
   }
 }

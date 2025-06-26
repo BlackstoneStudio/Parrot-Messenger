@@ -92,7 +92,8 @@ describe('TwilioCall', () => {
       await twilioCallTransport.send(message);
 
       const callArgs = mockCreate.mock.calls[0][0];
-      expect(callArgs.twiml).toContain('Test &amp; &quot;quotes&quot; &apos;apostrophe&apos;');
+      // XML builder properly escapes & but not quotes in text content
+      expect(callArgs.twiml).toContain('Test &amp; "quotes" \'apostrophe\'');
     });
 
     it('should include proper TwiML structure', async () => {
@@ -177,8 +178,8 @@ describe('TwilioCall', () => {
       await twilioCallTransport.send(message);
 
       const callArgs = mockCreate.mock.calls[0][0];
-      expect(callArgs.twiml).toContain('<Say voice="Polly.Joanna">');
-      expect(callArgs.twiml.match(/<Say voice="Polly.Joanna">\s*<\/Say>/)).toBeTruthy();
+      // XML builder creates self-closing tag for empty content
+      expect(callArgs.twiml).toContain('<Say voice="Polly.Joanna"/>');
     });
 
     it('should handle empty from field', async () => {

@@ -9,13 +9,13 @@
     "sourceMap": true,
     "outDir": "dist",
     "skipLibCheck": true,
-    "strict": false,
-    /* Strict Type-Checking Options - Enable gradually */
-    "noImplicitAny": false /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
+    "strict": true,
+    /* Strict Type-Checking Options - All enabled with strict: true */
+    "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
     "strictNullChecks": true /* When type checking, take into account 'null' and 'undefined'. */,
     "strictFunctionTypes": true /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */,
     "strictBindCallApply": true /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */,
-    "strictPropertyInitialization": false /* Check for class properties that are declared but not set in the constructor. */,
+    "strictPropertyInitialization": true /* Check for class properties that are declared but not set in the constructor. */,
     "noImplicitThis": true /* Enable error reporting when 'this' is given the type 'any'. */,
     "alwaysStrict": true /* Ensure 'use strict' is always emitted. */,
     "forceConsistentCasingInFileNames": true,

@@ -11,10 +11,11 @@ describe('voices', () => {
     expect(voiceKeys.length).toBeGreaterThan(0);
 
     voiceKeys.forEach((key) => {
-      expect(voices[key]).toHaveProperty('voice');
-      expect(voices[key]).toHaveProperty('language');
-      expect(typeof voices[key].voice).toBe('string');
-      expect(typeof voices[key].language).toBe('string');
+      const voice = voices[key as keyof typeof voices];
+      expect(voice).toHaveProperty('voice');
+      expect(voice).toHaveProperty('language');
+      expect(typeof voice.voice).toBe('string');
+      expect(typeof voice.language).toBe('string');
     });
   });
 

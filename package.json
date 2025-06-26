@@ -1,7 +1,7 @@
 {
   "name": "parrot-messenger",
   "version": "2.0.0",
-  "description": "",
+  "description": "Unified messaging library for Email, SMS, and Voice with multiple provider support",
   "main": "dist/index.js",
   "files": [
     "/dist"
@@ -11,14 +11,19 @@
     "@aws-sdk/client-sns": "^3.835.0",
     "@mailchimp/mailchimp_transactional": "^1.0.59",
     "@sendgrid/mail": "^8.1.5",
+    "@types/dompurify": "^3.0.5",
+    "@types/validator": "^13.15.2",
     "axios": "^1.7.8",
     "form-data": "^4.0.3",
     "handlebars": "^4.7.8",
     "html-to-text": "^9.0.5",
+    "isomorphic-dompurify": "^2.25.0",
     "mailgun.js": "^12.0.3",
     "nodemailer": "^7.0.3",
     "telnyx": "^2.0.0",
-    "twilio": "^5.7.1"
+    "twilio": "^5.7.1",
+    "validator": "^13.15.15",
+    "xmlbuilder2": "^3.1.1"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",

@@ -27,8 +27,16 @@ export interface GenericTransport<T extends unknown = {}> {
   send(envelope: Envelope): Promise<void>;
 }
 
+export interface RetryOptions {
+  maxRetries?: number;
+  initialDelay?: number;
+  maxDelay?: number;
+  factor?: number;
+}
+
 export type Defaults = {
   defaults?: Envelope;
+  retryOptions?: RetryOptions;
 };
 export interface AWSSESConfig extends Defaults {
   auth: {
