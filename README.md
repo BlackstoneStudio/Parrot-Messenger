@@ -31,7 +31,41 @@
 
 ## What's New
 
-### Version 1.1.0
+### Version 2.0.0
+
+#### Breaking Changes
+
+- **AWS SES Configuration**: The AWS SES transport configuration has changed. The `auth` field now only accepts `region`, `accessKeyId`, and `secretAccessKey` properties. Additional AWS SDK configuration options are no longer supported.
+  
+  **Before (v1.x):**
+  ```typescript
+  {
+    name: 'ses',
+    settings: {
+      auth: {
+        region: 'us-east-1',
+        credentials: { /* ... */ },
+        endpoint: 'https://custom-endpoint',
+        maxRetries: 3
+        // Other AWS SDK options...
+      }
+    }
+  }
+  ```
+  
+  **After (v2.0.0):**
+  ```typescript
+  {
+    name: 'ses',
+    settings: {
+      auth: {
+        region: 'us-east-1',
+        accessKeyId: 'your-access-key',
+        secretAccessKey: 'your-secret-key'
+      }
+    }
+  }
+  ```
 
 #### New Features
 
@@ -52,12 +86,8 @@
 - **Performance Enhancements**:
   - Transport clients are now properly managed
   - Better resource utilization
-- **Testing**: Added comprehensive test suite with high coverage
+- **Testing**: Achieved 99% test coverage
 - **CI/CD**: Migrated from CircleCI to GitHub Actions
-
-#### Breaking Changes
-
-None - This release maintains full backward compatibility
 
 ## Features
 

@@ -5,6 +5,52 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-06-25
+
+### Breaking Changes
+
+- **AWS SES Configuration**: The AWS SES transport configuration has been restricted for security reasons. The `auth` field now only accepts:
+  - `region` (string)
+  - `accessKeyId` (string)
+  - `secretAccessKey` (string)
+  
+  Additional AWS SDK configuration options (like `endpoint`, `maxRetries`, `httpOptions`, etc.) are no longer supported. This change prevents potential security misconfigurations and standardizes the authentication approach across all transports.
+
+  **Migration Guide:**
+  ```typescript
+  // Before (v1.x)
+  {
+    name: 'ses',
+    settings: {
+      auth: {
+        region: 'us-east-1',
+        credentials: { accessKeyId: '...', secretAccessKey: '...' },
+        endpoint: 'https://custom-endpoint',
+        maxRetries: 3
+      }
+    }
+  }
+
+  // After (v2.0.0)
+  {
+    name: 'ses',
+    settings: {
+      auth: {
+        region: 'us-east-1',
+        accessKeyId: '...',
+        secretAccessKey: '...'
+      }
+    }
+  }
+  ```
+
+### Added
+- All features from v1.1.0 (see below)
+
+### Security
+- Restricted AWS SES configuration to prevent potential security misconfigurations
+- All security fixes from v1.1.0 are included
+
 ## [1.1.0] - 2025-06-24
 
 ### Added
@@ -13,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive input validation for emails and phone numbers
 - Custom error types (ParrotError, ValidationError, TransportError, TemplateError, ConfigurationError)
 - HTML sanitization to prevent XSS attacks
-- Comprehensive test suite with 100% statement, function, and line coverage (up from 77%)
+- Comprehensive test suite with 99% statement, function, and line coverage (up from 77%)
 - Test coverage for all transport providers (Mailchimp, Mailgun, SendGrid, AWS SNS, Telnyx SMS, Twilio Call)
 - Test coverage for voices constants
 - GitHub Actions CI/CD pipeline

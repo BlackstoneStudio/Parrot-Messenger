@@ -1,4 +1,5 @@
 import { ValidationError } from './errors';
+import { Envelope } from './types';
 
 export const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -10,20 +11,18 @@ export const isValidPhoneNumber = (phone: string): boolean => {
   return phoneRegex.test(phone);
 };
 
-export const sanitizeHtml = (html: string): string => html
-  .replace(/&/g, '&amp;')
-  .replace(/</g, '&lt;')
-  .replace(/>/g, '&gt;')
-  .replace(/"/g, '&quot;')
-  .replace(/'/g, '&apos;');
+export const sanitizeHtml = (html: string): string =>
+  html
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 
-export const validateEnvelope = (envelope: {
-  to?: string;
-  from?: string;
-  subject?: string;
-  html?: string;
-  text?: string;
-}, transportClass: 'email' | 'sms' | 'call'): void => {
+export const validateEnvelope = (
+  envelope: Partial<Envelope>,
+  transportClass: 'email' | 'sms' | 'call',
+): void => {
   if (!envelope.to) {
     throw new ValidationError('Recipient (to) is required');
   }

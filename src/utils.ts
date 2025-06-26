@@ -8,4 +8,3 @@ export default (name: string): TransportClass => {
   // Default to email if transport name is not recognized
   return 'email';
 };
-// Test change

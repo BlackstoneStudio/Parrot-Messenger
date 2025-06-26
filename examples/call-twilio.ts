@@ -8,7 +8,7 @@ import Parrot from '../src';
 
 async function makeVoiceCalls() {
   // Initialize Parrot with Twilio Call
-  Parrot.init({
+  const parrot = new Parrot({
     transports: [
       {
         name: 'twilioCall',
@@ -27,7 +27,7 @@ async function makeVoiceCalls() {
 
   try {
     // Example 1: Simple text-to-speech call
-    const result = await Parrot.send({
+    await parrot.send({
       to: '+1234567890',
       text: 'Hello! This is an automated call from Parrot Messenger. Have a great day!',
     }, {
@@ -35,10 +35,10 @@ async function makeVoiceCalls() {
       name: 'twilioCall',
     });
 
-    console.log('✓ Voice call initiated:', result);
+    console.log('✓ Voice call initiated');
 
     // Example 2: Emergency notification call
-    const emergencyResult = await Parrot.send({
+    await parrot.send({
       to: '+1234567890',
       text: 'Attention! This is an emergency notification. Server CPU usage has exceeded 90 percent. Please check immediately.',
       // Twilio will convert this to TwiML with <Say> tags
@@ -47,10 +47,10 @@ async function makeVoiceCalls() {
       name: 'twilioCall',
     });
 
-    console.log('✓ Emergency call initiated:', emergencyResult);
+    console.log('✓ Emergency call initiated');
 
     // Example 3: Multi-language call
-    const multiLangResult = await Parrot.send({
+    await parrot.send({
       to: '+1234567890',
       text: '<Say language="en-US">Hello!</Say><Say language="es-ES">¡Hola!</Say><Say language="fr-FR">Bonjour!</Say>',
       // Direct TwiML for multi-language support
@@ -59,10 +59,10 @@ async function makeVoiceCalls() {
       name: 'twilioCall',
     });
 
-    console.log('✓ Multi-language call initiated:', multiLangResult);
+    console.log('✓ Multi-language call initiated');
 
     // Example 4: Call with custom voice and speech rate
-    const customVoiceResult = await Parrot.send({
+    await parrot.send({
       to: '+1234567890',
       text: 'This message uses a different voice and speaking rate.',
       voice: 'woman', // or 'man', 'alice', 'amazon.polly.Amy', etc.
@@ -72,7 +72,7 @@ async function makeVoiceCalls() {
       name: 'twilioCall',
     });
 
-    console.log('✓ Custom voice call initiated:', customVoiceResult);
+    console.log('✓ Custom voice call initiated');
 
     // Example 5: Appointment reminder call
     const appointment = {
@@ -81,7 +81,7 @@ async function makeVoiceCalls() {
       date: 'tomorrow at 2 PM',
     };
 
-    const reminderResult = await Parrot.send({
+    await parrot.send({
       to: '+1234567890',
       text: `Hello ${appointment.patientName}. This is a reminder about your appointment with ${appointment.doctorName} ${appointment.date}. Press 1 to confirm or 2 to reschedule.`,
     }, {
@@ -89,7 +89,7 @@ async function makeVoiceCalls() {
       name: 'twilioCall',
     });
 
-    console.log('✓ Appointment reminder call initiated:', reminderResult);
+    console.log('✓ Appointment reminder call initiated');
 
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -110,6 +110,24 @@ async function makeVoiceCalls() {
 async function makeBatchCalls() {
   console.log('\n--- Batch Voice Call Example ---');
   
+  // Create a new Parrot instance for batch calls
+  const parrot = new Parrot({
+    transports: [
+      {
+        name: 'twilioCall',
+        settings: {
+          auth: {
+            sid: process.env.TWILIO_ACCOUNT_SID || '',
+            token: process.env.TWILIO_AUTH_TOKEN || '',
+          },
+          defaults: {
+            from: process.env.TWILIO_PHONE_NUMBER || '+15555555555',
+          },
+        },
+      },
+    ],
+  });
+  
   const recipients = [
     { phone: '+1234567890', name: 'Alice', code: '1234' },
     { phone: '+0987654321', name: 'Bob', code: '5678' },
@@ -121,7 +139,7 @@ async function makeBatchCalls() {
 
   for (const recipient of recipients) {
     try {
-      const result = await Parrot.send({
+      await parrot.send({
         to: recipient.phone,
         text: `Hello ${recipient.name}. Your verification code is ${recipient.code}. Please repeat: ${recipient.code.split('').join(' ')}.`,
       }, {
@@ -129,7 +147,7 @@ async function makeBatchCalls() {
         name: 'twilioCall',
       });
 
-      console.log(`✓ Call to ${recipient.name} initiated: ${result.sid}`);
+      console.log(`✓ Call to ${recipient.name} initiated`);
       
       // Wait 2 seconds between calls
       await delay(2000);

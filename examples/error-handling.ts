@@ -8,7 +8,7 @@ import Parrot from '../src';
 
 async function demonstrateErrorHandling() {
   // Initialize with multiple transports
-  Parrot.init({
+  const parrot = new Parrot({
     transports: [
       {
         name: 'ses',
@@ -41,7 +41,7 @@ async function demonstrateErrorHandling() {
   // Example 1: Validation Error
   console.log('\n--- Example 1: Validation Error ---');
   try {
-    await Parrot.send({
+    await parrot.send({
       to: 'invalid-email-format', // Invalid email
       subject: 'Test',
       html: '<p>Hello</p>',
@@ -51,7 +51,7 @@ async function demonstrateErrorHandling() {
     });
   } catch (error) {
     if (error.name === 'ValidationError') {
-      console.log('✓ Caught ValidationError:', error.message);
+      console.log('✓ Caught ValidationError:');
       console.log('  Field:', error.field);
       console.log('  Value:', error.value);
     }
@@ -60,7 +60,7 @@ async function demonstrateErrorHandling() {
   // Example 2: Configuration Error
   console.log('\n--- Example 2: Configuration Error ---');
   try {
-    await Parrot.send({
+    await parrot.send({
       to: 'user@example.com',
       subject: 'Test',
       html: '<p>Hello</p>',
@@ -70,7 +70,7 @@ async function demonstrateErrorHandling() {
     });
   } catch (error) {
     if (error.name === 'ConfigurationError') {
-      console.log('✓ Caught ConfigurationError:', error.message);
+      console.log('✓ Caught ConfigurationError:');
     }
   }
 
@@ -82,8 +82,8 @@ async function demonstrateErrorHandling() {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         console.log(`  Attempt ${attempt}/${maxRetries}...`);
-        const result = await Parrot.send(envelope, options);
-        console.log('✓ Email sent successfully on attempt', attempt);
+        await parrot.send(envelope, options);
+        console.log('✓ Email sent successfully on attempt');
         return result;
       } catch (error) {
         lastError = error;
@@ -130,12 +130,12 @@ async function demonstrateErrorHandling() {
   console.log('\n--- Example 4: Template Error ---');
   try {
     // Register a template with invalid syntax
-    Parrot.templates.register({
+    parrot.templates.register({
       name: 'broken-template',
       html: '<p>Hello {{name</p>', // Missing closing }}
     });
     
-    await Parrot.templates.send(
+    await parrot.templates.send(
       'broken-template',
       {
         to: 'user@example.com',
@@ -146,7 +146,7 @@ async function demonstrateErrorHandling() {
     );
   } catch (error) {
     if (error.name === 'TemplateError') {
-      console.log('✓ Caught TemplateError:', error.message);
+      console.log('✓ Caught TemplateError:');
     }
   }
 
@@ -160,7 +160,7 @@ async function demonstrateErrorHandling() {
     };
     
     // The library automatically sanitizes HTML content
-    const result = await Parrot.send(envelope, {
+    await parrot.send(envelope, {
       class: 'email',
       name: 'ses',
     });
@@ -182,7 +182,7 @@ async function demonstrateErrorHandling() {
     for (const transport of transports) {
       try {
         console.log(`  Trying ${transport}...`);
-        const result = await Parrot.send(envelope, {
+        await parrot.send(envelope, {
           class: 'email',
           name: transport,
         });

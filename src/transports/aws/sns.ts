@@ -7,7 +7,7 @@ class SNSTransport extends BaseAWSTransport<SNS> {
 
   constructor(private settings: AWSSNS) {
     super(settings);
-    
+
     this.transport = new SNS({
       region: this.region,
       credentials: this.credentials,

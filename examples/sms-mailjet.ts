@@ -7,7 +7,7 @@ import Parrot from '../src';
 
 async function sendWithMailjetSMS() {
   // Initialize Parrot with Mailjet SMS
-  Parrot.init({
+  const parrot = new Parrot({
     transports: [
       {
         name: 'mailjetSMS',
@@ -25,7 +25,7 @@ async function sendWithMailjetSMS() {
 
   try {
     // Example 1: Simple SMS
-    const result = await Parrot.send({
+    await parrot.send({
       to: '+33612345678', // International format required
       text: 'Bonjour! This is a test SMS from Mailjet via Parrot Messenger.',
     }, {
@@ -33,10 +33,10 @@ async function sendWithMailjetSMS() {
       name: 'mailjetSMS',
     });
 
-    console.log('✓ SMS sent via Mailjet:', result);
+    console.log('✓ SMS sent via Mailjet:');
 
     // Example 2: SMS with custom sender (if approved)
-    const customSenderResult = await Parrot.send({
+    await parrot.send({
       to: '+33612345678',
       from: 'MyBrand', // Must be pre-approved by Mailjet
       text: 'Custom sender SMS from MyBrand',
@@ -45,10 +45,10 @@ async function sendWithMailjetSMS() {
       name: 'mailjetSMS',
     });
 
-    console.log('✓ Custom sender SMS sent:', customSenderResult);
+    console.log('✓ Custom sender SMS sent:');
 
     // Example 3: Marketing SMS with unsubscribe
-    const marketingResult = await Parrot.send({
+    await parrot.send({
       to: '+33612345678',
       text: 'Special offer! Get 20% off today. Reply STOP to unsubscribe.',
       // Mailjet automatically handles STOP replies
@@ -57,11 +57,11 @@ async function sendWithMailjetSMS() {
       name: 'mailjetSMS',
     });
 
-    console.log('✓ Marketing SMS sent:', marketingResult);
+    console.log('✓ Marketing SMS sent:');
 
     // Example 4: Transactional SMS (OTP)
     const otpCode = Math.floor(100000 + Math.random() * 900000);
-    const otpResult = await Parrot.send({
+    await parrot.send({
       to: '+33612345678',
       text: `Your verification code is: ${otpCode}. Valid for 10 minutes.`,
     }, {
@@ -69,10 +69,10 @@ async function sendWithMailjetSMS() {
       name: 'mailjetSMS',
     });
 
-    console.log('✓ OTP SMS sent:', otpResult);
+    console.log('✓ OTP SMS sent:');
 
     // Example 5: Unicode SMS (with special characters)
-    const unicodeResult = await Parrot.send({
+    await parrot.send({
       to: '+33612345678',
       text: 'Hello! 👋 Special chars: €£¥ émojis 😊🎉 work perfectly!',
     }, {
@@ -80,7 +80,7 @@ async function sendWithMailjetSMS() {
       name: 'mailjetSMS',
     });
 
-    console.log('✓ Unicode SMS sent:', unicodeResult);
+    console.log('✓ Unicode SMS sent:');
 
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -113,7 +113,7 @@ async function sendBulkCampaign() {
   const results = await Promise.allSettled(
     recipients.map(async (phone) => {
       try {
-        const result = await Parrot.send({
+        await parrot.send({
           to: phone,
           text: campaignText,
         }, {

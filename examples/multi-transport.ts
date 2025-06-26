@@ -7,7 +7,7 @@ import Parrot from '../src';
  */
 
 async function setupMultipleTransports() {
-  Parrot.init({
+  const parrot = new Parrot({
     transports: [
       // Primary email transport
       {
@@ -106,7 +106,7 @@ async function emailWithFallback() {
 
   // When no specific transport is specified, Parrot will use the first available
   try {
-    const result = await Parrot.send(envelope, { class: 'email' });
+    await parrot.send(envelope, { class: 'email' });
     console.log('✓ Email sent successfully using default transport');
   } catch (error) {
     console.error('✗ All email transports failed:', error.message);
@@ -131,7 +131,7 @@ async function manualFallbackStrategy() {
     try {
       console.log(`  Attempting to send via ${transport}...`);
       
-      const result = await Parrot.send(envelope, {
+      await parrot.send(envelope, {
         class: 'email',
         name: transport,
       });
@@ -168,7 +168,7 @@ async function multiChannelNotification() {
 
   // Send email notification
   try {
-    results.email = await Parrot.send({
+    results.email = await parrot.send({
       to: criticalAlert.email,
       subject: 'Critical Server Alert',
       html: `<h1 style="color: red;">Critical Alert</h1><p>${criticalAlert.message}</p>`,
@@ -181,7 +181,7 @@ async function multiChannelNotification() {
 
   // Send SMS notification
   try {
-    results.sms = await Parrot.send({
+    results.sms = await parrot.send({
       to: criticalAlert.phone,
       text: criticalAlert.message,
     }, { class: 'sms' });
@@ -192,7 +192,7 @@ async function multiChannelNotification() {
 
   // For critical alerts, also make a call
   try {
-    results.call = await Parrot.send({
+    results.call = await parrot.send({
       to: criticalAlert.phone,
       text: criticalAlert.message,
     }, { class: 'call' });
@@ -230,7 +230,7 @@ async function loadBalancingExample() {
     const transport = getNextTransport();
     
     try {
-      await Parrot.send({
+      await parrot.send({
         to: recipient,
         subject: 'Newsletter',
         html: '<p>This week\'s newsletter content...</p>',
@@ -285,7 +285,7 @@ async function priorityBasedSelection() {
       try {
         console.log(`  Trying ${transport.name} (cost: $${transport.cost}, reliability: ${transport.reliability})`);
         
-        const result = await Parrot.send(envelope, {
+        await parrot.send(envelope, {
           class: messageClass,
           name: transport.name,
         });

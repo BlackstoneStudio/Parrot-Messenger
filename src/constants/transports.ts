@@ -8,12 +8,12 @@ export const TRANSPORT_NAMES = {
   MAILGUN: 'mailgun',
   MAILCHIMP: 'mailchimp',
   SENDGRID: 'sendgrid',
-  
+
   // SMS transports
   SNS: 'sns',
   TWILIO_SMS: 'twilioSMS',
   TELNYX_SMS: 'telnyxSMS',
-  
+
   // Call transports
   TWILIO_CALL: 'twilioCall',
 } as const;
@@ -38,16 +38,10 @@ export const TRANSPORT_CLASSIFICATION = {
     TRANSPORT_NAMES.SMTP,
     TRANSPORT_NAMES.SENDGRID,
   ],
-  sms: [
-    TRANSPORT_NAMES.TWILIO_SMS,
-    TRANSPORT_NAMES.TELNYX_SMS,
-    TRANSPORT_NAMES.SNS,
-  ],
-  call: [
-    TRANSPORT_NAMES.TWILIO_CALL,
-  ],
+  sms: [TRANSPORT_NAMES.TWILIO_SMS, TRANSPORT_NAMES.TELNYX_SMS, TRANSPORT_NAMES.SNS],
+  call: [TRANSPORT_NAMES.TWILIO_CALL],
 } as const;
 
 // Type exports
-export type TransportName = typeof TRANSPORT_NAMES[keyof typeof TRANSPORT_NAMES];
-export type TransportClass = typeof TRANSPORT_CLASSES[keyof typeof TRANSPORT_CLASSES];
+export type TransportName = (typeof TRANSPORT_NAMES)[keyof typeof TRANSPORT_NAMES];
+export type TransportClass = (typeof TRANSPORT_CLASSES)[keyof typeof TRANSPORT_CLASSES];

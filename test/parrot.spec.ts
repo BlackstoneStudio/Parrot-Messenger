@@ -27,10 +27,10 @@ describe('Parrot', () => {
           name: 'twilioSMS' as const,
           settings: {
             auth: { sid: 'test', token: 'test' },
-            defaults: { from: '+15551234567' }
-          }
-        }
-      ]
+            defaults: { from: '+15551234567' },
+          },
+        },
+      ],
     };
 
     parrot = new Parrot(settings);
@@ -44,16 +44,16 @@ describe('Parrot', () => {
           name: 'smtp' as const,
           settings: {
             auth: {},
-            defaults: { from: 'default@example.com' }
-          }
-        }
-      ]
+            defaults: { from: 'default@example.com' },
+          },
+        },
+      ],
     });
 
     const message = {
       to: 'test@example.com',
       subject: 'Test',
-      html: '<p>Content</p>'
+      html: '<p>Content</p>',
     };
 
     await parrot.send(message);
@@ -64,10 +64,10 @@ describe('Parrot', () => {
         expect.objectContaining({
           name: 'smtp',
           class: 'email',
-          settings: expect.any(Object)
-        })
+          settings: expect.any(Object),
+        }),
       ]),
-      undefined
+      undefined,
     );
   });
 
@@ -75,35 +75,36 @@ describe('Parrot', () => {
     parrot = new Parrot({
       transports: [
         { name: 'smtp', settings: { auth: {}, defaults: {} } },
-        { name: 'ses', settings: { auth: {}, defaults: {} } }
-      ]
+        { name: 'ses', settings: { auth: {}, defaults: {} } },
+      ],
     });
 
     const message = {
       to: 'test@example.com',
       from: 'sender@example.com',
       subject: 'Test',
-      html: 'Content'
+      html: 'Content',
     };
 
     await parrot.send(message, { class: 'email', name: 'smtp' });
 
-    expect(send).toHaveBeenCalledWith(
-      message,
-      expect.any(Array),
-      { class: 'email', name: 'smtp' }
-    );
+    expect(send).toHaveBeenCalledWith(message, expect.any(Array), { class: 'email', name: 'smtp' });
   });
 
   it('should handle send errors', async () => {
     (send as jest.Mock).mockRejectedValue(new Error('Transport error'));
 
     parrot = new Parrot({
-      transports: [{ name: 'smtp' as const, settings: { auth: {}, defaults: {} } }]
+      transports: [{ name: 'smtp' as const, settings: { auth: {}, defaults: {} } }],
     });
 
     await expect(
-      parrot.send({ to: 'test@example.com', from: 'sender@example.com', subject: 'Test', html: 'Content' })
+      parrot.send({
+        to: 'test@example.com',
+        from: 'sender@example.com',
+        subject: 'Test',
+        html: 'Content',
+      }),
     ).rejects.toThrow('Error sending message: Transport error');
   });
 
@@ -117,19 +118,26 @@ describe('Parrot', () => {
       transports: [
         { name: 'smtp', settings: { auth: {}, defaults: {} } },
         { name: 'twilioSMS', settings: { auth: {}, defaults: {} } },
-        { name: 'twilioCall', settings: { auth: {}, defaults: {} } }
-      ]
+        { name: 'twilioCall', settings: { auth: {}, defaults: {} } },
+      ],
     });
 
-    await parrot.send({ to: 'test@example.com', from: 'sender@example.com', subject: 'Test', html: 'Content' });
+    await parrot.send({
+      to: 'test@example.com',
+      from: 'sender@example.com',
+      subject: 'Test',
+      html: 'Content',
+    });
 
     const callArgs = (send as jest.Mock).mock.calls[0];
     const transports = callArgs[1];
 
-    expect(transports).toEqual(expect.arrayContaining([
-      expect.objectContaining({ name: 'smtp', class: 'email' }),
-      expect.objectContaining({ name: 'twilioSMS', class: 'sms' }),
-      expect.objectContaining({ name: 'twilioCall', class: 'call' })
-    ]));
+    expect(transports).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ name: 'smtp', class: 'email' }),
+        expect.objectContaining({ name: 'twilioSMS', class: 'sms' }),
+        expect.objectContaining({ name: 'twilioCall', class: 'call' }),
+      ]),
+    );
   });
 });

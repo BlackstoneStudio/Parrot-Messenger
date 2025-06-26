@@ -1,7 +1,11 @@
 /* eslint-disable max-classes-per-file */
 
 export class ParrotError extends Error {
-  constructor(message: string, public code: string, public details?: Record<string, unknown>) {
+  constructor(
+    message: string,
+    public code: string,
+    public details?: Record<string, unknown>,
+  ) {
     super(message);
     this.name = 'ParrotError';
   }
@@ -15,7 +19,11 @@ export class ValidationError extends ParrotError {
 }
 
 export class TransportError extends ParrotError {
-  constructor(message: string, public transport: string, details?: Record<string, unknown>) {
+  constructor(
+    message: string,
+    public transport: string,
+    details?: Record<string, unknown>,
+  ) {
     super(message, 'TRANSPORT_ERROR', details);
     this.name = 'TransportError';
   }

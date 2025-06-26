@@ -23,7 +23,7 @@ const DEFAULT_OPTIONS: UrlValidationOptions = {
  */
 export function validateUrl(urlString: string, options: UrlValidationOptions = {}): URL {
   const opts = { ...DEFAULT_OPTIONS, ...options };
-  
+
   let url: URL;
   try {
     url = new URL(urlString);
@@ -36,7 +36,7 @@ export function validateUrl(urlString: string, options: UrlValidationOptions = {
     const protocol = url.protocol.slice(0, -1); // Remove trailing colon
     if (!opts.allowedProtocols.includes(protocol)) {
       throw new ConfigurationError(
-        `Protocol "${protocol}" not allowed. Allowed protocols: ${opts.allowedProtocols.join(', ')}`
+        `Protocol "${protocol}" not allowed. Allowed protocols: ${opts.allowedProtocols.join(', ')}`,
       );
     }
   }
@@ -45,7 +45,7 @@ export function validateUrl(urlString: string, options: UrlValidationOptions = {
   if (opts.allowedHosts && opts.allowedHosts.length > 0) {
     if (!opts.allowedHosts.includes(url.hostname)) {
       throw new ConfigurationError(
-        `Host "${url.hostname}" not allowed. Allowed hosts: ${opts.allowedHosts.join(', ')}`
+        `Host "${url.hostname}" not allowed. Allowed hosts: ${opts.allowedHosts.join(', ')}`,
       );
     }
   }
@@ -60,7 +60,7 @@ export function validateUrl(urlString: string, options: UrlValidationOptions = {
   if (opts.allowedPorts && opts.allowedPorts.length > 0) {
     if (!opts.allowedPorts.includes(port)) {
       throw new ConfigurationError(
-        `Port ${port} not allowed. Allowed ports: ${opts.allowedPorts.join(', ')}`
+        `Port ${port} not allowed. Allowed ports: ${opts.allowedPorts.join(', ')}`,
       );
     }
   }
@@ -68,22 +68,22 @@ export function validateUrl(urlString: string, options: UrlValidationOptions = {
   // Block private IPs
   if (opts.blockPrivateIPs) {
     const privateIPRanges = [
-      /^127\./,           // Loopback
-      /^10\./,            // Private Class A
-      /^172\.(1[6-9]|2\d|3[01])\./,  // Private Class B
-      /^192\.168\./,      // Private Class C
-      /^169\.254\./,      // Link-local
-      /^::1$/,            // IPv6 loopback
-      /^fe80::/,          // IPv6 link-local
-      /^fc00::/,          // IPv6 unique local
+      /^127\./, // Loopback
+      /^10\./, // Private Class A
+      /^172\.(1[6-9]|2\d|3[01])\./, // Private Class B
+      /^192\.168\./, // Private Class C
+      /^169\.254\./, // Link-local
+      /^::1$/, // IPv6 loopback
+      /^fe80::/, // IPv6 link-local
+      /^fc00::/, // IPv6 unique local
     ];
 
-    const {hostname} = url;
-    
+    const { hostname } = url;
+
     // Check if hostname is an IP address
     const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
     const ipv6Regex = /^([\da-f]{0,4}:){2,7}[\da-f]{0,4}$/i;
-    
+
     if (ipv4Regex.test(hostname) || ipv6Regex.test(hostname)) {
       // eslint-disable-next-line no-restricted-syntax
       for (const range of privateIPRanges) {

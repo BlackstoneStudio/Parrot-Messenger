@@ -10,7 +10,7 @@ describe('SMTP Transport', () => {
   beforeEach(() => {
     mockSendMail = jest.fn().mockResolvedValue({ messageId: '123' });
     (nodemailer.createTransport as jest.Mock).mockReturnValue({
-      sendMail: mockSendMail
+      sendMail: mockSendMail,
     });
 
     transport = new SMTP({
@@ -20,12 +20,12 @@ describe('SMTP Transport', () => {
         secure: false,
         auth: {
           user: 'user@example.com',
-          pass: 'password'
-        }
+          pass: 'password',
+        },
       },
       defaults: {
-        from: 'default@example.com'
-      }
+        from: 'default@example.com',
+      },
     });
   });
 
@@ -36,8 +36,8 @@ describe('SMTP Transport', () => {
       secure: false,
       auth: {
         user: 'user@example.com',
-        pass: 'password'
-      }
+        pass: 'password',
+      },
     });
   });
 
@@ -45,14 +45,14 @@ describe('SMTP Transport', () => {
     await transport.send({
       to: 'recipient@example.com',
       subject: 'Test Email',
-      html: '<p>Test content</p>'
+      html: '<p>Test content</p>',
     });
 
     expect(mockSendMail).toHaveBeenCalledWith({
       from: 'default@example.com',
       to: 'recipient@example.com',
       subject: 'Test Email',
-      html: '<p>Test content</p>'
+      html: '<p>Test content</p>',
     });
   });
 
@@ -61,14 +61,14 @@ describe('SMTP Transport', () => {
       from: 'override@example.com',
       to: 'recipient@example.com',
       subject: 'Test',
-      html: 'Content'
+      html: 'Content',
     });
 
     expect(mockSendMail).toHaveBeenCalledWith({
       from: 'override@example.com',
       to: 'recipient@example.com',
       subject: 'Test',
-      html: 'Content'
+      html: 'Content',
     });
   });
 });

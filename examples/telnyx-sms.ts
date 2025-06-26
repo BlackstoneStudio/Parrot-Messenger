@@ -9,7 +9,7 @@ import Parrot from '../src';
 async function sendTelnyxSMS() {
   try {
     // Initialize Parrot with Telnyx transport
-    Parrot.init({
+    const parrot = new Parrot({
       transports: [
         {
           name: 'telnyxSMS',
@@ -26,7 +26,7 @@ async function sendTelnyxSMS() {
     });
 
     // Send a simple SMS
-    const result = await Parrot.send({
+    await parrot.send({
       to: '+1234567890', // Replace with actual recipient
       text: 'Hello from Parrot Messenger with Telnyx!',
     }, {
@@ -37,7 +37,7 @@ async function sendTelnyxSMS() {
     console.log('Telnyx SMS sent successfully:', result);
 
     // Send SMS with longer message (automatic segmentation)
-    const longMessage = await Parrot.send({
+    const longMessage = await parrot.send({
       to: '+1234567890',
       text: 'This is a longer message that might be split into multiple SMS segments. ' +
             'Telnyx handles message segmentation automatically, ensuring your entire ' +
@@ -76,7 +76,7 @@ async function sendBatchSMS() {
 
     // Send to multiple recipients
     const promises = recipients.map(to => 
-      Parrot.send({
+      parrot.send({
         to,
         text: 'Batch notification: System maintenance tonight at 10 PM EST',
       }, {

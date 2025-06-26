@@ -7,7 +7,7 @@ import Parrot from '../src';
 
 async function sendWithSES() {
   // Initialize Parrot with AWS SES
-  Parrot.init({
+  const parrot = new Parrot({
     transports: [
       {
         name: 'ses',
@@ -27,7 +27,7 @@ async function sendWithSES() {
 
   try {
     // Example 1: Simple email
-    const result = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Test Email from AWS SES',
       text: 'This is a test email sent via AWS SES.',
@@ -37,10 +37,10 @@ async function sendWithSES() {
       name: 'ses',
     });
 
-    console.log('✓ Email sent via SES:', result);
+    console.log('✓ Email sent via SES');
 
     // Example 2: Email with attachment
-    const withAttachment = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Email with Attachment',
       html: '<p>Please find the attached document.</p>',
@@ -54,10 +54,10 @@ async function sendWithSES() {
       name: 'ses',
     });
 
-    console.log('✓ Email with attachment sent:', withAttachment);
+    console.log('✓ Email with attachment sent');
 
     // Example 3: Bulk email to multiple recipients
-    const bulkResult = await Parrot.send({
+    await parrot.send({
       to: ['user1@example.com', 'user2@example.com', 'user3@example.com'],
       subject: 'Bulk Email via SES',
       html: '<p>This email was sent to multiple recipients.</p>',
@@ -66,10 +66,10 @@ async function sendWithSES() {
       name: 'ses',
     });
 
-    console.log('✓ Bulk email sent:', bulkResult);
+    console.log('✓ Bulk email sent');
 
     // Example 4: Email with custom headers
-    const withHeaders = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Email with Custom Headers',
       html: '<p>This email includes custom headers.</p>',
@@ -82,7 +82,7 @@ async function sendWithSES() {
       name: 'ses',
     });
 
-    console.log('✓ Email with headers sent:', withHeaders);
+    console.log('✓ Email with headers sent');
 
   } catch (error) {
     if (error.name === 'ValidationError') {

@@ -7,7 +7,7 @@ import Parrot from '../src';
 
 async function sendWithTwilioSMS() {
   // Initialize Parrot with Twilio SMS
-  Parrot.init({
+  const parrot = new Parrot({
     transports: [
       {
         name: 'twilioSMS',
@@ -26,7 +26,7 @@ async function sendWithTwilioSMS() {
 
   try {
     // Example 1: Simple SMS
-    const result = await Parrot.send({
+    await parrot.send({
       to: '+1234567890', // E.164 format required
       text: 'Hello from Twilio! This is a test message from Parrot Messenger.',
     }, {
@@ -34,10 +34,10 @@ async function sendWithTwilioSMS() {
       name: 'twilioSMS',
     });
 
-    console.log('✓ SMS sent via Twilio:', result);
+    console.log('✓ SMS sent via Twilio');
 
     // Example 2: SMS with media (MMS)
-    const mmsResult = await Parrot.send({
+    await parrot.send({
       to: '+1234567890',
       text: 'Check out this image!',
       mediaUrl: ['https://example.com/image.jpg'],
@@ -46,10 +46,10 @@ async function sendWithTwilioSMS() {
       name: 'twilioSMS',
     });
 
-    console.log('✓ MMS sent:', mmsResult);
+    console.log('✓ MMS sent');
 
     // Example 3: SMS with status callback
-    const callbackResult = await Parrot.send({
+    await parrot.send({
       to: '+1234567890',
       text: 'This message has delivery tracking enabled.',
       statusCallback: 'https://your-webhook.com/sms-status',
@@ -58,10 +58,10 @@ async function sendWithTwilioSMS() {
       name: 'twilioSMS',
     });
 
-    console.log('✓ SMS with callback sent:', callbackResult);
+    console.log('✓ SMS with callback sent:');
 
     // Example 4: Long message (auto-segmentation)
-    const longMessage = await Parrot.send({
+    const longMessage = await parrot.send({
       to: '+1234567890',
       text: 'This is a longer message that exceeds the 160 character limit for a single SMS. ' +
             'Twilio will automatically segment this message into multiple parts and reassemble ' +
@@ -75,7 +75,7 @@ async function sendWithTwilioSMS() {
     console.log('✓ Long message sent (segments:', longMessage.numSegments || 'unknown', ')');
 
     // Example 5: Alphanumeric sender ID (where supported)
-    const alphanumericResult = await Parrot.send({
+    await parrot.send({
       to: '+447700900000', // UK number (supports alphanumeric sender)
       from: 'COMPANY', // Alphanumeric sender ID (max 11 chars)
       text: 'Message from COMPANY with custom sender ID',
@@ -84,10 +84,10 @@ async function sendWithTwilioSMS() {
       name: 'twilioSMS',
     });
 
-    console.log('✓ SMS with alphanumeric sender sent:', alphanumericResult);
+    console.log('✓ SMS with alphanumeric sender sent:');
 
     // Example 6: Scheduled SMS (using Twilio Message Scheduling)
-    const scheduledResult = await Parrot.send({
+    await parrot.send({
       to: '+1234567890',
       text: 'This is a scheduled message',
       sendAt: new Date(Date.now() + 3600000), // 1 hour from now
@@ -97,7 +97,7 @@ async function sendWithTwilioSMS() {
       name: 'twilioSMS',
     });
 
-    console.log('✓ Scheduled SMS queued:', scheduledResult);
+    console.log('✓ Scheduled SMS queued:');
 
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -127,7 +127,7 @@ async function sendBatchSMS() {
   const results = await Promise.allSettled(
     recipients.map(async (recipient) => {
       try {
-        const result = await Parrot.send({
+        await parrot.send({
           to: recipient.phone,
           text: `Hi ${recipient.name}! This is a personalized message just for you.`,
         }, {

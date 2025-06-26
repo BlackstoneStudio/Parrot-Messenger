@@ -8,7 +8,7 @@ describe('Sendgrid', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     mockTransport = {
       setApiKey: jest.fn().mockImplementation(() => {}),
       send: jest.fn().mockResolvedValue({ success: true }),
@@ -118,9 +118,7 @@ describe('Sendgrid', () => {
         html: '<p>Test HTML</p>',
       };
 
-      await expect(sendgridTransport.send(message)).rejects.toThrow(
-        'Sendgrid API error'
-      );
+      await expect(sendgridTransport.send(message)).rejects.toThrow('Sendgrid API error');
     });
 
     it('should merge defaults with message data', async () => {

@@ -2,18 +2,25 @@ import { compile } from 'handlebars';
 import Axios from 'axios';
 import { Envelope, Mailer, Transport } from '../types';
 import { TemplateError, ConfigurationError } from '../errors';
-import { validateUrl, createSecureAxiosConfig, UrlValidationOptions } from '../security/urlValidator';
+import {
+  validateUrl,
+  createSecureAxiosConfig,
+  UrlValidationOptions,
+} from '../security/urlValidator';
 
 /**
  * Template management system for Parrot Messenger
  * Supports static templates and async templates fetched via HTTP
  */
 class Templates {
-  public templates: Map<string, {
-    name: string
-    html: string
-    request?: Record<string|number, any>
-  }>;
+  public templates: Map<
+    string,
+    {
+      name: string;
+      html: string;
+      request?: Record<string | number, any>;
+    }
+  >;
 
   private urlValidationOptions: UrlValidationOptions;
 
@@ -32,7 +39,7 @@ class Templates {
 
   /**
    * Register a new template
-   * 
+   *
    * @param options - Template configuration
    * @param options.name - Unique name for the template
    * @param options.html - Handlebars template string or static HTML
@@ -41,11 +48,13 @@ class Templates {
    * @throws {TemplateError} When template parsing fails
    */
   register({
-    name, html, request,
+    name,
+    html,
+    request,
   }: {
-    name: string,
-    html: string,
-    request?: Record<string|number, any>
+    name: string;
+    html: string;
+    request?: Record<string | number, any>;
   }) {
     // Test that the template is a valid handlebars template
     try {
@@ -69,7 +78,7 @@ class Templates {
 
   /**
    * List all registered template names
-   * 
+   *
    * @returns Array of template names
    */
   list(): string[] {
@@ -83,7 +92,7 @@ class Templates {
 
   /**
    * Send a message using a registered template
-   * 
+   *
    * @param name - Name of the registered template
    * @param settings - Message envelope settings (to, from, etc.)
    * @param data - Data to pass to the Handlebars template
@@ -114,16 +123,19 @@ class Templates {
         if (!request.url) {
           throw new ConfigurationError('Template request must include a URL');
         }
-        
+
         const validatedUrl = validateUrl(request.url, this.urlValidationOptions);
-        const axiosConfig = createSecureAxiosConfig(validatedUrl, this.urlValidationOptions.timeout);
-        
+        const axiosConfig = createSecureAxiosConfig(
+          validatedUrl,
+          this.urlValidationOptions.timeout,
+        );
+
         // Merge with any additional axios options (excluding url)
         const { url: _url, ...otherRequestOptions } = request; // eslint-disable-line @typescript-eslint/no-unused-vars
         const finalConfig = { ...axiosConfig, ...otherRequestOptions };
-        
+
         const req = await Axios(finalConfig);
-        
+
         // Safely resolve the path in the response
         if (request.resolve) {
           const resolvePath = String(request.resolve).split('.');
@@ -140,7 +152,9 @@ class Templates {
         if (e instanceof ConfigurationError) {
           throw e; // Re-throw security errors as-is
         }
-        throw new TemplateError(`Error fetching async template "${name}": ${e.message}`, { request });
+        throw new TemplateError(`Error fetching async template "${name}": ${e.message}`, {
+          request,
+        });
       }
     }
 

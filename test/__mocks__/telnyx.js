@@ -3,7 +3,7 @@ class MockTelnyx {
   constructor(apiKey) {
     this.apiKey = apiKey;
     this.messages = {
-      create: jest.fn().mockResolvedValue({ id: 'mock-message-id' })
+      create: jest.fn().mockResolvedValue({ id: 'mock-message-id' }),
     };
   }
 }

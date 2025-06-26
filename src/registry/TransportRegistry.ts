@@ -56,7 +56,7 @@ class TransportRegistry {
 
   /**
    * Register a new transport
-   * 
+   *
    * @param name - Unique name for the transport
    * @param transport - Transport constructor
    * @throws {ConfigurationError} If transport name is already registered
@@ -70,7 +70,7 @@ class TransportRegistry {
 
   /**
    * Get a transport by name
-   * 
+   *
    * @param name - Transport name
    * @returns Transport constructor
    * @throws {ConfigurationError} If transport is not found
@@ -85,7 +85,7 @@ class TransportRegistry {
 
   /**
    * Check if a transport is registered
-   * 
+   *
    * @param name - Transport name
    * @returns True if transport is registered
    */
@@ -95,7 +95,7 @@ class TransportRegistry {
 
   /**
    * Get all registered transport names
-   * 
+   *
    * @returns Array of transport names
    */
   list(): string[] {

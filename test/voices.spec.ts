@@ -40,7 +40,7 @@ describe('voices', () => {
 
   it('should contain all expected languages', () => {
     const languages = Object.values(voices).map((v) => v.language);
-    
+
     expect(languages).toContain('English (US) (en-US)');
     expect(languages).toContain('Spanish (Castilian) (es-ES)');
     expect(languages).toContain('French (fr-FR)');

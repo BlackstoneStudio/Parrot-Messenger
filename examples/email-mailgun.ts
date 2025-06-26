@@ -7,7 +7,7 @@ import Parrot from '../src';
 
 async function sendWithMailgun() {
   // Initialize Parrot with Mailgun
-  Parrot.init({
+  const parrot = new Parrot({
     transports: [
       {
         name: 'mailgun',
@@ -26,7 +26,7 @@ async function sendWithMailgun() {
 
   try {
     // Example 1: Simple email
-    const result = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Hello from Mailgun',
       text: 'Testing Mailgun integration with Parrot Messenger.',
@@ -36,10 +36,10 @@ async function sendWithMailgun() {
       name: 'mailgun',
     });
 
-    console.log('✓ Email sent via Mailgun:', result);
+    console.log('✓ Email sent via Mailgun');
 
     // Example 2: Email with tracking
-    const trackingResult = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Tracked Email',
       html: '<p>This email has open and click tracking enabled.</p><a href="https://example.com">Click here</a>',
@@ -52,13 +52,13 @@ async function sendWithMailgun() {
       name: 'mailgun',
     });
 
-    console.log('✓ Tracked email sent:', trackingResult);
+    console.log('✓ Tracked email sent');
 
     // Example 3: Scheduled email
     const futureDate = new Date();
     futureDate.setHours(futureDate.getHours() + 1);
 
-    const scheduledResult = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Scheduled Email',
       html: '<p>This email was scheduled to be sent in the future.</p>',
@@ -68,10 +68,10 @@ async function sendWithMailgun() {
       name: 'mailgun',
     });
 
-    console.log('✓ Scheduled email queued:', scheduledResult);
+    console.log('✓ Scheduled email queued');
 
     // Example 4: Email with tags and metadata
-    const taggedResult = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Tagged Email',
       html: '<p>This email includes tags and custom variables for analytics.</p>',
@@ -83,10 +83,10 @@ async function sendWithMailgun() {
       name: 'mailgun',
     });
 
-    console.log('✓ Tagged email sent:', taggedResult);
+    console.log('✓ Tagged email sent');
 
     // Example 5: Batch sending with recipient variables
-    const batchResult = await Parrot.send({
+    await parrot.send({
       to: ['alice@example.com', 'bob@example.com'],
       subject: 'Hello %recipient.name%',
       html: '<p>Hi %recipient.name%! Your discount code is: %recipient.code%</p>',
@@ -99,7 +99,7 @@ async function sendWithMailgun() {
       name: 'mailgun',
     });
 
-    console.log('✓ Batch email sent:', batchResult);
+    console.log('✓ Batch email sent');
 
   } catch (error) {
     if (error.name === 'ValidationError') {

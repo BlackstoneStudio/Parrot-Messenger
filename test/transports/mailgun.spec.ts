@@ -8,9 +8,11 @@ const mockClient = jest.fn(() => ({
   },
 }));
 
-jest.mock('mailgun.js', () => jest.fn().mockImplementation(() => ({
+jest.mock('mailgun.js', () =>
+  jest.fn().mockImplementation(() => ({
     client: mockClient,
-  })));
+  })),
+);
 
 jest.mock('form-data', () => jest.fn());
 
@@ -126,9 +128,7 @@ describe('MailgunTransport', () => {
         html: '<p>Test HTML</p>',
       };
 
-      await expect(mailgunTransport.send(message)).rejects.toThrow(
-        'Mailgun API error'
-      );
+      await expect(mailgunTransport.send(message)).rejects.toThrow('Mailgun API error');
     });
 
     it('should merge defaults with message data', async () => {

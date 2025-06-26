@@ -19,7 +19,7 @@ describe('SNSTransport', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     mockSettings = {
       auth: {
         region: 'us-east-1',

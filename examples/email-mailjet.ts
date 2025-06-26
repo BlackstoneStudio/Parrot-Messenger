@@ -7,7 +7,7 @@ import Parrot from '../src';
 
 async function sendWithMailjet() {
   // Initialize Parrot with Mailjet
-  Parrot.init({
+  const parrot = new Parrot({
     transports: [
       {
         name: 'mailjetEmail',
@@ -26,7 +26,7 @@ async function sendWithMailjet() {
 
   try {
     // Example 1: Simple email
-    const result = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Hello from Mailjet',
       text: 'This email was sent using Mailjet via Parrot Messenger.',
@@ -36,10 +36,10 @@ async function sendWithMailjet() {
       name: 'mailjetEmail',
     });
 
-    console.log('✓ Email sent via Mailjet:', result);
+    console.log('✓ Email sent via Mailjet:');
 
     // Example 2: Email with custom ID and monitoring
-    const monitoredResult = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Monitored Email',
       html: '<p>This email includes custom tracking.</p>',
@@ -54,10 +54,10 @@ async function sendWithMailjet() {
       name: 'mailjetEmail',
     });
 
-    console.log('✓ Monitored email sent:', monitoredResult);
+    console.log('✓ Monitored email sent:');
 
     // Example 3: Email with template language
-    const templateResult = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Personalized Email',
       html: `
@@ -77,7 +77,7 @@ async function sendWithMailjet() {
       name: 'mailjetEmail',
     });
 
-    console.log('✓ Template email sent:', templateResult);
+    console.log('✓ Template email sent:');
 
     // Example 4: Bulk personalized emails
     const bulkMessages = [
@@ -102,7 +102,7 @@ async function sendWithMailjet() {
     const bulkHtml = '<p>Hi {{var:name}}! Your exclusive discount is {{var:discount}} off!</p>';
 
     for (const msg of bulkMessages) {
-      await Parrot.send({
+      await parrot.send({
         ...msg,
         html: bulkHtml,
       }, {
@@ -114,7 +114,7 @@ async function sendWithMailjet() {
     console.log('✓ Bulk personalized emails sent');
 
     // Example 5: Email with priority and campaign tracking
-    const campaignResult = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Summer Sale - Limited Time!',
       html: '<h1>Summer Sale!</h1><p>Get 30% off everything!</p>',
@@ -128,7 +128,7 @@ async function sendWithMailjet() {
       name: 'mailjetEmail',
     });
 
-    console.log('✓ Campaign email sent:', campaignResult);
+    console.log('✓ Campaign email sent:');
 
   } catch (error) {
     if (error.name === 'ValidationError') {

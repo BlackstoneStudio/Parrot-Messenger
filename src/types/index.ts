@@ -59,9 +59,9 @@ export interface TwilioSMS extends Defaults {
   };
 }
 export interface TelnyxSMS extends Defaults {
-	auth: {
-		apiKey: string
-	}
+  auth: {
+    apiKey: string;
+  };
 }
 export interface Mailchimp extends Defaults {
   auth: {
@@ -85,11 +85,7 @@ export interface SMTP extends Defaults {
   auth: SMTPTransport.Options;
 }
 
-interface TransportGeneric<
-  N extends string,
-  C extends 'email' | 'sms' | 'call',
-  S extends {}
-> {
+interface TransportGeneric<N extends string, C extends 'email' | 'sms' | 'call', S extends {}> {
   name: N;
   class: C;
   settings: S;
@@ -126,7 +122,7 @@ export type ParrotSettings = {
 export interface Mailer<T> {
   send(
     message: Envelope,
-    transport?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[]
+    transport?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
   ): void;
   templates: T;
 }

@@ -1,11 +1,13 @@
 import Mailchimp from '../../src/transports/mailchimp';
 import { Envelope, Mailchimp as IMailchimp } from '../../src/types';
 
-jest.mock('@mailchimp/mailchimp_transactional/src/index', () => jest.fn(() => ({
+jest.mock('@mailchimp/mailchimp_transactional/src/index', () =>
+  jest.fn(() => ({
     messages: {
       send: jest.fn().mockResolvedValue({ success: true }),
     },
-  })));
+  })),
+);
 
 describe('Mailchimp', () => {
   let mailchimpTransport: Mailchimp;
@@ -135,9 +137,7 @@ describe('Mailchimp', () => {
         html: '<p>Test HTML</p>',
       };
 
-      await expect(mailchimpTransport.send(message)).rejects.toThrow(
-        'Mailchimp API error'
-      );
+      await expect(mailchimpTransport.send(message)).rejects.toThrow('Mailchimp API error');
     });
   });
 });

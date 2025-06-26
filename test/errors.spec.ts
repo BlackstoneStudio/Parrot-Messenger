@@ -1,4 +1,15 @@
-import { ParrotError, ValidationError, TransportError, TemplateError, ConfigurationError } from '../src/errors';
+import {
+  ParrotError,
+  ValidationError,
+  TransportError,
+  TemplateError,
+  ConfigurationError,
+  isParrotError,
+  isValidationError,
+  isTransportError,
+  isTemplateError,
+  isConfigurationError,
+} from '../src/errors';
 
 describe('Error Classes', () => {
   describe('ParrotError', () => {
@@ -47,6 +58,85 @@ describe('Error Classes', () => {
       expect(error.message).toBe('Missing API key');
       expect(error.code).toBe('CONFIGURATION_ERROR');
       expect(error.name).toBe('ConfigurationError');
+    });
+  });
+
+  describe('Type Guards', () => {
+    const parrotError = new ParrotError('Test', 'TEST_CODE');
+    const validationError = new ValidationError('Test');
+    const transportError = new TransportError('Test', 'smtp');
+    const templateError = new TemplateError('Test');
+    const configError = new ConfigurationError('Test');
+    const regularError = new Error('Test');
+
+    describe('isParrotError', () => {
+      it('should identify ParrotError instances', () => {
+        expect(isParrotError(parrotError)).toBe(true);
+        expect(isParrotError(validationError)).toBe(true);
+        expect(isParrotError(transportError)).toBe(true);
+        expect(isParrotError(templateError)).toBe(true);
+        expect(isParrotError(configError)).toBe(true);
+      });
+
+      it('should return false for non-ParrotError instances', () => {
+        expect(isParrotError(regularError)).toBe(false);
+        expect(isParrotError(null)).toBe(false);
+        expect(isParrotError(undefined)).toBe(false);
+        expect(isParrotError('string')).toBe(false);
+        expect(isParrotError({})).toBe(false);
+      });
+    });
+
+    describe('isValidationError', () => {
+      it('should identify ValidationError instances', () => {
+        expect(isValidationError(validationError)).toBe(true);
+      });
+
+      it('should return false for other error types', () => {
+        expect(isValidationError(parrotError)).toBe(false);
+        expect(isValidationError(transportError)).toBe(false);
+        expect(isValidationError(regularError)).toBe(false);
+        expect(isValidationError(null)).toBe(false);
+      });
+    });
+
+    describe('isTransportError', () => {
+      it('should identify TransportError instances', () => {
+        expect(isTransportError(transportError)).toBe(true);
+      });
+
+      it('should return false for other error types', () => {
+        expect(isTransportError(parrotError)).toBe(false);
+        expect(isTransportError(validationError)).toBe(false);
+        expect(isTransportError(regularError)).toBe(false);
+        expect(isTransportError(null)).toBe(false);
+      });
+    });
+
+    describe('isTemplateError', () => {
+      it('should identify TemplateError instances', () => {
+        expect(isTemplateError(templateError)).toBe(true);
+      });
+
+      it('should return false for other error types', () => {
+        expect(isTemplateError(parrotError)).toBe(false);
+        expect(isTemplateError(validationError)).toBe(false);
+        expect(isTemplateError(regularError)).toBe(false);
+        expect(isTemplateError(null)).toBe(false);
+      });
+    });
+
+    describe('isConfigurationError', () => {
+      it('should identify ConfigurationError instances', () => {
+        expect(isConfigurationError(configError)).toBe(true);
+      });
+
+      it('should return false for other error types', () => {
+        expect(isConfigurationError(parrotError)).toBe(false);
+        expect(isConfigurationError(validationError)).toBe(false);
+        expect(isConfigurationError(regularError)).toBe(false);
+        expect(isConfigurationError(null)).toBe(false);
+      });
     });
   });
 });

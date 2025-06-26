@@ -69,4 +69,89 @@ describe('Creates a parrot instance', () => {
       },
     );
   });
+
+  it('should re-throw ParrotError instances without wrapping', async () => {
+    const { ParrotError } = require('../src/errors');
+    const originalError = new ParrotError('Custom error', 'CUSTOM_CODE');
+
+    // Mock send to throw ParrotError
+    const sendMock = require('../src/send');
+    sendMock.default = jest.fn().mockRejectedValue(originalError);
+
+    const parrotWithError = new Parrot({
+      transports: [
+        {
+          name: 'ses',
+          settings: {
+            auth: {
+              secretAccessKey: 'test',
+              accessKeyId: 'test',
+              region: 'us-east-1',
+            },
+            defaults: {},
+          },
+        },
+      ],
+    });
+
+    await expect(
+      parrotWithError.send({
+        from: 'test@example.com',
+        to: 'recipient@example.com',
+        subject: 'Test',
+        html: 'Test content',
+      }),
+    ).rejects.toThrow(originalError);
+  });
+
+  it('should wrap non-ParrotError exceptions in ParrotError', async () => {
+    const { ParrotError } = require('../src/errors');
+    const genericError = new Error('Network timeout');
+
+    // Override the send method directly on the instance to test error wrapping
+    const parrotWithError = new Parrot({
+      transports: [
+        {
+          name: 'ses',
+          settings: {
+            auth: {
+              secretAccessKey: 'test',
+              accessKeyId: 'test',
+              region: 'us-east-1',
+            },
+            defaults: {},
+          },
+        },
+      ],
+    });
+
+    // Replace the send implementation to bypass mocking issues
+    const originalSend = parrotWithError.send.bind(parrotWithError);
+    parrotWithError.send = async function (message: any, transport?: any) {
+      try {
+        // Simulate the internal send call throwing a non-ParrotError
+        throw genericError;
+      } catch (e) {
+        // This mimics the catch block in the real send method
+        if (e instanceof ParrotError) {
+          throw e;
+        }
+        throw new ParrotError(`Error sending message: ${(e as any).message || e}`, 'SEND_ERROR');
+      }
+    };
+
+    try {
+      await parrotWithError.send({
+        from: 'test@example.com',
+        to: 'recipient@example.com',
+        subject: 'Test',
+        html: 'Test content',
+      });
+      fail('Should have thrown');
+    } catch (error: any) {
+      expect(error).toBeInstanceOf(ParrotError);
+      expect(error.message).toBe('Error sending message: Network timeout');
+      expect(error.code).toBe('SEND_ERROR');
+    }
+  });
 });

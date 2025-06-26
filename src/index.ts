@@ -1,14 +1,12 @@
 import Templates from './templates';
 import send from './send';
 import getTransportClass from './utils';
-import {
-  Envelope, Mailer, ParrotSettings, Transport,
-} from './types';
+import { Envelope, Mailer, ParrotSettings, Transport } from './types';
 import { ParrotError } from './errors';
 
 /**
  * Parrot Messenger - Unified messaging library for Email, SMS, and Voice
- * 
+ *
  * @example
  * ```typescript
  * const parrot = new Parrot({
@@ -20,7 +18,7 @@ import { ParrotError } from './errors';
  *     }
  *   }]
  * });
- * 
+ *
  * await parrot.send({
  *   to: 'user@example.com',
  *   subject: 'Hello',
@@ -36,7 +34,7 @@ class Parrot implements Mailer<Templates> {
 
   /**
    * Create a new Parrot instance
-   * 
+   *
    * @param settings - Configuration for Parrot
    * @param settings.defaultClass - Default transport class ('email', 'sms', 'call')
    * @param settings.transports - Array of transport configurations
@@ -58,7 +56,7 @@ class Parrot implements Mailer<Templates> {
 
   /**
    * Send a message through configured transports
-   * 
+   *
    * @param message - Message envelope containing to, from, subject, content, etc.
    * @param transport - Optional transport filter to use specific transport(s)
    * @throws {ParrotError} When sending fails

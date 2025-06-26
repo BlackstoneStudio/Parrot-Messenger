@@ -9,7 +9,7 @@ import Parrot from '../src';
 async function sendSMSExample() {
   try {
     // Initialize Parrot with AWS SNS transport
-    Parrot.init({
+    const parrot = new Parrot({
       transports: [
         {
           name: 'sns',
@@ -30,7 +30,7 @@ async function sendSMSExample() {
     });
 
     // Send a simple SMS
-    const result = await Parrot.send({
+    await parrot.send({
       to: '+1234567890', // Replace with actual phone number
       text: 'Hello from Parrot Messenger v1.1.0!',
     }, {
@@ -38,10 +38,10 @@ async function sendSMSExample() {
       name: 'sns',
     });
 
-    console.log('SMS sent successfully:', result);
+    console.log('SMS sent successfully!');
 
     // Send SMS with custom attributes
-    const resultWithAttributes = await Parrot.send({
+    await parrot.send({
       to: '+1234567890',
       text: 'Your verification code is: 123456',
       // AWS SNS specific attributes can be passed through
@@ -54,7 +54,7 @@ async function sendSMSExample() {
       name: 'sns',
     });
 
-    console.log('SMS with attributes sent:', resultWithAttributes);
+    console.log('SMS with attributes sent!');
 
   } catch (error) {
     // Enhanced error handling with custom error types (v1.1.0)

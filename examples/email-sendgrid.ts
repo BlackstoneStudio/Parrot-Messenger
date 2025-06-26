@@ -7,7 +7,7 @@ import Parrot from '../src';
 
 async function sendWithSendGrid() {
   // Initialize Parrot with SendGrid
-  Parrot.init({
+  const parrot = new Parrot({
     transports: [
       {
         name: 'sendgrid',
@@ -26,7 +26,7 @@ async function sendWithSendGrid() {
 
   try {
     // Example 1: Simple email
-    const result = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Hello from SendGrid',
       text: 'This email was sent using SendGrid via Parrot Messenger.',
@@ -36,10 +36,10 @@ async function sendWithSendGrid() {
       name: 'sendgrid',
     });
 
-    console.log('✓ Email sent via SendGrid:', result);
+    console.log('✓ Email sent via SendGrid:');
 
     // Example 2: Email with dynamic template
-    const templateResult = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Dynamic Template Email',
       templateId: 'd-1234567890abcdef', // Your SendGrid template ID
@@ -53,10 +53,10 @@ async function sendWithSendGrid() {
       name: 'sendgrid',
     });
 
-    console.log('✓ Template email sent:', templateResult);
+    console.log('✓ Template email sent:');
 
     // Example 3: Email with categories and custom args
-    const categorizedResult = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Categorized Email',
       html: '<p>This email includes categories for analytics.</p>',
@@ -70,10 +70,10 @@ async function sendWithSendGrid() {
       name: 'sendgrid',
     });
 
-    console.log('✓ Categorized email sent:', categorizedResult);
+    console.log('✓ Categorized email sent:');
 
     // Example 4: Email with attachment and inline image
-    const richResult = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Email with Rich Content',
       html: '<h1>Newsletter</h1><img src="cid:logo"><p>Check out our latest updates!</p>',
@@ -97,7 +97,7 @@ async function sendWithSendGrid() {
       name: 'sendgrid',
     });
 
-    console.log('✓ Rich content email sent:', richResult);
+    console.log('✓ Rich content email sent:');
 
     // Example 5: Personalized batch email
     const personalizations = [
@@ -119,7 +119,7 @@ async function sendWithSendGrid() {
       },
     ];
 
-    const batchResult = await Parrot.send({
+    await parrot.send({
       personalizations,
       from: 'sales@example.com',
       html: '<p>Hi -name-! Your exclusive discount is -discount- off!</p>',
@@ -128,7 +128,7 @@ async function sendWithSendGrid() {
       name: 'sendgrid',
     });
 
-    console.log('✓ Batch personalized email sent:', batchResult);
+    console.log('✓ Batch personalized email sent:');
 
   } catch (error) {
     if (error.name === 'ValidationError') {

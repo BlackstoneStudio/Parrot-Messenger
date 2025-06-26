@@ -6,8 +6,8 @@ import Parrot from '../src';
  */
 
 async function basicUsage() {
-  // Step 1: Initialize Parrot with transport configurations
-  Parrot.init({
+  // Step 1: Create a Parrot instance with transport configurations
+  const parrot = new Parrot({
     transports: [
       {
         name: 'ses',
@@ -27,7 +27,7 @@ async function basicUsage() {
 
   // Step 2: Send a simple email
   try {
-    const result = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Hello from Parrot!',
       text: 'This is a plain text email.',
@@ -37,20 +37,20 @@ async function basicUsage() {
       name: 'ses',
     });
 
-    console.log('Email sent successfully:', result);
+    console.log('Email sent successfully!');
   } catch (error) {
     console.error('Failed to send email:', error);
   }
 
   // Step 3: Using templates
-  Parrot.templates.register({
+  parrot.templates.register({
     name: 'welcome',
     html: '<h1>Welcome {{name}}!</h1><p>We are glad to have you.</p>',
     text: 'Welcome {{name}}! We are glad to have you.',
   });
 
   try {
-    await Parrot.templates.send(
+    await parrot.templates.send(
       'welcome',
       {
         to: 'newuser@example.com',
@@ -67,8 +67,8 @@ async function basicUsage() {
 
 // Multiple transports example
 async function multipleTransports() {
-  // Initialize with multiple transports for fallback
-  Parrot.init({
+  // Create instance with multiple transports for fallback
+  const parrot = new Parrot({
     transports: [
       {
         name: 'ses',
@@ -99,7 +99,7 @@ async function multipleTransports() {
   });
 
   // Send an email
-  await Parrot.send({
+  await parrot.send({
     to: 'user@example.com',
     subject: 'Multi-transport example',
     text: 'This email was sent using Parrot Messenger',
@@ -108,7 +108,7 @@ async function multipleTransports() {
   }); // Will use first available email transport (ses)
 
   // Send an SMS
-  await Parrot.send({
+  await parrot.send({
     to: '+1234567890',
     text: 'Your verification code is: 123456',
   }, {

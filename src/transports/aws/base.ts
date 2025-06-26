@@ -51,11 +51,7 @@ export abstract class BaseAWSTransport<T> implements GenericTransport<T> {
       statusCode: error.$metadata?.httpStatusCode,
       requestId: error.$metadata?.requestId,
     };
-    
-    throw new TransportError(
-      `AWS ${transportName} error: ${message}`,
-      transportName,
-      details
-    );
+
+    throw new TransportError(`AWS ${transportName} error: ${message}`, transportName, details);
   }
 }

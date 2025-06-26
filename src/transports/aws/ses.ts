@@ -8,7 +8,7 @@ class SES extends BaseAWSTransport<Transporter> {
 
   constructor(private settings: AWSSESConfig) {
     super(settings);
-    
+
     const ses = new aws.SES({
       apiVersion: '2010-12-01',
       region: this.region,

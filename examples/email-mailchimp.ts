@@ -7,7 +7,7 @@ import Parrot from '../src';
 
 async function sendWithMailchimp() {
   // Initialize Parrot with Mailchimp/Mandrill
-  Parrot.init({
+  const parrot = new Parrot({
     transports: [
       {
         name: 'mailchimp',
@@ -25,7 +25,7 @@ async function sendWithMailchimp() {
 
   try {
     // Example 1: Simple transactional email
-    const result = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Transaction Receipt',
       text: 'Thank you for your purchase!',
@@ -35,10 +35,10 @@ async function sendWithMailchimp() {
       name: 'mailchimp',
     });
 
-    console.log('✓ Email sent via Mailchimp/Mandrill:', result);
+    console.log('✓ Email sent via Mailchimp/Mandrill');
 
     // Example 2: Email with merge variables
-    const mergeResult = await Parrot.send({
+    const mergeResult = await parrot.send({
       to: 'customer@example.com',
       subject: 'Welcome *|FNAME|*!',
       html: `
@@ -62,10 +62,10 @@ async function sendWithMailchimp() {
       name: 'mailchimp',
     });
 
-    console.log('✓ Merge variables email sent:', mergeResult);
+    console.log('✓ Merge variables email sent');
 
     // Example 3: Email with metadata and tags
-    const taggedResult = await Parrot.send({
+    const taggedResult = await parrot.send({
       to: 'recipient@example.com',
       subject: 'Tagged Transaction Email',
       html: '<p>This email includes tags and metadata for tracking.</p>',
@@ -80,10 +80,10 @@ async function sendWithMailchimp() {
       name: 'mailchimp',
     });
 
-    console.log('✓ Tagged email sent:', taggedResult);
+    console.log('✓ Tagged email sent');
 
     // Example 4: Using a Mandrill template
-    const templateResult = await Parrot.send({
+    const templateResult = await parrot.send({
       to: 'recipient@example.com',
       subject: 'Order Confirmation',
       template_name: 'order-confirmation',
@@ -100,10 +100,10 @@ async function sendWithMailchimp() {
       name: 'mailchimp',
     });
 
-    console.log('✓ Template email sent:', templateResult);
+    console.log('✓ Template email sent');
 
     // Example 5: Important email with high priority
-    const importantResult = await Parrot.send({
+    const importantResult = await parrot.send({
       to: 'recipient@example.com',
       subject: 'Important: Action Required',
       html: '<p>This is an important email that requires immediate attention.</p>',
@@ -117,7 +117,7 @@ async function sendWithMailchimp() {
       name: 'mailchimp',
     });
 
-    console.log('✓ Important email sent:', importantResult);
+    console.log('✓ Important email sent');
 
   } catch (error) {
     if (error.name === 'ValidationError') {

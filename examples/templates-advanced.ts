@@ -1,4 +1,4 @@
-import Parrot from '../src';
+import { Parrot } from '../src';
 
 /**
  * Advanced Template Engine Example
@@ -7,7 +7,7 @@ import Parrot from '../src';
  */
 
 async function setupTransports() {
-  Parrot.init({
+  return new Parrot({
     transports: [
       {
         name: 'ses',
@@ -39,12 +39,12 @@ async function setupTransports() {
 }
 
 async function demonstrateTemplates() {
-  await setupTransports();
+  const parrot = await setupTransports();
 
   // Example 1: Basic HTML Template with Handlebars
   console.log('\n--- Example 1: Basic HTML Template ---');
   
-  Parrot.templates.register({
+  parrot.templates.register({
     name: 'welcome-email',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -62,18 +62,10 @@ async function demonstrateTemplates() {
         </ul>
       </div>
     `,
-    text: `
-Welcome {{userName}}!
-Thank you for joining our platform on {{joinDate}}.
-{{#if isPremium}}You're a Premium member!{{/if}}
-Features:
-{{#each features}}- {{this}}
-{{/each}}
-    `,
   });
 
   try {
-    await Parrot.templates.send(
+    await parrot.templates.send(
       'welcome-email',
       {
         to: 'newuser@example.com',
@@ -95,8 +87,9 @@ Features:
   // Example 2: Async Template with Remote Data
   console.log('\n--- Example 2: Async Template with Remote Data ---');
   
-  Parrot.templates.register({
+  parrot.templates.register({
     name: 'weather-notification',
+    html: 'Current temperature in NYC: {{temperature}}°C, Wind: {{windspeed}} km/h',
     request: {
       method: 'GET',
       url: 'https://api.open-meteo.com/v1/forecast',
@@ -110,12 +103,10 @@ Features:
   });
 
   try {
-    const weatherData = await Parrot.templates.send(
+    await parrot.templates.send(
       'weather-notification',
       {
         to: '+1234567890',
-        // The template data comes from the API response
-        text: 'Current temperature in NYC: {{temperature}}°C, Wind: {{windspeed}} km/h',
       },
       {}, // No additional data needed, it comes from the API
       { class: 'sms', name: 'twilioSMS' }
@@ -154,7 +145,7 @@ Features:
 
   // Register templates for each language
   Object.entries(translations).forEach(([lang, texts]) => {
-    Parrot.templates.register({
+    parrot.templates.register({
       name: `order-confirmation-${lang}`,
       html: `
         <div style="font-family: Arial, sans-serif;">
@@ -164,7 +155,6 @@ Features:
           <p>${texts.thank}</p>
         </div>
       `,
-      text: `${texts.greeting}\n${texts.message}\n${texts.total}\n${texts.thank}`,
     });
   });
 
@@ -177,7 +167,7 @@ Features:
 
   for (const order of orders) {
     try {
-      await Parrot.templates.send(
+      await parrot.templates.send(
         `order-confirmation-${order.lang}`,
         {
           to: order.email,
@@ -199,7 +189,7 @@ Features:
   // Example 4: Dynamic Template with Complex Logic
   console.log('\n--- Example 4: Dynamic Template with Complex Logic ---');
   
-  Parrot.templates.register({
+  parrot.templates.register({
     name: 'invoice-template',
     html: `
       <style>
@@ -233,17 +223,17 @@ Features:
             <tr>
               <td>{{name}}</td>
               <td>{{quantity}}</td>
-              <td>${{price}}</td>
-              <td>${{multiply quantity price}}</td>
+              <td>\${{price}}</td>
+              <td>\${{multiply quantity price}}</td>
             </tr>
             {{/each}}
           </tbody>
         </table>
         
         <p class="total">
-          Subtotal: ${{invoice.subtotal}}<br>
-          Tax ({{invoice.taxRate}}%): ${{invoice.tax}}<br>
-          <strong>Total: ${{invoice.total}}</strong>
+          Subtotal: \${{invoice.subtotal}}<br>
+          Tax ({{invoice.taxRate}}%): \${{invoice.tax}}<br>
+          <strong>Total: \${{invoice.total}}</strong>
         </p>
         
         {{#if invoice.isPastDue}}
@@ -280,16 +270,16 @@ Features:
   };
 
   try {
-    await Parrot.templates.send(
+    await parrot.templates.send(
       'invoice-template',
       {
         to: invoiceData.customer.email,
         subject: `Invoice ${invoiceData.invoice.number}`,
-        attachment: {
+        attachments: [{
           filename: `invoice-${invoiceData.invoice.number}.pdf`,
           // In a real scenario, you'd generate a PDF here
           content: Buffer.from('Invoice PDF content would go here'),
-        },
+        }],
       },
       invoiceData,
       { class: 'email', name: 'ses' }
@@ -302,13 +292,14 @@ Features:
   // Example 5: Template with External API and Error Handling
   console.log('\n--- Example 5: Template with External API ---');
   
-  Parrot.templates.register({
+  parrot.templates.register({
     name: 'user-activity-report',
+    html: 'Report generated with ID: {{.}}',
     request: {
       method: 'POST',
       url: 'https://jsonplaceholder.typicode.com/posts',
       data: {
-        userId: '{{userId}}',
+        userId: 'USER_ID_PLACEHOLDER',
         title: 'Activity Report',
         body: 'Fetching user activity...',
       },
@@ -320,12 +311,11 @@ Features:
   });
 
   try {
-    await Parrot.templates.send(
+    await parrot.templates.send(
       'user-activity-report',
       {
         to: 'admin@example.com',
         subject: 'Daily Activity Report',
-        text: 'Report generated with ID: {{response}}',
       },
       { userId: 123 },
       { class: 'email', name: 'ses' }

@@ -1,6 +1,4 @@
-import {
-  Envelope, GenericTransport, Settings, Transport,
-} from './types';
+import { Envelope, GenericTransport, Settings, Transport } from './types';
 import { validateEnvelope } from './validation';
 import { ConfigurationError, ValidationError } from './errors';
 import TransportRegistry from './registry/TransportRegistry';
@@ -43,36 +41,43 @@ const send = async (
   });
 
   if (!matchServices.length) {
-    throw new ConfigurationError(`Transport ${
-      Array.isArray(transportFilter) ? transportFilter.map((f) => f.name).join(', ') : transportFilter?.name
-    } not found`);
+    throw new ConfigurationError(
+      `Transport ${
+        Array.isArray(transportFilter)
+          ? transportFilter.map((f) => f.name).join(', ')
+          : transportFilter?.name
+      } not found`,
+    );
   }
 
   const registry = TransportRegistry.getInstance();
 
-  await Promise.all(matchServices.map(async (transport) => {
-    if (!registry.has(transport.name)) {
-      throw new ConfigurationError(`Transport ${transport.name} not found & no mailer function available`);
-    }
-    const Mailer = registry.get(transport.name);
-
-    const messageData: Envelope = {
-      ...transport.settings.defaults,
-      ...message,
-    };
-
-    try {
-      validateEnvelope(messageData, transport.class);
-    } catch (validationError) {
-      if (validationError instanceof ValidationError) {
-        throw validationError;
+  await Promise.all(
+    matchServices.map(async (transport) => {
+      if (!registry.has(transport.name)) {
+        throw new ConfigurationError(
+          `Transport ${transport.name} not found & no mailer function available`,
+        );
       }
-      throw new ValidationError(`Validation Error: ${validationError.message}`);
-    }
+      const Mailer = registry.get(transport.name);
 
-    await (new Mailer(transport.settings) as GenericTransport)
-      .send(messageData);
-  }));
+      const messageData: Envelope = {
+        ...transport.settings.defaults,
+        ...message,
+      };
+
+      try {
+        validateEnvelope(messageData, transport.class);
+      } catch (validationError) {
+        if (validationError instanceof ValidationError) {
+          throw validationError;
+        }
+        throw new ValidationError(`Validation Error: ${validationError.message}`);
+      }
+
+      await (new Mailer(transport.settings) as GenericTransport).send(messageData);
+    }),
+  );
 };
 
 export default send;

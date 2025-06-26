@@ -7,7 +7,7 @@ import Parrot from '../src';
 
 async function sendWithSMTP() {
   // Initialize Parrot with SMTP
-  Parrot.init({
+  const parrot = new Parrot({
     transports: [
       {
         name: 'smtp',
@@ -29,7 +29,7 @@ async function sendWithSMTP() {
 
   try {
     // Example 1: Simple email
-    const result = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'SMTP Test Email',
       text: 'This email was sent using SMTP via Parrot Messenger.',
@@ -39,10 +39,10 @@ async function sendWithSMTP() {
       name: 'smtp',
     });
 
-    console.log('✓ Email sent via SMTP:', result);
+    console.log('✓ Email sent via SMTP:');
 
     // Example 2: Email with attachment
-    const attachmentResult = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'SMTP Email with Attachment',
       html: '<p>Please find the report attached.</p>',
@@ -56,10 +56,10 @@ async function sendWithSMTP() {
       name: 'smtp',
     });
 
-    console.log('✓ Email with attachment sent:', attachmentResult);
+    console.log('✓ Email with attachment sent:');
 
     // Example 3: Email with multiple recipients and CC/BCC
-    const multiRecipientResult = await Parrot.send({
+    await parrot.send({
       to: ['user1@example.com', 'user2@example.com'],
       cc: 'manager@example.com',
       bcc: 'archive@example.com',
@@ -70,10 +70,10 @@ async function sendWithSMTP() {
       name: 'smtp',
     });
 
-    console.log('✓ Multi-recipient email sent:', multiRecipientResult);
+    console.log('✓ Multi-recipient email sent:');
 
     // Example 4: Email with custom headers
-    const customHeaderResult = await Parrot.send({
+    await parrot.send({
       to: 'recipient@example.com',
       subject: 'Email with Custom Headers',
       html: '<p>This email includes custom headers.</p>',
@@ -87,7 +87,7 @@ async function sendWithSMTP() {
       name: 'smtp',
     });
 
-    console.log('✓ Email with custom headers sent:', customHeaderResult);
+    console.log('✓ Email with custom headers sent:');
 
   } catch (error) {
     if (error.name === 'ValidationError') {
