@@ -14,6 +14,9 @@
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-100%25-blue" />
   <img alt="Node.js Version" src="https://img.shields.io/badge/node-%3E%3D18-brightgreen" />
   <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  <a href="https://scorecard.dev/viewer/?uri=github.com/BlackstoneStudio/Parrot-Messenger" target="_blank">
+    <img alt="OpenSSF Scorecard" src="https://api.scorecard.dev/projects/github.com/BlackstoneStudio/Parrot-Messenger/badge" />
+  </a>
 </p>
 
 ## Table of Contents
