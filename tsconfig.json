@@ -1,19 +1,27 @@
 {
-	"compilerOptions": {
-	  "moduleResolution": "node",
+  "compilerOptions": {
+    "moduleResolution": "node",
     "esModuleInterop": true,
-	  "module": "CommonJS",
-	  "target": "ES2015",
-	  "declaration": true,
-	  "outDir": "dist"
-	},
-	"include": [
-	  "src/**/*",
-    "test/index.spec.ts"	
-  ],
-	"exclude": [
-		"dist",
-		"node_modules",
-		"test"
-	]
+    "module": "CommonJS",
+    "target": "ES2020",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "strict": true,
+    /* Strict Type-Checking Options - All enabled with strict: true */
+    "noImplicitAny": true /* Enable error reporting for expressions and declarations with an implied 'any' type. */,
+    "strictNullChecks": true /* When type checking, take into account 'null' and 'undefined'. */,
+    "strictFunctionTypes": true /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */,
+    "strictBindCallApply": true /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */,
+    "strictPropertyInitialization": true /* Check for class properties that are declared but not set in the constructor. */,
+    "noImplicitThis": true /* Enable error reporting when 'this' is given the type 'any'. */,
+    "alwaysStrict": true /* Ensure 'use strict' is always emitted. */,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "lib": ["ES2020"]
+  },
+  "include": ["src/**/*", "test/**/*"],
+  "exclude": ["dist", "node_modules"]
 }

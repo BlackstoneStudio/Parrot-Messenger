@@ -1,0 +1,49 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Load .env file if it exists
+if [ -f .env ]; then
+  export $(cat .env | grep -v '^#' | xargs)
+fi
+
+# Run lint-staged for code formatting
+npx lint-staged
+
+# Run ESLint check
+echo "Running ESLint check..."
+npm run lint
+if [ $? -ne 0 ]; then
+  echo "❌ ESLint check failed"
+  exit 1
+fi
+echo "✅ ESLint check passed"
+
+# Run Prettier check
+echo "Running Prettier format check..."
+npm run format:check
+if [ $? -ne 0 ]; then
+  echo "❌ Prettier format check failed"
+  exit 1
+fi
+echo "✅ Prettier format check passed"
+
+# Run TypeScript type check
+echo "Running TypeScript type check..."
+npm run typecheck
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript type check failed"
+  exit 1
+fi
+echo "✅ TypeScript type check passed"
+
+# Update coverage badge if explicitly requested via environment variable
+if [ "$UPDATE_COVERAGE_BADGE" = "true" ] && [ -z "$CI" ]; then
+  echo "Updating coverage badge..."
+  npm run coverage:badge
+  
+  # Stage the README if it was modified
+  if git diff --name-only | grep -q "README.md"; then
+    git add README.md
+    echo "✅ Coverage badge updated in README.md"
+  fi
+fi

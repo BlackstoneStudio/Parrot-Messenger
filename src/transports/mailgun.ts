@@ -1,11 +1,17 @@
 import formData from 'form-data';
-import Mailgun from 'mailgun.js';
 // eslint-disable-next-line import/no-unresolved
-import Client from 'mailgun.js/client';
+import Mailgun from 'mailgun.js';
 import { Envelope, GenericTransport, Mailgun as IMailgun } from '../types';
+import { TransportError } from '../errors';
+
+interface MailgunClient {
+  messages: {
+    create(domain: string, data: Record<string, unknown>): Promise<unknown>;
+  };
+}
 
 class MailgunTransport implements GenericTransport {
-  transport: Client;
+  transport: MailgunClient;
 
   private mailgun = new Mailgun(formData);
 
@@ -21,16 +27,26 @@ class MailgunTransport implements GenericTransport {
       ...this.settings.defaults,
       ...message,
     };
-    const data: any = {
+    const data: Record<string, unknown> = {
       from: mailData.from,
       to: mailData.to,
       subject: mailData.subject,
       text: mailData.text,
       html: mailData.html,
-      attachments: mailData.attachments,
     };
-    if (mailData.attachments) data.attachment = mailData.attachments;
-    await this.transport.messages.create(this.settings.auth.domain, data);
+    if (mailData.attachments) {
+      data.attachment = mailData.attachments;
+    }
+
+    try {
+      await this.transport.messages.create(this.settings.auth.domain, data);
+    } catch (error) {
+      throw new TransportError(
+        `Mailgun error: ${error instanceof Error ? error.message : String(error)}`,
+        'mailgun',
+        { originalError: error },
+      );
+    }
   }
 }
 

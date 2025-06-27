@@ -1,17 +1,22 @@
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import * as aws from '@aws-sdk/client-ses';
 import { Transporter, createTransport } from 'nodemailer';
-import { AWSSESConfig, Envelope, GenericTransport } from '../../types';
+import { AWSSESConfig, Envelope } from '../../types';
+import { BaseAWSTransport } from './base';
 
-class SES implements GenericTransport<Transporter> {
-  private sesClient: SESClient;
-
+class SES extends BaseAWSTransport<Transporter> {
   transport: Transporter;
 
   constructor(private settings: AWSSESConfig) {
-    this.sesClient = new SESClient(settings.auth);
+    super(settings);
+
+    const ses = new aws.SES({
+      apiVersion: '2010-12-01',
+      region: this.region,
+      credentials: this.credentials,
+    });
 
     this.transport = createTransport({
-      SES: { ses: this.sesClient },
+      SES: { ses, aws },
     });
   }
 
@@ -21,18 +26,11 @@ class SES implements GenericTransport<Transporter> {
       ...envelope,
     };
 
-    const sendEmailCommand = new SendEmailCommand({
-      Source: request.from,
-      Destination: { ToAddresses: [request.to] },
-      Message: {
-        Subject: { Data: request.subject },
-        Body: {
-          Html: { Data: request.html },
-        },
-      },
-    });
-
-    await this.sesClient.send(sendEmailCommand);
+    try {
+      await this.transport.sendMail(request);
+    } catch (error) {
+      BaseAWSTransport.wrapError(error, 'SES');
+    }
   }
 }
 

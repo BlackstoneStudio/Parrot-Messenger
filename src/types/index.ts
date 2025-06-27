@@ -1,4 +1,3 @@
-import { SESClientConfig } from '@aws-sdk/client-ses';
 import Mail from 'nodemailer/lib/mailer';
 import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { voices } from '../constants/voices';
@@ -28,24 +27,33 @@ export interface GenericTransport<T extends unknown = {}> {
   send(envelope: Envelope): Promise<void>;
 }
 
-export type Defaults = {
-  defaults?: Envelope;
-};
-export interface AWSSESConfig extends Defaults {
-  auth: SESClientConfig;
+export interface RetryOptions {
+  maxRetries?: number;
+  initialDelay?: number;
+  maxDelay?: number;
+  factor?: number;
 }
 
-// export interface MailjetEmail extends Defaults {
-// 	auth: {
-// 		apiKeyPublic: string
-// 		apiKeyPrivate: string
-// 	}
-// }
-// export interface MailjetSMS extends Defaults {
-// 	auth: {
-// 		apiKey: string
-// 	}
-// }
+export type Defaults = {
+  defaults?: Envelope;
+  retryOptions?: RetryOptions;
+};
+export interface AWSSESConfig extends Defaults {
+  auth: {
+    region: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+}
+export interface AWSSNS extends Defaults {
+  auth: {
+    region: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+  smsType?: 'Transactional' | 'Promotional';
+}
+
 export interface TwilioCall extends Defaults {
   auth: {
     sid: string;
@@ -56,6 +64,11 @@ export interface TwilioSMS extends Defaults {
   auth: {
     sid: string;
     token: string;
+  };
+}
+export interface TelnyxSMS extends Defaults {
+  auth: {
+    apiKey: string;
   };
 }
 export interface Mailchimp extends Defaults {
@@ -80,10 +93,28 @@ export interface SMTP extends Defaults {
   auth: SMTPTransport.Options;
 }
 
+export interface Slack extends Defaults {
+  auth: {
+    token?: string;
+    webhook?: string;
+  };
+  defaultChannel?: string;
+}
+
+export interface Telegram extends Defaults {
+  auth: {
+    botToken: string;
+  };
+  defaultChatId?: string | number;
+  parseMode?: 'HTML' | 'Markdown' | 'MarkdownV2';
+  disableWebPagePreview?: boolean;
+  disableNotification?: boolean;
+}
+
 interface TransportGeneric<
   N extends string,
-  C extends 'email' | 'sms' | 'call',
-  S extends {}
+  C extends 'email' | 'sms' | 'call' | 'chat',
+  S extends {},
 > {
   name: N;
   class: C;
@@ -92,14 +123,16 @@ interface TransportGeneric<
 
 export type Transport =
   | TransportGeneric<'ses', 'email', AWSSESConfig>
-  // | TransportGeneric<'mailjetEmail', 'email', MailjetEmail>
-  // | TransportGeneric<'mailjetSMS', 'sms', MailjetSMS>
+  | TransportGeneric<'sns', 'sms', AWSSNS>
   | TransportGeneric<'twilioSMS', 'sms', TwilioSMS>
+  | TransportGeneric<'telnyxSMS', 'sms', TelnyxSMS>
   | TransportGeneric<'twilioCall', 'call', TwilioCall>
   | TransportGeneric<'mailchimp', 'email', Mailchimp>
   | TransportGeneric<'mailgun', 'email', Mailgun>
   | TransportGeneric<'sendgrid', 'email', Sendgrid>
-  | TransportGeneric<'smtp', 'email', SMTP>;
+  | TransportGeneric<'smtp', 'email', SMTP>
+  | TransportGeneric<'slack', 'chat', Slack>
+  | TransportGeneric<'telegram', 'chat', Telegram>;
 
 export type Settings = {
   defaultClass?: string;
@@ -109,12 +142,19 @@ export type Settings = {
 export type ParrotSettings = {
   defaultClass?: string;
   transports: Omit<Transport, 'class'>[];
+  templateUrlValidation?: {
+    allowedProtocols?: string[];
+    allowedHosts?: string[];
+    allowedPorts?: number[];
+    blockPrivateIPs?: boolean;
+    timeout?: number;
+  };
 };
 
 export interface Mailer<T> {
   send(
     message: Envelope,
-    transport?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[]
+    transport?: Omit<Transport, 'settings'> | Omit<Transport, 'settings'>[],
   ): void;
   templates: T;
 }

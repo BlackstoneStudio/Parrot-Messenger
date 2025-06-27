@@ -1,6 +1,7 @@
 import * as nodemailer from 'nodemailer';
 import * as SMTPTransport from 'nodemailer/lib/smtp-transport';
 import { Envelope, GenericTransport, SMTP as ISMTP } from '../types';
+import { TransportError } from '../errors';
 
 class SMTP implements GenericTransport<nodemailer.Transporter<SMTPTransport.SentMessageInfo>> {
   transport: nodemailer.Transporter<SMTPTransport.SentMessageInfo>;
@@ -15,13 +16,22 @@ class SMTP implements GenericTransport<nodemailer.Transporter<SMTPTransport.Sent
       ...message,
     };
 
-    await this.transport.sendMail({
-      from: request.from,
-      to: request.to,
-      subject: request.subject,
-      html: request.html,
-      attachments: request.attachments,
-    });
+    try {
+      await this.transport.sendMail({
+        from: request.from,
+        to: request.to,
+        subject: request.subject,
+        text: request.text,
+        html: request.html,
+        attachments: request.attachments,
+      });
+    } catch (error) {
+      throw new TransportError(
+        `SMTP error: ${error instanceof Error ? error.message : String(error)}`,
+        'smtp',
+        { originalError: error },
+      );
+    }
   }
 }
 

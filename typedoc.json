@@ -1,0 +1,27 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "Parrot Messenger API Documentation",
+  "entryPoints": ["./src/index.ts"],
+  "out": "./docs/api",
+  "tsconfig": "./tsconfig.json",
+  "excludePrivate": true,
+  "excludeProtected": false,
+  "excludeExternals": true,
+  "excludeInternal": true,
+  "includeVersion": true,
+  "hideGenerator": true,
+  "readme": "./README.md",
+  "navigationLinks": {
+    "GitHub": "https://github.com/BlackstoneStudio/Parrot-Messenger",
+    "NPM": "https://www.npmjs.com/package/parrot-messenger"
+  },
+  "categorizeByGroup": true,
+  "defaultCategory": "Other",
+  "categoryOrder": ["Transports", "Types", "Templates", "Errors", "Other"],
+  "theme": "default",
+  "lightHighlightTheme": "github-light",
+  "darkHighlightTheme": "github-dark",
+  "markedOptions": {
+    "mangle": false
+  }
+}
