@@ -137,4 +137,38 @@ describe('Twilio SMS Transport', () => {
       body: 'HTML content',
     });
   });
+
+  it('should throw TransportError when Twilio API fails with Error instance', async () => {
+    const error = new Error('Twilio API error');
+    mockCreate.mockRejectedValue(error);
+
+    await expect(
+      transport.send({
+        to: '+15559876543',
+        text: 'Test message',
+      }),
+    ).rejects.toThrow('Twilio SMS error: Twilio API error');
+  });
+
+  it('should throw TransportError when Twilio API fails with non-Error value', async () => {
+    mockCreate.mockRejectedValue('String error');
+
+    await expect(
+      transport.send({
+        to: '+15559876543',
+        text: 'Test message',
+      }),
+    ).rejects.toThrow('Twilio SMS error: String error');
+  });
+
+  it('should throw TransportError when Twilio API fails with object', async () => {
+    mockCreate.mockRejectedValue({ code: 'ERROR_CODE', message: 'Object error' });
+
+    await expect(
+      transport.send({
+        to: '+15559876543',
+        text: 'Test message',
+      }),
+    ).rejects.toThrow('Twilio SMS error: [object Object]');
+  });
 });
