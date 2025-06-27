@@ -75,13 +75,51 @@ jobs:
           git config --global user.name "semantic-release-bot"
           git config --global user.email "semantic-release-bot@martynus.net"
           
-          # Run semantic-release
-          if [ "${{ steps.check_first_release.outputs.first_release }}" = "true" ]; then
-            echo "Running semantic-release for new version..."
+          # Check if version tag already exists
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          if git rev-parse "v${CURRENT_VERSION}" >/dev/null 2>&1; then
+            echo "Tag v${CURRENT_VERSION} already exists, running semantic-release normally"
             npx semantic-release
           else
-            echo "Running semantic-release normally..."
-            npx semantic-release
+            # Check if there are any previous tags
+            LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+            if [ -z "$LAST_TAG" ] || [ "$LAST_TAG" != "v${CURRENT_VERSION}" ]; then
+              echo "Package version ($CURRENT_VERSION) is ahead of tags ($LAST_TAG)"
+              echo "Creating release for existing version..."
+              
+              # Generate release notes from commits since last tag
+              if [ -z "$LAST_TAG" ]; then
+                COMMITS=$(git log --format="- %s" --no-merges)
+              else
+                COMMITS=$(git log ${LAST_TAG}..HEAD --format="- %s" --no-merges)
+              fi
+              
+              # Create release notes
+              cat > RELEASE_NOTES_CI.md << EOF
+          # Release v${CURRENT_VERSION}
+
+          ## Changes
+
+          ${COMMITS}
+
+          ---
+          *Released by CI/CD pipeline*
+          EOF
+              
+              # Create GitHub release
+              gh release create "v${CURRENT_VERSION}" \
+                --title "Release v${CURRENT_VERSION}" \
+                --notes-file RELEASE_NOTES_CI.md
+              
+              # Publish to npm
+              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+              npm publish
+              
+              echo "Successfully released v${CURRENT_VERSION}"
+            else
+              echo "Running semantic-release normally"
+              npx semantic-release
+            fi
           fi
 
       - name: Summary

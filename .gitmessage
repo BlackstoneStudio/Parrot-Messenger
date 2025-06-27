@@ -1,35 +1,27 @@
-# TYPE (Issue) Brief summary (imperative mood, under 50 chars)
-
-# Optional longer description (wrap at 72 chars)
-# - Explain WHY this change is being made
-# - Reference any related issues or context
-# - Use bullet points for multiple items
-
-# Issue Reference:
-# - Use #123 for GitHub issues
-# - Use PROJ-123 for external tracking systems
-# - Use NA for commits without associated issues
-
-# Commit Types:
-# BREAK  - Breaking changes
-# CI     - Changes in CI or docker files  
-# DEPEN  - Changes in project dependencies
-# DOCS   - Documentation changes
-# ESLINT - Eslint/stylelint rule changes
-# FEAT   - New feature
-# FILES  - File/folder structure changes
-# FIX    - Bug fixes
-# FUNC   - Functionality changes to existing components
-# STYLE  - Style file changes
-# TEST   - Test additions/edits
-# DB     - Database-related changes
-
-# Examples:
-# FEAT (#123) Add SMS support for Telnyx provider
-# FIX (PROJ-456) Resolve authentication error
-# DOCS (NA) Update API reference section
+# TYPE (Issue) Brief summary
+# 
+# Example: FEAT (#123) Add support for Discord integration
+# Example: FIX (NA) Resolve validation error in email transport
 #
-# - Implemented TelnyxSMSTransport class
-# - Added authentication configuration
-# - Included comprehensive unit tests
-# - Updated documentation
+# Valid Types:
+# - BREAK: Breaking changes
+# - FEAT: New feature
+# - FIX: Bug fixes
+# - FUNC: Functionality changes to existing components
+# - DOCS: Documentation changes
+# - STYLE: Style file changes
+# - REFACTOR: Code refactoring
+# - TEST: Test additions/edits
+# - CI: CI/CD changes
+# - DEPEN: Dependencies changes
+# - ESLINT: Eslint/stylelint rule changes
+# - FILES: File/folder structure changes
+# - DB: Database-related changes
+# - LINT: Linting fixes
+#
+# For breaking changes, add BREAKING CHANGE: in the body
+#
+# Body (optional):
+# Provide more detailed explanation if needed
+#
+# BREAKING CHANGE: Description of the breaking change (if applicable)

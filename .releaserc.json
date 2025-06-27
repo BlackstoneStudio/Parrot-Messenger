@@ -4,7 +4,6 @@
     [
       "@semantic-release/commit-analyzer",
       {
-        "preset": "angular",
         "releaseRules": [
           {"type": "BREAK", "release": "major"},
           {"type": "FEAT", "release": "minor"},
@@ -17,31 +16,48 @@
           {"type": "DEPEN", "release": "patch"},
           {"type": "ESLINT", "release": "patch"},
           {"type": "FILES", "release": "patch"},
-          {"type": "DB", "release": "patch"}
+          {"type": "DB", "release": "patch"},
+          {"type": "REFACTOR", "release": "patch"},
+          {"type": "LINT", "release": "patch"}
         ],
         "parserOpts": {
-          "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAK"]
+          "headerPattern": "^(\\w+)\\s+\\(([^)]+)\\)\\s+(.+)$",
+          "headerCorrespondence": ["type", "scope", "subject"],
+          "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES", "BREAK"],
+          "revertPattern": "^Revert\\s\"([\\s\\S]*)\"\\s*This reverts commit (\\w*)\\.?$",
+          "revertCorrespondence": ["header", "hash"]
         }
       }
     ],
     [
       "@semantic-release/release-notes-generator",
       {
-        "preset": "angular",
+        "parserOpts": {
+          "headerPattern": "^(\\w+)\\s+\\(([^)]+)\\)\\s+(.+)$",
+          "headerCorrespondence": ["type", "scope", "subject"]
+        },
+        "writerOpts": {
+          "groupBy": "type",
+          "commitGroupsSort": "title",
+          "commitsSort": ["scope", "subject"],
+          "noteGroupsSort": "title"
+        },
         "presetConfig": {
           "types": [
-            {"type": "BREAK", "section": "Breaking Changes", "hidden": false},
-            {"type": "FEAT", "section": "Features", "hidden": false},
-            {"type": "FUNC", "section": "Functionality Changes", "hidden": false},
-            {"type": "FIX", "section": "Bug Fixes", "hidden": false},
-            {"type": "DOCS", "section": "Documentation", "hidden": false},
-            {"type": "STYLE", "section": "Styles", "hidden": false},
-            {"type": "TEST", "section": "Tests", "hidden": false},
-            {"type": "CI", "section": "Continuous Integration", "hidden": false},
-            {"type": "DEPEN", "section": "Dependencies", "hidden": false},
-            {"type": "ESLINT", "section": "Code Style", "hidden": false},
-            {"type": "FILES", "section": "File Structure", "hidden": false},
-            {"type": "DB", "section": "Database", "hidden": false}
+            {"type": "BREAK", "section": "⚠️ Breaking Changes", "hidden": false},
+            {"type": "FEAT", "section": "✨ Features", "hidden": false},
+            {"type": "FUNC", "section": "🔧 Functionality Changes", "hidden": false},
+            {"type": "FIX", "section": "🐛 Bug Fixes", "hidden": false},
+            {"type": "DOCS", "section": "📚 Documentation", "hidden": false},
+            {"type": "STYLE", "section": "💎 Styles", "hidden": false},
+            {"type": "REFACTOR", "section": "♻️ Code Refactoring", "hidden": false},
+            {"type": "TEST", "section": "✅ Tests", "hidden": false},
+            {"type": "CI", "section": "⚙️ Continuous Integration", "hidden": false},
+            {"type": "DEPEN", "section": "📦 Dependencies", "hidden": false},
+            {"type": "ESLINT", "section": "🔍 Code Style", "hidden": false},
+            {"type": "FILES", "section": "📁 File Structure", "hidden": false},
+            {"type": "DB", "section": "🗄️ Database", "hidden": false},
+            {"type": "LINT", "section": "🔍 Code Style", "hidden": false}
           ]
         }
       }
