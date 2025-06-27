@@ -123,7 +123,9 @@ describe('TwilioCall', () => {
         html: '<p>Test message</p>',
       };
 
-      await expect(twilioCallTransport.send(message)).rejects.toThrow('Twilio Call error: Twilio API error');
+      await expect(twilioCallTransport.send(message)).rejects.toThrow(
+        'Twilio Call error: Twilio API error',
+      );
     });
 
     it('should merge defaults with message data', async () => {

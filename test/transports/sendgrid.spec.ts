@@ -118,7 +118,9 @@ describe('Sendgrid', () => {
         html: '<p>Test HTML</p>',
       };
 
-      await expect(sendgridTransport.send(message)).rejects.toThrow('SendGrid error: Sendgrid API error');
+      await expect(sendgridTransport.send(message)).rejects.toThrow(
+        'SendGrid error: Sendgrid API error',
+      );
     });
 
     it('should merge defaults with message data', async () => {

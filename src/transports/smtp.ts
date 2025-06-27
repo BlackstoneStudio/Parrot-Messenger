@@ -29,7 +29,7 @@ class SMTP implements GenericTransport<nodemailer.Transporter<SMTPTransport.Sent
       throw new TransportError(
         `SMTP error: ${error instanceof Error ? error.message : String(error)}`,
         'smtp',
-        { originalError: error }
+        { originalError: error },
       );
     }
   }

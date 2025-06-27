@@ -37,14 +37,14 @@ class MailgunTransport implements GenericTransport {
     if (mailData.attachments) {
       data.attachment = mailData.attachments;
     }
-    
+
     try {
       await this.transport.messages.create(this.settings.auth.domain, data);
     } catch (error) {
       throw new TransportError(
         `Mailgun error: ${error instanceof Error ? error.message : String(error)}`,
         'mailgun',
-        { originalError: error }
+        { originalError: error },
       );
     }
   }

@@ -81,7 +81,7 @@ describe('SMTP Transport', () => {
         to: 'recipient@example.com',
         subject: 'Test Email',
         html: '<p>Test content</p>',
-      })
+      }),
     ).rejects.toThrow('SMTP error: Connection refused');
   });
 });

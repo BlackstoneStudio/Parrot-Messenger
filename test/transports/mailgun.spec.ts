@@ -125,7 +125,9 @@ describe('MailgunTransport', () => {
         html: '<p>Test HTML</p>',
       };
 
-      await expect(mailgunTransport.send(message)).rejects.toThrow('Mailgun error: Mailgun API error');
+      await expect(mailgunTransport.send(message)).rejects.toThrow(
+        'Mailgun error: Mailgun API error',
+      );
     });
 
     it('should merge defaults with message data', async () => {

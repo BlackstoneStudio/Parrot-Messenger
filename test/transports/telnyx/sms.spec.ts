@@ -108,7 +108,9 @@ describe('TelnyxSMSTransport', () => {
         text: 'Test message',
       };
 
-      await expect(telnyxTransport.send(message)).rejects.toThrow('Telnyx SMS error: Telnyx API error');
+      await expect(telnyxTransport.send(message)).rejects.toThrow(
+        'Telnyx SMS error: Telnyx API error',
+      );
     });
 
     it('should merge defaults with message data', async () => {

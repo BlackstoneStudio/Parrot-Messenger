@@ -37,7 +37,7 @@ class Sendgrid implements GenericTransport {
       throw new TransportError(
         `SendGrid error: ${error instanceof Error ? error.message : String(error)}`,
         'sendgrid',
-        { originalError: error }
+        { originalError: error },
       );
     }
   }

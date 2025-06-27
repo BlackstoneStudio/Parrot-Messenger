@@ -184,7 +184,9 @@ describe('Mailchimp', () => {
         html: '<p>Test HTML</p>',
       };
 
-      await expect(mailchimpTransport.send(message)).rejects.toThrow('Mailchimp error: Mailchimp API error');
+      await expect(mailchimpTransport.send(message)).rejects.toThrow(
+        'Mailchimp error: Mailchimp API error',
+      );
     });
 
     it('should handle missing from and to fields with defaults', async () => {

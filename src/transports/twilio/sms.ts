@@ -25,7 +25,7 @@ class TwilioSMS implements GenericTransport<Twilio.Twilio> {
       throw new TransportError(
         `Twilio SMS error: ${error instanceof Error ? error.message : String(error)}`,
         'twilioSMS',
-        { originalError: error }
+        { originalError: error },
       );
     }
   }

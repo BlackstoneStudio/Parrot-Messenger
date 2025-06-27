@@ -41,7 +41,7 @@ class TwilioCall implements GenericTransport<Twilio.Twilio> {
       throw new TransportError(
         `Twilio Call error: ${error instanceof Error ? error.message : String(error)}`,
         'twilioCall',
-        { originalError: error }
+        { originalError: error },
       );
     }
   }

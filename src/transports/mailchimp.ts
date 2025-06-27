@@ -52,7 +52,7 @@ class Mailchimp implements GenericTransport<any> {
       throw new TransportError(
         `Mailchimp error: ${error instanceof Error ? error.message : String(error)}`,
         'mailchimp',
-        { originalError: error }
+        { originalError: error },
       );
     }
   }

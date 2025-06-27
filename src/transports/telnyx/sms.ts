@@ -32,7 +32,7 @@ class TelnyxSMSTransport implements GenericTransport {
       throw new TransportError(
         `Telnyx SMS error: ${error instanceof Error ? error.message : String(error)}`,
         'telnyxSMS',
-        { originalError: error }
+        { originalError: error },
       );
     }
   }
