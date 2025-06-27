@@ -1,3 +1,5 @@
+## [2.0.1](https://github.com/BlackstoneStudio/Parrot-Messenger/compare/v2.0.0...v2.0.1) (2025-06-27)
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -13,10 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `region` (string)
   - `accessKeyId` (string)
   - `secretAccessKey` (string)
-  
+
   Additional AWS SDK configuration options (like `endpoint`, `maxRetries`, `httpOptions`, etc.) are no longer supported. This change prevents potential security misconfigurations and standardizes the authentication approach across all transports.
 
   **Migration Guide:**
+
   ```typescript
   // Before (v1.x)
   {
@@ -45,15 +48,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 
 ### Added
+
 - All features from v1.1.0 (see below)
 
 ### Security
+
 - Restricted AWS SES configuration to prevent potential security misconfigurations
 - All security fixes from v1.1.0 are included
 
 ## [1.1.0] - 2025-06-24
 
 ### Added
+
 - AWS SNS SMS transport provider support
 - Telnyx SMS transport provider support
 - Comprehensive input validation for emails and phone numbers
@@ -69,6 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - .env.example file with all supported service configurations
 
 ### Changed
+
 - Updated all dependencies to latest versions
 - Improved error messages with more context
 - Better resource management for transport clients
@@ -76,6 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refactored examples directory structure - removed monolithic examples.ts in favor of focused examples
 
 ### Fixed
+
 - AWS credentials global pollution issue - now uses isolated SES client
 - TwiML injection vulnerability in Twilio Call transport
 - Typo: 'setttings' parameter in Twilio SMS constructor
@@ -84,6 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed ReDoS vulnerability in email validation regex
 
 ### Security
+
 - Added input validation for all message fields
 - Implemented HTML content sanitization
 - Fixed potential SSRF vulnerability in template system
@@ -94,6 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.12] - Previous Release
 
 ### Added
+
 - Initial release with support for:
   - Email: AWS SES, Mailgun, Mailchimp, SendGrid, SMTP
   - SMS: Twilio, Mailjet
