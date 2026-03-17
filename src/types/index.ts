@@ -82,6 +82,12 @@ export interface Sendgrid extends Defaults {
   };
 }
 
+export interface Postmark extends Defaults {
+  auth: {
+    serverToken: string;
+  };
+}
+
 export interface Mailgun extends Defaults {
   auth: {
     apiKey: string;
@@ -130,6 +136,7 @@ export type Transport =
   | TransportGeneric<'mailchimp', 'email', Mailchimp>
   | TransportGeneric<'mailgun', 'email', Mailgun>
   | TransportGeneric<'sendgrid', 'email', Sendgrid>
+  | TransportGeneric<'postmark', 'email', Postmark>
   | TransportGeneric<'smtp', 'email', SMTP>
   | TransportGeneric<'slack', 'chat', Slack>
   | TransportGeneric<'telegram', 'chat', Telegram>;

@@ -37,6 +37,7 @@
     "isomorphic-dompurify": "^2.25.0",
     "mailgun.js": "^12.7.1",
     "nodemailer": "^7.0.3",
+    "postmark": "^4.0.7",
     "telnyx": "^2.0.0",
     "twilio": "^5.13.0",
     "validator": "^13.15.15",

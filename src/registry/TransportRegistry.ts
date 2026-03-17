@@ -9,6 +9,7 @@ import Mailchimp from '../transports/mailchimp';
 import SES from '../transports/aws/ses';
 import SNS from '../transports/aws/sns';
 import Sendgrid from '../transports/sendgrid';
+import Postmark from '../transports/postmark';
 import TwilioSMS from '../transports/twilio/sms';
 import TwilioCall from '../transports/twilio/call';
 import TelnyxSMS from '../transports/telnyx/sms';
@@ -51,6 +52,7 @@ class TransportRegistry {
     this.register(TRANSPORT_NAMES.SES, SES);
     this.register(TRANSPORT_NAMES.SNS, SNS);
     this.register(TRANSPORT_NAMES.SENDGRID, Sendgrid);
+    this.register(TRANSPORT_NAMES.POSTMARK, Postmark);
     this.register(TRANSPORT_NAMES.TWILIO_SMS, TwilioSMS);
     this.register(TRANSPORT_NAMES.TWILIO_CALL, TwilioCall);
     this.register(TRANSPORT_NAMES.TELNYX_SMS, TelnyxSMS);
