@@ -39,8 +39,9 @@
 #### Breaking Changes
 
 - **AWS SES Configuration**: The AWS SES transport configuration has changed. The `auth` field now only accepts `region`, `accessKeyId`, and `secretAccessKey` properties. Additional AWS SDK configuration options are no longer supported.
-  
+
   **Before (v1.x):**
+
   ```typescript
   {
     name: 'ses',
@@ -55,8 +56,9 @@
     }
   }
   ```
-  
+
   **After (v2.0.0):**
+
   ```typescript
   {
     name: 'ses',
@@ -72,7 +74,7 @@
 
 #### New Features
 
-- **Chat Platform Support**: 
+- **Chat Platform Support**:
   - Added Slack integration (bot tokens and webhooks)
   - Added Telegram bot support with inline keyboards
   - New `chat` transport class for messaging platforms
@@ -95,7 +97,7 @@
   - Transport clients are now properly managed
   - Better resource utilization
 - **Testing**: Achieved 97% test coverage
-- **CI/CD**: 
+- **CI/CD**:
   - Migrated from CircleCI to GitHub Actions
   - Added Prettier formatting checks to CI
   - Enforced 97% coverage thresholds
@@ -115,6 +117,8 @@ In its current iteration it supports 4 types of transport classes:
 - AWS SES
 - Mailchimp (Mandrill)
 - Mailgun
+- Postmark
+- Resend
 - Sendgrid
 - SMTP
 
@@ -459,12 +463,16 @@ parrot.send(slackMessage, { name: 'slack' });
 const telegramMessage = {
   to: '@yourchannel', // Chat ID or @channelname
   text: 'Hello from Parrot Messenger! 🦜',
-  attachments: [{
-    inline_keyboard: [[
-      { text: 'Learn More', url: 'https://example.com' },
-      { text: 'Get Started', callback_data: 'start' },
-    ]],
-  }],
+  attachments: [
+    {
+      inline_keyboard: [
+        [
+          { text: 'Learn More', url: 'https://example.com' },
+          { text: 'Get Started', callback_data: 'start' },
+        ],
+      ],
+    },
+  ],
 };
 
 parrot.send(telegramMessage, { name: 'telegram' });
@@ -643,6 +651,28 @@ interface MailchimpConfig {
 }
 ```
 
+#### Postmark
+
+```typescript
+interface PostmarkConfig {
+  auth: {
+    serverToken: string; // Postmark Server Token
+  };
+  defaults?: Envelope;
+}
+```
+
+#### Resend
+
+```typescript
+interface ResendConfig {
+  auth: {
+    apiKey: string; // Resend API Key
+  };
+  defaults?: Envelope;
+}
+```
+
 #### SMTP
 
 ```typescript
@@ -720,8 +750,8 @@ interface TwilioCallConfig {
 ```typescript
 interface SlackConfig {
   auth: {
-    token?: string;    // Bot token (xoxb-...)
-    webhook?: string;  // Webhook URL for simpler integration
+    token?: string; // Bot token (xoxb-...)
+    webhook?: string; // Webhook URL for simpler integration
   };
   defaultChannel?: string;
   defaults?: Envelope;
@@ -733,7 +763,7 @@ interface SlackConfig {
 ```typescript
 interface TelegramConfig {
   auth: {
-    botToken: string;  // Bot token from @BotFather
+    botToken: string; // Bot token from @BotFather
   };
   defaultChatId?: string | number;
   parseMode?: 'HTML' | 'Markdown' | 'MarkdownV2';
