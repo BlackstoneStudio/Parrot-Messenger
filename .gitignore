@@ -113,3 +113,12 @@ dist
 # TernJS port file
 .tern-port
 
+# Claude AI
+.claude
+CLAUDE.md
+
+# Documentation
+docs/api
+
+# macOS
+.DS_Store

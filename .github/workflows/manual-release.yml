@@ -1,0 +1,81 @@
+name: Manual Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 2.0.1)'
+        required: true
+        type: string
+      release_notes:
+        description: 'Release notes (optional)'
+        required: false
+        type: string
+        default: 'Manual release'
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  release:
+    name: Manual Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Update version
+        run: |
+          npm version ${{ github.event.inputs.version }} --no-git-tag-version
+          git add package.json package-lock.json
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(release): ${{ github.event.inputs.version }}"
+          git push
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # Create release notes
+          cat > RELEASE_NOTES.md << EOF
+          # Release v${{ github.event.inputs.version }}
+          
+          ${{ github.event.inputs.release_notes }}
+          
+          ---
+          *Released manually via GitHub Actions*
+          EOF
+          
+          # Create GitHub release
+          gh release create "v${{ github.event.inputs.version }}" \
+            --title "Release v${{ github.event.inputs.version }}" \
+            --notes-file RELEASE_NOTES.md
+          
+          # Publish to npm
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          npm publish
+          
+          echo "Successfully released v${{ github.event.inputs.version }}"

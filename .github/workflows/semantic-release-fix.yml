@@ -1,0 +1,58 @@
+name: Fix Semantic Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    name: Fix Version Sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Sync versions
+        run: |
+          # Get current package version
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          echo "Package version: $PACKAGE_VERSION"
+          
+          # Get latest tag
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "Latest tag: $LATEST_TAG"
+          
+          # If package version doesn't match latest tag, create a sync commit
+          if [ "v${PACKAGE_VERSION}" != "$LATEST_TAG" ]; then
+            echo "Version mismatch detected"
+            
+            # If no tag exists or package is ahead
+            if [ -z "$LATEST_TAG" ] || [ "v${PACKAGE_VERSION}" != "$LATEST_TAG" ]; then
+              # Reset package.json to match the latest tag
+              if [ -n "$LATEST_TAG" ]; then
+                TAG_VERSION=${LATEST_TAG#v}
+                npm version $TAG_VERSION --no-git-tag-version --force
+                git config --global user.name "github-actions[bot]"
+                git config --global user.email "github-actions[bot]@users.noreply.github.com"
+                git add package.json package-lock.json
+                git commit -m "chore: sync package version with git tags"
+                git push
+                echo "Synced package.json to version $TAG_VERSION"
+              else
+                echo "No tags exist yet, semantic-release will handle the first release"
+              fi
+            fi
+          else
+            echo "Versions are in sync!"
+          fi

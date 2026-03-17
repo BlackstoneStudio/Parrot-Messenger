@@ -1,0 +1,27 @@
+# TYPE (Issue) Brief summary
+# 
+# Example: FEAT (#123) Add support for Discord integration
+# Example: FIX (NA) Resolve validation error in email transport
+#
+# Valid Types:
+# - BREAK: Breaking changes
+# - FEAT: New feature
+# - FIX: Bug fixes
+# - FUNC: Functionality changes to existing components
+# - DOCS: Documentation changes
+# - STYLE: Style file changes
+# - REFACTOR: Code refactoring
+# - TEST: Test additions/edits
+# - CI: CI/CD changes
+# - DEPEN: Dependencies changes
+# - ESLINT: Eslint/stylelint rule changes
+# - FILES: File/folder structure changes
+# - DB: Database-related changes
+# - LINT: Linting fixes
+#
+# For breaking changes, add BREAKING CHANGE: in the body
+#
+# Body (optional):
+# Provide more detailed explanation if needed
+#
+# BREAKING CHANGE: Description of the breaking change (if applicable)
