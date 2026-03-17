@@ -1,6 +1,5 @@
 import Twilio from 'twilio';
 import { htmlToText } from 'html-to-text';
-import { create } from 'xmlbuilder2';
 import { Envelope, GenericTransport, TwilioCall as ITwilioCall } from '../../types';
 import { TransportError } from '../../errors';
 
@@ -19,17 +18,11 @@ class TwilioCall implements GenericTransport<Twilio.Twilio> {
 
     const textContent = htmlToText(request.html || request.text || '');
 
-    // Build TwiML using XML builder to prevent injection attacks
-    const twiml = create({ version: '1.0', encoding: 'UTF-8' })
-      .ele('Response')
-      .ele('Pause')
-      .att('length', '1')
-      .up()
-      .ele('Say')
-      .att('voice', request.voice ? `Polly.${request.voice}` : 'Polly.Joanna')
-      .txt(textContent)
-      .up()
-      .end({ prettyPrint: true });
+    // Build TwiML using Twilio's built-in VoiceResponse builder
+    const response = new Twilio.twiml.VoiceResponse();
+    response.pause({ length: 1 });
+    response.say({ voice: request.voice ? `Polly.${request.voice}` : 'Polly.Joanna' }, textContent);
+    const twiml = response.toString();
 
     try {
       await this.transport.calls.create({

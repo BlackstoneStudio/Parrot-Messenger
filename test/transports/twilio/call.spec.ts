@@ -4,13 +4,16 @@ import { Envelope, TwilioCall as ITwilioCall } from '../../../src/types';
 
 const mockCreate = jest.fn().mockResolvedValue({ sid: 'test-call-sid' });
 
-jest.mock('twilio', () =>
-  jest.fn().mockImplementation(() => ({
+jest.mock('twilio', () => {
+  const actualTwilio = jest.requireActual('twilio');
+  const mock: any = jest.fn().mockImplementation(() => ({
     calls: {
       create: mockCreate,
     },
-  })),
-);
+  }));
+  mock.twiml = actualTwilio.twiml;
+  return mock;
+});
 
 jest.mock('html-to-text', () => ({
   htmlToText: jest.fn((html) =>
