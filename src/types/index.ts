@@ -21,6 +21,7 @@ export type Envelope = {
   text?: string;
   voice?: keyof typeof voices;
   attachments?: Attachment[];
+  mediaUrls?: string[];
 };
 export interface GenericTransport<T extends unknown = {}> {
   transport: T;

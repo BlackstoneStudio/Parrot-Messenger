@@ -1,29 +1,29 @@
 import TelnyxSMSTransport from '../../../src/transports/telnyx/sms';
 import { Envelope, TelnyxSMS } from '../../../src/types';
 
-const mockCreate = jest.fn().mockResolvedValue({ id: 'test-message-id' });
-
-jest.mock('telnyx', () =>
-  jest.fn().mockImplementation(() => ({
-    messages: {
-      create: mockCreate,
-    },
+jest.mock('telnyx', () => ({
+  Telnyx: jest.fn().mockImplementation(() => ({
+    messages: { send: jest.fn().mockResolvedValue({ id: 'default-id' }) },
   })),
-);
+}));
 
 jest.mock('html-to-text', () => ({
-  htmlToText: jest.fn((html) =>
-    // Simple HTML tag removal
-    html.replace(/<[^>]*>/g, ''),
-  ),
+  htmlToText: jest.fn((html: string) => html.replace(/<[^>]*>/g, '')),
 }));
 
 describe('TelnyxSMSTransport', () => {
   let telnyxTransport: TelnyxSMSTransport;
   let mockSettings: TelnyxSMS;
+  let mockTransport: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockTransport = {
+      messages: {
+        send: jest.fn().mockResolvedValue({ id: 'test-message-id' }),
+      },
+    };
 
     mockSettings = {
       auth: {
@@ -34,7 +34,7 @@ describe('TelnyxSMSTransport', () => {
       },
     };
 
-    telnyxTransport = new TelnyxSMSTransport(mockSettings);
+    telnyxTransport = new TelnyxSMSTransport(mockSettings, mockTransport);
   });
 
   describe('constructor', () => {
@@ -43,10 +43,13 @@ describe('TelnyxSMSTransport', () => {
       expect(telnyxTransport.transport).toBeDefined();
     });
 
-    it('should create Telnyx client with API key', () => {
-      // eslint-disable-next-line global-require
-      const TelnyxMock = require('telnyx');
-      expect(TelnyxMock).toHaveBeenCalledWith(mockSettings.auth.apiKey);
+    it('should use provided transport', () => {
+      expect(telnyxTransport.transport).toBe(mockTransport);
+    });
+
+    it('should use Telnyx SDK as default transport when none provided', () => {
+      const transportWithDefaults = new TelnyxSMSTransport(mockSettings);
+      expect(transportWithDefaults.transport).toBeDefined();
     });
   });
 
@@ -60,7 +63,7 @@ describe('TelnyxSMSTransport', () => {
 
       await telnyxTransport.send(message);
 
-      expect(mockCreate).toHaveBeenCalledWith({
+      expect(mockTransport.messages.send).toHaveBeenCalledWith({
         from: message.from,
         to: message.to,
         text: message.text,
@@ -76,10 +79,10 @@ describe('TelnyxSMSTransport', () => {
 
       await telnyxTransport.send(message);
 
-      expect(mockCreate).toHaveBeenCalledWith({
+      expect(mockTransport.messages.send).toHaveBeenCalledWith({
         from: message.from,
         to: message.to,
-        text: 'Test HTML message',
+        text: expect.stringContaining('Test HTML message'),
       });
     });
 
@@ -91,7 +94,7 @@ describe('TelnyxSMSTransport', () => {
 
       await telnyxTransport.send(message);
 
-      expect(mockCreate).toHaveBeenCalledWith({
+      expect(mockTransport.messages.send).toHaveBeenCalledWith({
         from: mockSettings.defaults?.from,
         to: message.to,
         text: message.text,
@@ -100,7 +103,7 @@ describe('TelnyxSMSTransport', () => {
 
     it('should handle send errors', async () => {
       const error = new Error('Telnyx API error');
-      mockCreate.mockRejectedValueOnce(error);
+      mockTransport.messages.send.mockRejectedValueOnce(error);
 
       const message: Envelope = {
         from: '+1987654321',
@@ -111,6 +114,18 @@ describe('TelnyxSMSTransport', () => {
       await expect(telnyxTransport.send(message)).rejects.toThrow(
         'Telnyx SMS error: Telnyx API error',
       );
+    });
+
+    it('should wrap non-Error throw in TransportError', async () => {
+      mockTransport.messages.send.mockRejectedValueOnce('string error');
+
+      const message: Envelope = {
+        from: '+1987654321',
+        to: '+1234567890',
+        text: 'Test message',
+      };
+
+      await expect(telnyxTransport.send(message)).rejects.toThrow('Telnyx SMS error: string error');
     });
 
     it('should merge defaults with message data', async () => {
@@ -124,7 +139,7 @@ describe('TelnyxSMSTransport', () => {
         },
       };
 
-      const transport = new TelnyxSMSTransport(settingsWithDefaults);
+      const transport = new TelnyxSMSTransport(settingsWithDefaults, mockTransport);
       const message: Envelope = {
         to: '+1987654321',
         text: 'Test message',
@@ -132,8 +147,88 @@ describe('TelnyxSMSTransport', () => {
 
       await transport.send(message);
 
-      expect(mockCreate).toHaveBeenCalledWith({
+      expect(mockTransport.messages.send).toHaveBeenCalledWith({
         from: '+1234567890',
+        to: message.to,
+        text: message.text,
+      });
+    });
+  });
+
+  describe('MMS', () => {
+    it('should send MMS when mediaUrls are provided', async () => {
+      const message: Envelope = {
+        from: '+1987654321',
+        to: '+1234567890',
+        text: 'Check out this image',
+        mediaUrls: ['https://example.com/image.jpg'],
+      };
+
+      await telnyxTransport.send(message);
+
+      expect(mockTransport.messages.send).toHaveBeenCalledWith({
+        from: message.from,
+        to: message.to,
+        text: message.text,
+        type: 'MMS',
+        media_urls: ['https://example.com/image.jpg'],
+        subject: undefined,
+      });
+    });
+
+    it('should include subject for MMS when provided', async () => {
+      const message: Envelope = {
+        from: '+1987654321',
+        to: '+1234567890',
+        text: 'Check out this image',
+        subject: 'Photo attachment',
+        mediaUrls: ['https://example.com/image.jpg'],
+      };
+
+      await telnyxTransport.send(message);
+
+      expect(mockTransport.messages.send).toHaveBeenCalledWith({
+        from: message.from,
+        to: message.to,
+        text: message.text,
+        type: 'MMS',
+        media_urls: ['https://example.com/image.jpg'],
+        subject: 'Photo attachment',
+      });
+    });
+
+    it('should send MMS with multiple media URLs', async () => {
+      const message: Envelope = {
+        from: '+1987654321',
+        to: '+1234567890',
+        text: 'Multiple images',
+        mediaUrls: ['https://example.com/image1.jpg', 'https://example.com/image2.png'],
+      };
+
+      await telnyxTransport.send(message);
+
+      expect(mockTransport.messages.send).toHaveBeenCalledWith({
+        from: message.from,
+        to: message.to,
+        text: message.text,
+        type: 'MMS',
+        media_urls: ['https://example.com/image1.jpg', 'https://example.com/image2.png'],
+        subject: undefined,
+      });
+    });
+
+    it('should send as SMS when mediaUrls is empty array', async () => {
+      const message: Envelope = {
+        from: '+1987654321',
+        to: '+1234567890',
+        text: 'No media',
+        mediaUrls: [],
+      };
+
+      await telnyxTransport.send(message);
+
+      expect(mockTransport.messages.send).toHaveBeenCalledWith({
+        from: message.from,
         to: message.to,
         text: message.text,
       });
