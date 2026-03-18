@@ -913,7 +913,7 @@ You can also suggest a new feature by creating an Issue. Please wait for confirm
 
 ## License
 
-Copyright © 2025 [Blackstone Studio](https://blackstone.studio/).
+Copyright © 2026 [Blackstone Studio](https://blackstone.studio/).
 
 This project is [MIT](https://github.com/BlackstoneStudio/Parrot-Messenger/master/LICENSE) licensed.
 
