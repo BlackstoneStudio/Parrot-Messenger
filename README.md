@@ -1,4 +1,4 @@
-<a href="https://www.blackstone.studio/" target="_blank"><img src="./assets/header.png" alt="Blackstone Studio - In Development We Trust"></a>
+<img src="./assets/header.png" alt="Parrot Messenger - Cut the chaos out of messaging logic">
 
 # Parrot Messenger
 
