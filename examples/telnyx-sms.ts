@@ -1,108 +1,129 @@
-import Parrot from '../src';
+import { Parrot } from '../src';
 
 /**
- * Telnyx SMS Example
- * This example demonstrates how to send SMS messages using Telnyx
- * New transport added in v1.1.0
+ * Telnyx SMS & MMS Example
+ * Demonstrates sending SMS and MMS messages using Telnyx via Parrot Messenger
  */
 
-async function sendTelnyxSMS() {
-  try {
-    // Initialize Parrot with Telnyx transport
-    const parrot = new Parrot({
-      transports: [
-        {
-          name: 'telnyxSMS',
-          settings: {
-            auth: {
-              apiKey: process.env.TELNYX_API_KEY || 'YOUR_TELNYX_API_KEY',
-            },
-            defaults: {
-              from: process.env.TELNYX_PHONE_NUMBER || '+15555555555', // Your Telnyx phone number
-            },
+async function sendWithTelnyx() {
+  // Initialize Parrot with Telnyx transport
+  const parrot = new Parrot({
+    transports: [
+      {
+        name: 'telnyxSMS',
+        settings: {
+          auth: {
+            apiKey: process.env.TELNYX_API_KEY || '',
+          },
+          defaults: {
+            from: process.env.TELNYX_FROM_NUMBER || '+15555555555',
           },
         },
-      ],
-    });
+      },
+    ],
+  });
 
-    // Send a simple SMS
-    await parrot.send({
-      to: '+1234567890', // Replace with actual recipient
-      text: 'Hello from Parrot Messenger with Telnyx!',
-    }, {
-      class: 'sms',
-      name: 'telnyxSMS',
-    });
+  try {
+    // Example 1: Simple SMS
+    await parrot.send(
+      {
+        to: '+1234567890',
+        text: 'Hello from Parrot Messenger with Telnyx!',
+      },
+      {
+        class: 'sms',
+        name: 'telnyxSMS',
+      },
+    );
 
-    console.log('Telnyx SMS sent successfully:', result);
+    console.log('SMS sent via Telnyx');
 
-    // Send SMS with longer message (automatic segmentation)
-    const longMessage = await parrot.send({
-      to: '+1234567890',
-      text: 'This is a longer message that might be split into multiple SMS segments. ' +
-            'Telnyx handles message segmentation automatically, ensuring your entire ' +
-            'message is delivered properly even if it exceeds the 160 character limit.',
-    }, {
-      class: 'sms',
-      name: 'telnyxSMS',
-    });
+    // Example 2: SMS from HTML content (auto-converted to plain text)
+    await parrot.send(
+      {
+        to: '+1234567890',
+        html: '<p>Your order <strong>#12345</strong> has shipped!</p>',
+      },
+      {
+        class: 'sms',
+        name: 'telnyxSMS',
+      },
+    );
 
-    console.log('Long message sent:', longMessage);
+    console.log('HTML-to-text SMS sent via Telnyx');
 
+    // Example 3: MMS with media attachment
+    await parrot.send(
+      {
+        to: '+1234567890',
+        text: 'Check out this image!',
+        subject: 'Photo from Parrot',
+        mediaUrls: ['https://example.com/image.jpg'],
+      },
+      {
+        class: 'sms',
+        name: 'telnyxSMS',
+      },
+    );
+
+    console.log('MMS sent via Telnyx');
+
+    // Example 4: MMS with multiple media
+    await parrot.send(
+      {
+        to: '+1234567890',
+        text: 'Here are your photos',
+        mediaUrls: ['https://example.com/photo1.jpg', 'https://example.com/photo2.jpg'],
+      },
+      {
+        class: 'sms',
+        name: 'telnyxSMS',
+      },
+    );
+
+    console.log('Multi-media MMS sent via Telnyx');
   } catch (error) {
-    // Enhanced error handling
     if (error.name === 'ValidationError') {
-      console.error('Validation failed:', error.message);
-      // Phone number validation is performed automatically
+      console.error('Validation error:', error.message);
     } else if (error.name === 'TransportError') {
       console.error('Telnyx API error:', error.message);
-      // Check API key, phone number ownership, or account balance
     } else if (error.name === 'ConfigurationError') {
-      console.error('Configuration issue:', error.message);
+      console.error('Configuration error:', error.message);
     } else {
       console.error('Unexpected error:', error);
     }
   }
 }
 
-// Batch SMS example
-async function sendBatchSMS() {
-  try {
-    const recipients = [
-      '+1234567890',
-      '+0987654321',
-      '+1112223333',
-    ];
+// Configuration tips
+function showConfigurationTips() {
+  console.log(`
+Telnyx Configuration Tips:
+--------------------------
+1. Sign up at https://telnyx.com
+2. Create an API key in Mission Control
+3. Purchase a phone number with SMS/MMS capability
+4. Associate the number with a messaging profile
 
-    // Send to multiple recipients
-    const promises = recipients.map(to => 
-      parrot.send({
-        to,
-        text: 'Batch notification: System maintenance tonight at 10 PM EST',
-      }, {
-        class: 'sms',
-        name: 'telnyxSMS',
-      })
-    );
+Environment variables needed:
+- TELNYX_API_KEY
+- TELNYX_FROM_NUMBER
 
-    const results = await Promise.allSettled(promises);
-    
-    results.forEach((result, index) => {
-      if (result.status === 'fulfilled') {
-        console.log(`SMS sent to ${recipients[index]}: ${result.value.id}`);
-      } else {
-        console.error(`Failed to send to ${recipients[index]}: ${result.reason.message}`);
-      }
-    });
-
-  } catch (error) {
-    console.error('Batch SMS error:', error);
-  }
+Features:
+- SMS and MMS support
+- Automatic message segmentation
+- Delivery webhooks
+- Number pooling
+- Alphanumeric sender IDs
+  `);
 }
 
-// Run examples
-(async () => {
-  await sendTelnyxSMS();
-  // Uncomment to run batch example
-  // await sendBatchSMS();
-})();
+// Run example
+if (require.main === module) {
+  sendWithTelnyx()
+    .then(() => {
+      console.log('\nTelnyx examples completed');
+      showConfigurationTips();
+    })
+    .catch(console.error);
+}
