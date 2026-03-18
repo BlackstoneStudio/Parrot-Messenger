@@ -31,6 +31,7 @@
 - [API](#api)
 - [Templates](#templates)
 - [API Reference](#api-reference)
+- [Testing](#testing)
 
 ## What's New
 
@@ -139,7 +140,7 @@ In its current iteration it supports 4 types of transport classes:
 
 ## Prerequisites
 
-- Node.js 18+ or higher
+- Node.js 20+ or higher
 - npm (comes with Node.js)
 
 ## Installing
@@ -872,6 +873,69 @@ await send(message, transports, [{ name: 'smtp' }, { name: 'ses' }]);
   - `subject`: Required for email only
   - `html` or `text`: At least one is required
 - **HTML content**: Automatically sanitized to prevent XSS attacks
+
+## Testing
+
+Parrot Messenger includes a built-in mock transport for testing your messaging logic without sending real messages. Import it from `parrot-messenger/testing`:
+
+```typescript
+import { Parrot } from 'parrot-messenger';
+import { MockTransport } from 'parrot-messenger/testing';
+
+// Register once in your test setup
+MockTransport.register();
+
+// Configure Parrot with the mock transport
+const parrot = new Parrot({
+  transports: [{ name: 'mock', settings: { defaults: { from: 'test@example.com' } } }],
+});
+
+// Send a message — nothing leaves your machine
+await parrot.send(
+  { to: 'user@example.com', subject: 'Welcome', html: '<p>Hi</p>' },
+  { class: 'email', name: 'mock' },
+);
+
+// Assert against captured messages
+expect(MockTransport.messages).toHaveLength(1);
+expect(MockTransport.lastMessage?.envelope.to).toBe('user@example.com');
+
+// Reset between tests
+MockTransport.clear();
+```
+
+### Simulating Failures
+
+```typescript
+const parrot = new Parrot({
+  transports: [
+    { name: 'mock', settings: { shouldFail: true, failMessage: 'Rate limit exceeded' } },
+  ],
+});
+
+await expect(
+  parrot.send({ to: 'user@test.com', text: 'Hi' }, { class: 'email', name: 'mock' }),
+).rejects.toThrow('Rate limit exceeded');
+```
+
+### MockTransport API
+
+| Method / Property            | Description                                           |
+| ---------------------------- | ----------------------------------------------------- |
+| `MockTransport.register()`   | Register the mock transport in the transport registry |
+| `MockTransport.unregister()` | Reset registry to defaults (removes mock)             |
+| `MockTransport.messages`     | Read-only array of all captured messages              |
+| `MockTransport.lastMessage`  | Most recently captured message                        |
+| `MockTransport.clear()`      | Clear all captured messages                           |
+
+### MockTransport Options
+
+| Option        | Type       | Default                              | Description                                       |
+| ------------- | ---------- | ------------------------------------ | ------------------------------------------------- |
+| `defaults`    | `Envelope` | `undefined`                          | Default envelope values merged into every message |
+| `shouldFail`  | `boolean`  | `false`                              | Simulate transport failure                        |
+| `failMessage` | `string`   | `'Mock transport simulated failure'` | Error message when failing                        |
+| `latency`     | `number`   | `0`                                  | Simulated delay in milliseconds                   |
 
 ## Who are we
 
