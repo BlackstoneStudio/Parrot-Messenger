@@ -18,7 +18,11 @@ describe('Twilio SMS Transport', () => {
       },
     });
 
-    (htmlToText as jest.Mock).mockImplementation((html) => html.replace(/<[^>]*>/g, ''));
+    (htmlToText as jest.Mock).mockImplementation((html: string) => {
+      let text = html;
+      while (/<[^>]*>/.test(text)) text = text.replace(/<[^>]*>/g, '');
+      return text;
+    });
 
     transport = new TwilioSMS({
       auth: {

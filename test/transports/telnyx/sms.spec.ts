@@ -8,7 +8,11 @@ jest.mock('telnyx', () => ({
 }));
 
 jest.mock('html-to-text', () => ({
-  htmlToText: jest.fn((html: string) => html.replace(/<[^>]*>/g, '')),
+  htmlToText: jest.fn((html: string) => {
+    let text = html;
+    while (/<[^>]*>/.test(text)) text = text.replace(/<[^>]*>/g, '');
+    return text;
+  }),
 }));
 
 describe('TelnyxSMSTransport', () => {

@@ -16,10 +16,11 @@ jest.mock('twilio', () => {
 });
 
 jest.mock('html-to-text', () => ({
-  htmlToText: jest.fn((html) =>
-    // Simple HTML tag removal
-    html.replace(/<[^>]*>/g, ''),
-  ),
+  htmlToText: jest.fn((html: string) => {
+    let text = html;
+    while (/<[^>]*>/.test(text)) text = text.replace(/<[^>]*>/g, '');
+    return text;
+  }),
 }));
 
 describe('TwilioCall', () => {

@@ -154,38 +154,26 @@ class Telegram implements GenericTransport<typeof Axios> {
     // https://core.telegram.org/bots/api#html-style
     return (
       clean
-        // Keep supported tags
-        .replace(/<b>/g, '<b>')
-        .replace(/<\/b>/g, '</b>')
+        // Convert HTML aliases to Telegram-supported equivalents
         .replace(/<strong>/g, '<b>')
         .replace(/<\/strong>/g, '</b>')
-        .replace(/<i>/g, '<i>')
-        .replace(/<\/i>/g, '</i>')
         .replace(/<em>/g, '<i>')
         .replace(/<\/em>/g, '</i>')
-        .replace(/<u>/g, '<u>')
-        .replace(/<\/u>/g, '</u>')
-        .replace(/<s>/g, '<s>')
-        .replace(/<\/s>/g, '</s>')
         .replace(/<strike>/g, '<s>')
         .replace(/<\/strike>/g, '</s>')
         .replace(/<del>/g, '<s>')
         .replace(/<\/del>/g, '</s>')
-        .replace(/<code>/g, '<code>')
-        .replace(/<\/code>/g, '</code>')
-        .replace(/<pre>/g, '<pre>')
-        .replace(/<\/pre>/g, '</pre>')
-        // Convert links
+        // Convert links to clean format
         .replace(/<a\s+href="([^"]+)"[^>]*>([^<]+)<\/a>/g, '<a href="$1">$2</a>')
-        // Remove unsupported tags
+        // Convert block elements to whitespace
         .replace(/<p>/g, '')
         .replace(/<\/p>/g, '\n\n')
         .replace(/<br\s*\/?>/g, '\n')
         .replace(/<hr\s*\/?>/g, '\n———\n')
         .replace(/<h[1-6]>/g, '<b>')
         .replace(/<\/h[1-6]>/g, '</b>\n\n')
-        // Remove all other tags
-        .replace(/<(?!\/?(b|i|u|s|a|code|pre)(\s|>))[^>]+>/g, '')
+        // Remove unsupported tags (keep b, i, u, s, a, code, pre)
+        .replace(/<\/?(?:div|span|h[1-6])[^>]*>/g, '')
         // Clean up extra whitespace
         .replace(/\n{3,}/g, '\n\n')
         .trim()
@@ -193,30 +181,13 @@ class Telegram implements GenericTransport<typeof Axios> {
   }
 
   private static escapeHtml(text: string): string {
-    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const map: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
+    return text.replace(/[&<>]/g, (ch) => map[ch]);
   }
 
   private static escapeMarkdown(text: string): string {
-    // Escape special Markdown characters
-    return text
-      .replace(/\*/g, '\\*')
-      .replace(/_/g, '\\_')
-      .replace(/\[/g, '\\[')
-      .replace(/\]/g, '\\]')
-      .replace(/\(/g, '\\(')
-      .replace(/\)/g, '\\)')
-      .replace(/~/g, '\\~')
-      .replace(/`/g, '\\`')
-      .replace(/>/g, '\\>')
-      .replace(/#/g, '\\#')
-      .replace(/\+/g, '\\+')
-      .replace(/-/g, '\\-')
-      .replace(/=/g, '\\=')
-      .replace(/\|/g, '\\|')
-      .replace(/\{/g, '\\{')
-      .replace(/\}/g, '\\}')
-      .replace(/\./g, '\\.')
-      .replace(/!/g, '\\!');
+    // Escape all MarkdownV2 special characters in a single pass
+    return text.replace(/[_*[\]()~`>#+\-=|{}.!\\]/g, '\\$&');
   }
 
   private static isTelegramReplyMarkup(attachments: any[]): boolean {
