@@ -147,7 +147,7 @@ class Telegram implements GenericTransport<typeof Axios> {
       ],
       ALLOWED_ATTR: ['href'],
       ALLOW_DATA_ATTR: false,
-      ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.-:]|$))/i,
+      ALLOWED_URI_REGEXP: /^(?:https?|mailto):/i,
     });
 
     // Telegram supports a subset of HTML tags

@@ -144,34 +144,39 @@ class Slack implements GenericTransport<typeof Axios> {
     // First sanitize the HTML
     const clean = sanitizeHtml(html);
 
-    // Basic HTML to Slack markdown conversion
-    return (
-      clean
-        // Links first (before we remove tags)
-        .replace(/<a\s+href="([^"]+)"[^>]*>([^<]+)<\/a>/g, '<$1|$2>')
-        // Bold
-        .replace(/<b>|<strong>/g, '*')
-        .replace(/<\/b>|<\/strong>/g, '*')
-        // Italic
-        .replace(/<i>|<em>/g, '_')
-        .replace(/<\/i>|<\/em>/g, '_')
-        // Code
-        .replace(/<code>/g, '`')
-        .replace(/<\/code>/g, '`')
-        // Pre/code blocks
-        .replace(/<pre>/g, '```\n')
-        .replace(/<\/pre>/g, '\n```')
-        // Line breaks
-        .replace(/<br\s*\/?>/g, '\n')
-        // Paragraphs
-        .replace(/<p>/g, '')
-        .replace(/<\/p>/g, '\n\n')
-        // Remove remaining HTML tags (but not Slack links which use <url|text> format)
-        .replace(/<(?!https?:\/\/[^|]+\|[^>]+>)[^>]+>/g, '')
-        // Clean up extra whitespace
-        .replace(/\n{3,}/g, '\n\n')
-        .trim()
-    );
+    // Convert HTML tags to Slack markdown in a single pass
+    const tagMap: Record<string, string> = {
+      '<b>': '*',
+      '</b>': '*',
+      '<strong>': '*',
+      '</strong>': '*',
+      '<i>': '_',
+      '</i>': '_',
+      '<em>': '_',
+      '</em>': '_',
+      '<code>': '`',
+      '</code>': '`',
+      '<pre>': '```\n',
+      '</pre>': '\n```',
+      '<p>': '',
+      '</p>': '\n\n',
+    };
+
+    let result = clean
+      // Convert links first (before tag replacement)
+      .replace(/<a\s+href="([^"]+)"[^>]*>([^<]+)<\/a>/g, '<$1|$2>');
+
+    // Replace known tags in a single pass
+    result = result.replace(/<\/?(b|strong|i|em|code|pre|p)>/g, (match) => tagMap[match] ?? '');
+
+    result = result
+      .replace(/<br\s*\/?>/g, '\n')
+      // Remove remaining HTML tags (but not Slack links which use <url|text> format)
+      .replace(/<(?!https?:\/\/[^|]+\|[^>]+>)[^>]+>/g, '')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+
+    return result;
   }
 
   private static isSlackAttachments(attachments: any[]): boolean {
