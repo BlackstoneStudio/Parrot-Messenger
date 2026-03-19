@@ -125,11 +125,17 @@ jobs:
 
       - name: Summary
         if: always()
+        env:
+          CURRENT_VER: ${{ steps.current_version.outputs.version }}
+          FIRST_RELEASE: ${{ steps.check_first_release.outputs.first_release }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
-          echo "- Current version: ${{ steps.current_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "- First release: ${{ steps.check_first_release.outputs.first_release }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Event: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "- PR: #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Current version: ${CURRENT_VER}" >> $GITHUB_STEP_SUMMARY
+          echo "- First release: ${FIRST_RELEASE}" >> $GITHUB_STEP_SUMMARY
+          echo "- Event: ${EVENT_NAME}" >> $GITHUB_STEP_SUMMARY
+          if [ "${EVENT_NAME}" = "pull_request" ]; then
+            echo "- PR: #${PR_NUMBER} - ${PR_TITLE}" >> $GITHUB_STEP_SUMMARY
           fi
