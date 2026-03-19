@@ -3,22 +3,23 @@ name: Fix Semantic Release
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
+permissions: read-all
 
 jobs:
   fix:
     name: Fix Version Sync
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '20'
           cache: 'npm'
@@ -28,15 +29,15 @@ jobs:
           # Get current package version
           PACKAGE_VERSION=$(node -p "require('./package.json').version")
           echo "Package version: $PACKAGE_VERSION"
-          
+
           # Get latest tag
           LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           echo "Latest tag: $LATEST_TAG"
-          
+
           # If package version doesn't match latest tag, create a sync commit
           if [ "v${PACKAGE_VERSION}" != "$LATEST_TAG" ]; then
             echo "Version mismatch detected"
-            
+
             # If no tag exists or package is ahead
             if [ -z "$LATEST_TAG" ] || [ "v${PACKAGE_VERSION}" != "$LATEST_TAG" ]; then
               # Reset package.json to match the latest tag

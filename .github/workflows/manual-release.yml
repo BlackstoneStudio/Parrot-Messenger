@@ -13,25 +13,26 @@ on:
         type: string
         default: 'Manual release'
 
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-  id-token: write
+permissions: read-all
 
 jobs:
   release:
     name: Manual Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '20'
           cache: 'npm'
@@ -62,20 +63,20 @@ jobs:
           # Create release notes
           cat > RELEASE_NOTES.md << EOF
           # Release v${{ github.event.inputs.version }}
-          
+
           ${{ github.event.inputs.release_notes }}
-          
+
           ---
           *Released manually via GitHub Actions*
           EOF
-          
+
           # Create GitHub release
           gh release create "v${{ github.event.inputs.version }}" \
             --title "Release v${{ github.event.inputs.version }}" \
             --notes-file RELEASE_NOTES.md
-          
+
           # Publish to npm
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
           npm publish
-          
+
           echo "Successfully released v${{ github.event.inputs.version }}"
