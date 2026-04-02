@@ -99,7 +99,7 @@
   - Better resource utilization
 - **Testing**: Achieved 97% test coverage
 - **CI/CD**:
-  - Migrated from CircleCI to GitHub Actions
+  - Standardized CI/CD on GitHub Actions
   - Added Prettier formatting checks to CI
   - Enforced 97% coverage thresholds
 

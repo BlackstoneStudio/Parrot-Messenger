@@ -38,7 +38,7 @@
 
 ## ⚙️ Continuous Integration
 
-- Migrated from CircleCI to GitHub Actions
+- Standardized CI/CD on GitHub Actions
 - Added Dependabot for automated dependency updates
 - Added OpenSSF Scorecard workflow
 - Added automatic release workflow
