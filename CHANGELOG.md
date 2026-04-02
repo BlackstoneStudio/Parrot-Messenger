@@ -13,6 +13,16 @@
 - Upgrade `dotenv` to v17.3.1
 - Refresh the lockfile and keep release commits in sync with `package-lock.json`
 
+## [Unreleased]
+
+### 📚 Documentation
+
+- Remove remaining legacy CI provider references from project docs
+
+### ⚙️ Continuous Integration
+
+- Remove legacy CI webhook from repository settings
+
 # [2.3.0](https://github.com/BlackstoneStudio/Parrot-Messenger/compare/v2.2.1...v2.3.0) (2026-03-19)
 
 ### 🐛 Bug Fixes
