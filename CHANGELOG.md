@@ -1,10 +1,73 @@
+## [Unreleased]
+
+### ⚙️ Continuous Integration
+
+- Upgrade `actions/checkout` to v6.0.2 across CI and release workflows
+- Upgrade `github/codeql-action` to v4.35.1 in static-analysis workflows
+- Run semantic-release workflows on Node 24.x for semantic-release v25 compatibility
+
+### 📦 Dependencies
+
+- Upgrade `semantic-release` to v25.0.3
+- Upgrade `@semantic-release/npm` to v13.1.5 and add `@semantic-release/github` explicitly
+- Upgrade `dotenv` to v17.3.1
+- Refresh the lockfile and keep release commits in sync with `package-lock.json`
+
 # [2.3.0](https://github.com/BlackstoneStudio/Parrot-Messenger/compare/v2.2.1...v2.3.0) (2026-03-19)
+
+### 🐛 Bug Fixes
+
+- Resolve CodeQL security findings in Telegram and Slack transports
+- Replace sequential `escapeMarkdown` with single atomic regex pass
+- Replace sequential `escapeHtml` with single-pass character map
+- Refactor Slack `htmlToSlackMarkdown` to use single-pass tag replacement
+- Restrict Telegram `ALLOWED_URI_REGEXP` to only `https`/`mailto` schemes
+- Remove identity replacements in `htmlToTelegram`
 
 ## [2.2.1](https://github.com/BlackstoneStudio/Parrot-Messenger/compare/v2.2.0...v2.2.1) (2026-03-19)
 
+### ⚙️ Continuous Integration
+
+- Pin all GitHub Actions to commit SHAs for supply chain security
+- Set top-level workflow permissions to `read-all`, scope write permissions per job
+- Fix script injection in release workflow summary step
+- Add CodeQL static analysis workflow
+
 # [2.2.0](https://github.com/BlackstoneStudio/Parrot-Messenger/compare/v2.1.0...v2.2.0) (2026-03-18)
 
+### ✨ Features
+
+- Add built-in MockTransport for testing (`parrot-messenger/testing`)
+- Capture sent messages in memory for assertion in tests
+- Support simulated failures and latency for error path testing
+- Add `exports` field to package.json for subpath imports
+
 # [2.1.0](https://github.com/BlackstoneStudio/Parrot-Messenger/compare/v2.0.1...v2.1.0) (2026-03-18)
+
+### ✨ Features
+
+- Add Postmark email provider adapter (#73)
+- Add Resend email provider adapter (#74)
+- Upgrade Telnyx SDK v2 to v6 with MMS support
+- Add `mediaUrls` field to Envelope type for MMS
+- Set Node.js engine minimum to >=20.0.0
+
+### 📦 Dependencies
+
+- Resolve all 39 npm audit vulnerabilities to 0
+- Update all semver-compatible dependencies
+- Override `fast-xml-parser` to 5.5.6 for CVE-2026-26278
+
+### ♻️ Code Refactoring
+
+- Replace `xmlbuilder2` with Twilio built-in TwiML `VoiceResponse` builder (removes dependency)
+
+### 📚 Documentation
+
+- Add Postmark and Resend to README provider list and API reference
+- Update README header image with Parrot Messenger banner
+- Update Telnyx SMS example for v6 SDK with MMS support
+- Update copyright year to 2026
 
 ## [2.0.1](https://github.com/BlackstoneStudio/Parrot-Messenger/compare/v2.0.0...v2.0.1) (2025-06-27)
 
