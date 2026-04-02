@@ -1,3 +1,17 @@
+## [Unreleased]
+
+### ⚙️ Continuous Integration
+
+- Upgrade `actions/checkout` to v6.0.2 across CI and release workflows
+- Upgrade `github/codeql-action` to v4.35.1 in static-analysis workflows
+- Run semantic-release workflows on Node 24.x for semantic-release v25 compatibility
+
+### 📦 Dependencies
+
+- Upgrade `semantic-release` to v25.0.3
+- Upgrade `dotenv` to v17.3.1
+- Refresh the lockfile and keep release commits in sync with `package-lock.json`
+
 # [2.3.0](https://github.com/BlackstoneStudio/Parrot-Messenger/compare/v2.2.1...v2.3.0) (2026-03-19)
 
 ### 🐛 Bug Fixes
