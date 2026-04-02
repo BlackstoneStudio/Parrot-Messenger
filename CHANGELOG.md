@@ -1,3 +1,5 @@
+## [2.3.2](https://github.com/BlackstoneStudio/Parrot-Messenger/compare/v2.3.1...v2.3.2) (2026-04-02)
+
 ## [2.3.1](https://github.com/BlackstoneStudio/Parrot-Messenger/compare/v2.3.0...v2.3.1) (2026-04-02)
 
 ## [Unreleased]
