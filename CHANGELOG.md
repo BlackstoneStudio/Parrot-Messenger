@@ -9,6 +9,7 @@
 ### 📦 Dependencies
 
 - Upgrade `semantic-release` to v25.0.3
+- Upgrade `@semantic-release/npm` to v13.1.5 and add `@semantic-release/github` explicitly
 - Upgrade `dotenv` to v17.3.1
 - Refresh the lockfile and keep release commits in sync with `package-lock.json`
 
