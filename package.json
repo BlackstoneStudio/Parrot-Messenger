@@ -44,7 +44,7 @@
     "form-data": "^4.0.5",
     "handlebars": "^4.7.9",
     "html-to-text": "^9.0.5",
-    "isomorphic-dompurify": "^2.25.0",
+    "isomorphic-dompurify": "^3.7.1",
     "mailgun.js": "^12.7.1",
     "nodemailer": "^8.0.4",
     "postmark": "^4.0.7",
