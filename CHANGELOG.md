@@ -15,6 +15,20 @@
 - Upgrade `dotenv` to v17.3.1
 - Refresh the lockfile and keep release commits in sync with `package-lock.json`
 
+## [Unreleased]
+
+### 📦 Dependencies
+
+- Update `nodemailer` to `8.0.4`
+- Update `handlebars` to `4.7.9`
+- Refresh the lockfile to pull in safe `lodash`, `picomatch`, `brace-expansion`, and `yaml` versions
+- Raise the `fast-xml-parser` override to `5.5.8`
+
+### ⚙️ Continuous Integration
+
+- Update `actions/setup-node` to `v6.3.0`
+- Update `actions/upload-artifact` to `v7.0.0`
+
 # [2.3.0](https://github.com/BlackstoneStudio/Parrot-Messenger/compare/v2.2.1...v2.3.0) (2026-03-19)
 
 ### 🐛 Bug Fixes
